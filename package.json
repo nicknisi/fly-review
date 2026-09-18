@@ -1,0 +1,21 @@
+{
+  "name": "fly-review",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "setup": "node scripts/setup.ts",
+    "build:web": "tsc -p tsconfig.web.json",
+    "dev": "npm run build:web && node --env-file-if-exists=.env src/server.ts",
+    "calibrate": "node src/review-calibrate.ts",
+    "measure:examples": "node --env-file-if-exists=.env src/example-reactions.ts",
+    "demo": "npm run dev",
+    "test": "node --test test/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.3"
+  }
+}

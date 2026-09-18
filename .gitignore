@@ -1,0 +1,7 @@
+node_modules/
+.runtime/
+.runs/
+data/*.gz
+.env
+.env.*
+!.env.example
