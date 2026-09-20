@@ -1,0 +1,3795 @@
+{
+  "at": "2026-09-20T03:42:32.874Z",
+  "note": "Synthetic diffs from executed cases: K hunks sharing a smell category plus one odd hunk (from another category when it shares the class), shuffled. The fly reads each diff hunk by hunk; \"looked\" is the hunk whose α'3 novelty MBONs stayed loudest on the frozen second reading. Odd hunks were never taught. Baselines on the same descriptors and split.",
+  "seed": 7,
+  "k": 5,
+  "trials": 40,
+  "familiarity": 0.3,
+  "memoryPath": "/Users/nicknisi/Developer/fly-attention/.runs/trained-memory.json",
+  "summary": {
+    "odd-regression": {
+      "trials": 40,
+      "hunks": 6,
+      "random": "6.7 expected",
+      "noveltyAttention": 21,
+      "noveltyTiesAtTop": 1,
+      "valenceAttention": 34,
+      "logisticPerHunk": 40,
+      "oddMeanNovelty": 42.225,
+      "bulkMeanNovelty": 17.35
+    },
+    "odd-control": {
+      "trials": 40,
+      "hunks": 6,
+      "random": "6.7 expected",
+      "noveltyAttention": 8,
+      "noveltyTiesAtTop": 3,
+      "valenceAttention": 35,
+      "logisticPerHunk": 39,
+      "oddMeanNovelty": 34.1,
+      "bulkMeanNovelty": 28.195000000000004
+    }
+  },
+  "results": [
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "blood-alcohol-content-warning-bac-lookup-table",
+        "loan-eligibility-check-loan-eligibility-reorder-guards",
+        "token-expiry",
+        "blood-alcohol-content-warning-bac-ternary-chain",
+        "wind-chill-comfort-level-wind-chill-comfort-level-control-reorder",
+        "gift-card-redemption-validator-extract-balance-check-helper"
+      ],
+      "odd": 2,
+      "novelty": [
+        2,
+        9,
+        23,
+        6,
+        64,
+        3
+      ],
+      "familiarity": [
+        0.957,
+        0.827,
+        0.395,
+        0.914,
+        0.179,
+        0.943
+      ],
+      "share": [
+        0.3718924857558956,
+        0.43789789607712365,
+        0.7672496933130677,
+        0.4104305905554947,
+        0.85567998385795,
+        0.3395820747005935
+      ],
+      "logistic": [
+        0.0041347503355372225,
+        0.02184130711359898,
+        0.9626874288440592,
+        0.005563845419261163,
+        0.17166676966100683,
+        0.0031375784778258117
+      ],
+      "lookedNovelty": 4,
+      "lookedValence": 4,
+      "lookedLogistic": 2
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "subscription-late-fee-calculator-late-fee-extract-rate-helper",
+        "session-timeout-checker-session-timeout-checker-ctrl-1",
+        "calorie-burn-estimator-calorie-burn-estimator-early-floor",
+        "subscription-late-fee-calculator-late-fee-ternary-refactor",
+        "session-timeout-checker-session-timeout-checker-ctrl-2",
+        "interest-accrual-daily-rate-control-extract-daily-rate-helper"
+      ],
+      "odd": 2,
+      "novelty": [
+        5,
+        15,
+        52,
+        2,
+        41,
+        4
+      ],
+      "familiarity": [
+        0.917,
+        0.835,
+        0.316,
+        0.969,
+        0.586,
+        0.935
+      ],
+      "share": [
+        0.3995056179775281,
+        0.46542230886769587,
+        0.9079066565206363,
+        0.3748216773240689,
+        0.6059477716451108,
+        0.3870418975405852
+      ],
+      "logistic": [
+        0.002378080391264083,
+        0.007166707226196543,
+        0.9884532979004932,
+        0.003984896745951233,
+        0.6169013212121887,
+        0.006683661665318186
+      ],
+      "lookedNovelty": 2,
+      "lookedValence": 2,
+      "lookedLogistic": 2
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "blood-alcohol-content-warning-bac-ternary-chain",
+        "commission-rate-calculator-commission-rate-precedence-drop",
+        "age-restricted-content-gate-age-restricted-content-gate-c1",
+        "age-restricted-content-gate-age-restricted-content-gate-c2",
+        "gift-card-redemption-validator-extract-balance-check-helper",
+        "wind-chill-comfort-level-wind-chill-comfort-level-control-reorder"
+      ],
+      "odd": 1,
+      "novelty": [
+        15,
+        47,
+        30,
+        36,
+        6,
+        39
+      ],
+      "familiarity": [
+        0.786,
+        0.453,
+        0.565,
+        0.471,
+        0.887,
+        0.5
+      ],
+      "share": [
+        0.42748091603053434,
+        0.8922019889799758,
+        0.37688574052210416,
+        0.7745677770648725,
+        0.3214663132546819,
+        0.8477003303207633
+      ],
+      "logistic": [
+        0.005563845419261163,
+        0.9713318081849869,
+        0.021081292083424092,
+        0.5328961680660105,
+        0.0031375784778258117,
+        0.17166676966100683
+      ],
+      "lookedNovelty": 1,
+      "lookedValence": 1,
+      "lookedLogistic": 1
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "age-restricted-content-gate-age-restricted-content-gate-c2",
+        "age-restricted-content-gate-age-restricted-content-gate-c1",
+        "blood-alcohol-content-warning-bac-lookup-table",
+        "loan-eligibility-check-loan-eligibility-reorder-guards",
+        "gift-card-redemption-validator-extract-balance-check-helper",
+        "api-key-masked-display-api-key-masked-display-v2"
+      ],
+      "odd": 5,
+      "novelty": [
+        50,
+        21,
+        4,
+        8,
+        4,
+        67
+      ],
+      "familiarity": [
+        0.265,
+        0.696,
+        0.915,
+        0.846,
+        0.925,
+        0.162
+      ],
+      "share": [
+        0.7776757562108035,
+        0.3726684927422811,
+        0.3693206514791235,
+        0.44043129076629545,
+        0.32142857142857145,
+        0.7601636800681733
+      ],
+      "logistic": [
+        0.5328961680660105,
+        0.021081292083424092,
+        0.0041347503355372225,
+        0.02184130711359898,
+        0.0031375784778258117,
+        0.992432791011213
+      ],
+      "lookedNovelty": 5,
+      "lookedValence": 0,
+      "lookedLogistic": 5
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "flight-upgrade-eligibility-upgrade-inline-seats-ok",
+        "access-level-permission-check-access-level-extract-role-validator",
+        "flight-upgrade-eligibility-upgrade-extract-tier-helper",
+        "parking-permit-eligibility-parking-permit-eligibility-ternary-contr",
+        "wind-chill-comfort-level-wind-chill-comfort-level-control-extract",
+        "commission-rate-calculator-commission-rate-precedence-drop"
+      ],
+      "odd": 5,
+      "novelty": [
+        8,
+        25,
+        7,
+        5,
+        10,
+        67
+      ],
+      "familiarity": [
+        0.896,
+        0.658,
+        0.892,
+        0.923,
+        0.859,
+        0.221
+      ],
+      "share": [
+        0.38033251273058377,
+        0.4023449172950834,
+        0.37650769153344177,
+        0.35756159668686077,
+        0.3342192796778763,
+        0.8905521224469178
+      ],
+      "logistic": [
+        0.01587436808732786,
+        0.030668597817517754,
+        0.003134015001187502,
+        0.01841490771591618,
+        0.0020166291117040434,
+        0.9713318081849869
+      ],
+      "lookedNovelty": 5,
+      "lookedValence": 5,
+      "lookedLogistic": 5
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "voltage-drop-severity-control-ternary-chain",
+        "water-quality-index-rating-wqir-control-comment-and-rename",
+        "freight-weight-surcharge-freight-control-extract-standard",
+        "water-quality-index-rating-wqir-control-extract-lookup",
+        "ticket-discount-tier-senior-boundary-flip",
+        "freight-weight-surcharge-freight-control-reorder-classes"
+      ],
+      "odd": 4,
+      "novelty": [
+        0,
+        6,
+        15,
+        0,
+        12,
+        11
+      ],
+      "familiarity": [
+        1,
+        0.891,
+        0.8,
+        1,
+        0.52,
+        0.843
+      ],
+      "share": [
+        0.4841463806798083,
+        0.4880758032213003,
+        0.3486024705523782,
+        0.389575349964808,
+        0.9196678189255072,
+        0.4724254361283061
+      ],
+      "logistic": [
+        0.04319937024845586,
+        0.002694168051614314,
+        0.002941412965855313,
+        0.002702921604981712,
+        0.9862155859910242,
+        0.012152987046873497
+      ],
+      "lookedNovelty": 2,
+      "lookedValence": 4,
+      "lookedLogistic": 4
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "promo-code-discount-amount-promo-extract-clamp-helper",
+        "inventory-reorder-label-inventory-reorder-label-v4",
+        "support-ticket-priority-label-stpl-control-ternary-to-if",
+        "product-review-summary-label-ctrl-lookup-table",
+        "product-review-summary-label-ctrl-early-return-reorder",
+        "battery-charge-status-battery-charge-status-low-threshold-rais"
+      ],
+      "odd": 5,
+      "novelty": [
+        6,
+        15,
+        22,
+        79,
+        15,
+        42
+      ],
+      "familiarity": [
+        0.867,
+        0.615,
+        0.633,
+        0.342,
+        0.762,
+        0.288
+      ],
+      "share": [
+        0.3716102162835824,
+        0.5600275197798418,
+        0.4237813661869418,
+        0.8502463253109352,
+        0.42748665731352786,
+        0.9772140544324844
+      ],
+      "logistic": [
+        0.0022191004700942998,
+        0.17224989990046072,
+        0.008875346250081545,
+        0.561257414940807,
+        0.07336669762261386,
+        0.9948488063659449
+      ],
+      "lookedNovelty": 3,
+      "lookedValence": 5,
+      "lookedLogistic": 5
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "download-speed-rating-download-speed-rating-simplify-condition",
+        "sprint-velocity-cap-sprint-velocity-cap-c2",
+        "sleep-dose-recommender-extract-clamp-helper",
+        "download-speed-rating-download-speed-rating-extract-clamp",
+        "server-cpu-throttle-level-cpu-throttle-early-return-refactor",
+        "fuel-surcharge-calculator-fuel-surcharge-early-floor"
+      ],
+      "odd": 5,
+      "novelty": [
+        12,
+        1,
+        5,
+        3,
+        4,
+        6
+      ],
+      "familiarity": [
+        0.833,
+        0.982,
+        0.929,
+        0.936,
+        0.941,
+        0.895
+      ],
+      "share": [
+        0.45278791741506846,
+        0.36349102966427854,
+        0.39722022685888975,
+        0.35894893406048584,
+        0.38885795644358184,
+        0.5297322717174502
+      ],
+      "logistic": [
+        0.11567839372731785,
+        0.014958608293266831,
+        0.007816764504518367,
+        0.005890046135610267,
+        0.006011452342035361,
+        0.2879536256961716
+      ],
+      "lookedNovelty": 0,
+      "lookedValence": 5,
+      "lookedLogistic": 5
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "reading-level-grade-classifier-rclc-control-extract-avg",
+        "commission-rate-calculator-commission-rate-precedence-drop",
+        "reading-level-grade-classifier-rclc-control-guard-reorder",
+        "word-count-badge-label-word-count-badge-label-control-lookup",
+        "bowling-frame-score-bowling-frame-score-comment-reorder",
+        "bowling-frame-score-bowling-frame-score-extract-helper"
+      ],
+      "odd": 1,
+      "novelty": [
+        12,
+        62,
+        7,
+        2,
+        13,
+        16
+      ],
+      "familiarity": [
+        0.813,
+        0.279,
+        0.825,
+        0.946,
+        0.79,
+        0.781
+      ],
+      "share": [
+        0.44976608381167255,
+        0.8903471777050508,
+        0.44476952948373544,
+        0.4670086541097232,
+        0.4572312407764786,
+        0.3768634936660935
+      ],
+      "logistic": [
+        0.0018381000491547812,
+        0.9713318081849869,
+        0.02926100018998756,
+        0.024723771794740747,
+        0.0019580710292375716,
+        0.00185172821330603
+      ],
+      "lookedNovelty": 1,
+      "lookedValence": 1,
+      "lookedLogistic": 1
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "ticket-discount-tier-senior-boundary-flip",
+        "coupon-code-validator-coupon-extract-trim-helper",
+        "product-review-summary-label-ctrl-lookup-table",
+        "promo-code-discount-amount-promo-extract-clamp-helper",
+        "inventory-reorder-label-inventory-reorder-label-v3",
+        "employee-display-name-formatter-extract-is-single-letter"
+      ],
+      "odd": 0,
+      "novelty": [
+        11,
+        16,
+        84,
+        0,
+        3,
+        4
+      ],
+      "familiarity": [
+        0.56,
+        0.797,
+        0.3,
+        1,
+        0.944,
+        0.937
+      ],
+      "share": [
+        0.9176830523124202,
+        0.3544367447634313,
+        0.8514851485148515,
+        0.38515479654629586,
+        0.3539526719542322,
+        0.35164672139254277
+      ],
+      "logistic": [
+        0.9862155859910242,
+        0.0019196369990989327,
+        0.561257414940807,
+        0.0022191004700942998,
+        0.0022747139971225536,
+        0.0019871919792970286
+      ],
+      "lookedNovelty": 2,
+      "lookedValence": 0,
+      "lookedLogistic": 0
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "employee-display-name-formatter-reorder-empty-checks",
+        "product-review-summary-label-ctrl-lookup-table",
+        "subscription-late-fee-calculator-late-fee-dollars-not-cents",
+        "api-error-response-formatter-reorder-guard-checks",
+        "referral-bonus-calculator-referral-bonus-lookup-table",
+        "referral-bonus-calculator-referral-bonus-guard-reorder"
+      ],
+      "odd": 2,
+      "novelty": [
+        9,
+        74,
+        49,
+        26,
+        14,
+        0
+      ],
+      "familiarity": [
+        0.836,
+        0.383,
+        0.21,
+        0.671,
+        0.788,
+        1
+      ],
+      "share": [
+        0.42870125314881546,
+        0.8514851485148515,
+        0.9102991523269894,
+        0.44828800043324624,
+        0.4549074799686535,
+        0.4720168954593453
+      ],
+      "logistic": [
+        0.017745926004436186,
+        0.561257414940807,
+        0.9951352965237548,
+        0.1360965493011592,
+        0.08051917781115929,
+        0.07428132076039361
+      ],
+      "lookedNovelty": 1,
+      "lookedValence": 2,
+      "lookedLogistic": 2
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "currency-exchange-fee-calculator-currency-exchange-fee-floor-instead-of-r",
+        "tax-bracket-lookup-tax-bracket-reorder-guards",
+        "blood-pressure-category-extract-low-helper",
+        "blood-pressure-category-inline-guard-comment",
+        "tax-bracket-lookup-tax-bracket-extract-helper",
+        "return-shipping-label-generator-ternary-carrier-and-fee"
+      ],
+      "odd": 0,
+      "novelty": [
+        34,
+        67,
+        6,
+        20,
+        1,
+        20
+      ],
+      "familiarity": [
+        0.37,
+        0.302,
+        0.829,
+        0.692,
+        0.98,
+        0.737
+      ],
+      "share": [
+        0.9265149522733952,
+        0.7465973465433945,
+        0.3596129011686304,
+        0.4379976886665506,
+        0.36993423318518037,
+        0.44642857142857145
+      ],
+      "logistic": [
+        0.9897819866995442,
+        0.059884770993703235,
+        0.0024694278206933234,
+        0.015155104589587964,
+        0.003986857662799733,
+        0.016434832439448585
+      ],
+      "lookedNovelty": 1,
+      "lookedValence": 0,
+      "lookedLogistic": 0
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "signal-strength-label-signal-strength-label-control-1",
+        "signal-strength-label-signal-strength-label-control-2",
+        "word-count-badge-label-word-count-badge-label-off-by-one-loop",
+        "hotel-cancellation-fee-hotel-cancellation-fee-extract-tier",
+        "hotel-cancellation-fee-hotel-cancellation-fee-comment-cleanup",
+        "battery-charge-status-battery-charge-status-extract-helper"
+      ],
+      "odd": 2,
+      "novelty": [
+        2,
+        17,
+        21,
+        5,
+        32,
+        26
+      ],
+      "familiarity": [
+        0.95,
+        0.75,
+        0.571,
+        0.919,
+        0.492,
+        0.662
+      ],
+      "share": [
+        0.3901321262884781,
+        0.36086545498902173,
+        0.6782029190109411,
+        0.4244644194756554,
+        0.5573729027906584,
+        0.3355076075166369
+      ],
+      "logistic": [
+        0.005863090732380728,
+        0.004974565740983833,
+        0.6338991605968823,
+        0.00853932996913456,
+        0.059461729750123225,
+        0.001992844472247121
+      ],
+      "lookedNovelty": 4,
+      "lookedValence": 2,
+      "lookedLogistic": 2
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "battery-charge-status-battery-charge-status-extract-helper",
+        "audit-log",
+        "signal-strength-label-signal-strength-label-control-1",
+        "hotel-cancellation-fee-hotel-cancellation-fee-comment-cleanup",
+        "hotel-cancellation-fee-hotel-cancellation-fee-extract-tier",
+        "battery-charge-status-battery-charge-status-reorder-full-check"
+      ],
+      "odd": 1,
+      "novelty": [
+        27,
+        25,
+        2,
+        39,
+        6,
+        39
+      ],
+      "familiarity": [
+        0.649,
+        0.375,
+        0.95,
+        0.381,
+        0.903,
+        0.536
+      ],
+      "share": [
+        0.34397712028068933,
+        0.8340582902029879,
+        0.3916083916083916,
+        0.5683581576289036,
+        0.42748091603053434,
+        0.612900471343671
+      ],
+      "logistic": [
+        0.001992844472247121,
+        0.9692484121063089,
+        0.005863090732380728,
+        0.059461729750123225,
+        0.00853932996913456,
+        0.054353622203633906
+      ],
+      "lookedNovelty": 3,
+      "lookedValence": 1,
+      "lookedLogistic": 1
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "parking-fee-calculator-parking-fee-ternary-refactor",
+        "parking-fee-calculator-parking-fee-extract-rate",
+        "tip-amount-calculator-tip-lookup-table",
+        "commission-rate-calculator-commission-rate-precedence-drop",
+        "currency-exchange-fee-calculator-currency-exchange-fee-inline-min",
+        "currency-exchange-fee-calculator-currency-exchange-fee-extract-rate-looku"
+      ],
+      "odd": 3,
+      "novelty": [
+        5,
+        4,
+        15,
+        64,
+        29,
+        25
+      ],
+      "familiarity": [
+        0.93,
+        0.943,
+        0.717,
+        0.256,
+        0.691,
+        0.688
+      ],
+      "share": [
+        0.41775317885496677,
+        0.3653526343638975,
+        0.34441404078840476,
+        0.8899349769710105,
+        0.42874388324818385,
+        0.4171704302095476
+      ],
+      "logistic": [
+        0.02782792833718463,
+        0.005102471853988629,
+        0.007104549146170175,
+        0.9713318081849869,
+        0.09801350609861735,
+        0.0034555703317571103
+      ],
+      "lookedNovelty": 3,
+      "lookedValence": 3,
+      "lookedLogistic": 3
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "freight-weight-surcharge-freight-control-reorder-classes",
+        "water-quality-index-rating-wqir-control-comment-and-rename",
+        "water-quality-index-rating-wqir-control-extract-lookup",
+        "currency-exchange-fee-calculator-currency-exchange-fee-floor-instead-of-r",
+        "voltage-drop-severity-control-ternary-chain",
+        "freight-weight-surcharge-freight-control-extract-standard"
+      ],
+      "odd": 3,
+      "novelty": [
+        11,
+        7,
+        0,
+        33,
+        0,
+        15
+      ],
+      "familiarity": [
+        0.843,
+        0.873,
+        1,
+        0.389,
+        1,
+        0.8
+      ],
+      "share": [
+        0.4757797050900768,
+        0.48656584686932464,
+        0.38350026700704637,
+        0.9250697674418605,
+        0.4750012053420761,
+        0.35818710902786255
+      ],
+      "logistic": [
+        0.012152987046873497,
+        0.002694168051614314,
+        0.002702921604981712,
+        0.9897819866995442,
+        0.04319937024845586,
+        0.002941412965855313
+      ],
+      "lookedNovelty": 3,
+      "lookedValence": 3,
+      "lookedLogistic": 3
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "blood-alcohol-content-warning-bac-lookup-table",
+        "blood-alcohol-content-warning-bac-ternary-chain",
+        "voltage-drop-severity-constant-return-overvoltage-early-exit",
+        "gift-card-redemption-validator-extract-balance-check-helper",
+        "loan-eligibility-check-loan-eligibility-extract-helper",
+        "age-restricted-content-gate-age-restricted-content-gate-c2"
+      ],
+      "odd": 2,
+      "novelty": [
+        2,
+        4,
+        75,
+        3,
+        11,
+        41
+      ],
+      "familiarity": [
+        0.957,
+        0.943,
+        0.279,
+        0.943,
+        0.831,
+        0.397
+      ],
+      "share": [
+        0.3672014934786447,
+        0.41545378696579216,
+        0.8106603852247145,
+        0.3219056816352808,
+        0.40274162190661345,
+        0.7770745183061161
+      ],
+      "logistic": [
+        0.0041347503355372225,
+        0.005563845419261163,
+        0.6826824734731911,
+        0.0031375784778258117,
+        0.012288382628333601,
+        0.5328961680660105
+      ],
+      "lookedNovelty": 2,
+      "lookedValence": 2,
+      "lookedLogistic": 2
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "tip-amount-calculator-tip-ternary-chain",
+        "calorie-burn-estimator-calorie-burn-estimator-reorder-guards",
+        "parking-fee-calculator-parking-fee-ternary-refactor",
+        "currency-exchange-fee-calculator-currency-exchange-fee-inline-min",
+        "tip-amount-calculator-tip-lookup-table",
+        "retry-delay"
+      ],
+      "odd": 5,
+      "novelty": [
+        8,
+        17,
+        6,
+        30,
+        22,
+        58
+      ],
+      "familiarity": [
+        0.877,
+        0.667,
+        0.915,
+        0.681,
+        0.585,
+        0.216
+      ],
+      "share": [
+        0.35272364999493433,
+        0.4230785206928541,
+        0.42105263157894735,
+        0.433791333232674,
+        0.36209989136750625,
+        0.882841120894659
+      ],
+      "logistic": [
+        0.003962493738886104,
+        0.01255247992664402,
+        0.02782792833718463,
+        0.09801350609861735,
+        0.007104549146170175,
+        0.9997831445749944
+      ],
+      "lookedNovelty": 5,
+      "lookedValence": 5,
+      "lookedLogistic": 5
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "commission-rate-calculator-commission-rate-guard-reorder",
+        "commission-rate-calculator-commission-rate-extract-bonus",
+        "audit-log",
+        "heat-index-comfort-rating-heat-index-control-guard-reorder",
+        "mortgage-monthly-payment-calculator-mortgage-control-factor-rename",
+        "overtime-pay-calculator-overtime-rename-intermediate"
+      ],
+      "odd": 2,
+      "novelty": [
+        2,
+        17,
+        26,
+        15,
+        9,
+        6
+      ],
+      "familiarity": [
+        0.969,
+        0.734,
+        0.35,
+        0.7,
+        0.873,
+        0.885
+      ],
+      "share": [
+        0.4282108635855273,
+        0.3999947445178752,
+        0.831851216127383,
+        0.4349192347979492,
+        0.32185794179699273,
+        0.4127124689444813
+      ],
+      "logistic": [
+        0.07104145446900187,
+        0.0028773232282989975,
+        0.9692484121063089,
+        0.015913960215635112,
+        0.0016112642256468355,
+        0.0012072908213053032
+      ],
+      "lookedNovelty": 2,
+      "lookedValence": 2,
+      "lookedLogistic": 2
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "interest-accrual-daily-rate-control-extract-daily-rate-helper",
+        "subscription-late-fee-calculator-late-fee-ternary-refactor",
+        "subscription-late-fee-calculator-late-fee-extract-rate-helper",
+        "interest-accrual-daily-rate-control-reorder-guards",
+        "session-timeout-checker-session-timeout-checker-ctrl-2",
+        "voltage-drop-severity-constant-return-overvoltage-early-exit"
+      ],
+      "odd": 5,
+      "novelty": [
+        4,
+        3,
+        6,
+        10,
+        53,
+        69
+      ],
+      "familiarity": [
+        0.935,
+        0.954,
+        0.9,
+        0.844,
+        0.465,
+        0.337
+      ],
+      "share": [
+        0.3842364532019705,
+        0.3709502351741605,
+        0.40100032944981884,
+        0.49638550733019116,
+        0.623228065404358,
+        0.8104953766278347
+      ],
+      "logistic": [
+        0.006683661665318186,
+        0.003984896745951233,
+        0.002378080391264083,
+        0.056256647112234645,
+        0.6169013212121887,
+        0.6826824734731911
+      ],
+      "lookedNovelty": 5,
+      "lookedValence": 5,
+      "lookedLogistic": 5
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "return-shipping-label-generator-ternary-carrier-and-fee",
+        "tax-bracket-lookup-tax-bracket-extract-helper",
+        "retry-delay",
+        "tax-bracket-lookup-tax-bracket-reorder-guards",
+        "return-shipping-label-generator-lookup-table-reason-codes",
+        "blood-pressure-category-inline-guard-comment"
+      ],
+      "odd": 2,
+      "novelty": [
+        18,
+        1,
+        61,
+        67,
+        29,
+        21
+      ],
+      "familiarity": [
+        0.763,
+        0.98,
+        0.176,
+        0.302,
+        0.613,
+        0.677
+      ],
+      "share": [
+        0.4410386460113567,
+        0.3593648420231439,
+        0.8850036718125842,
+        0.7494928758217856,
+        0.3815187066313756,
+        0.4413445536471253
+      ],
+      "logistic": [
+        0.016434832439448585,
+        0.003986857662799733,
+        0.9997831445749944,
+        0.059884770993703235,
+        0.006122150583622214,
+        0.015155104589587964
+      ],
+      "lookedNovelty": 3,
+      "lookedValence": 2,
+      "lookedLogistic": 2
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "tax-bracket-lookup-tax-bracket-swallow-negative",
+        "blood-pressure-category-inline-guard-comment",
+        "tax-bracket-lookup-tax-bracket-reorder-guards",
+        "return-shipping-label-generator-lookup-table-reason-codes",
+        "return-shipping-label-generator-ternary-carrier-and-fee",
+        "blood-pressure-category-extract-low-helper"
+      ],
+      "odd": 0,
+      "novelty": [
+        59,
+        18,
+        61,
+        27,
+        17,
+        6
+      ],
+      "familiarity": [
+        0.352,
+        0.723,
+        0.365,
+        0.64,
+        0.776,
+        0.829
+      ],
+      "share": [
+        0.9314341589058084,
+        0.44104209196072713,
+        0.7414493610105636,
+        0.3888605546859886,
+        0.4523348789660082,
+        0.35648905385002516
+      ],
+      "logistic": [
+        0.9952447732928517,
+        0.015155104589587964,
+        0.059884770993703235,
+        0.006122150583622214,
+        0.016434832439448585,
+        0.0024694278206933234
+      ],
+      "lookedNovelty": 2,
+      "lookedValence": 0,
+      "lookedLogistic": 0
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "loyalty-points-redemption-loyalty-points-redemption-extract-helper",
+        "loyalty-points-redemption-loyalty-points-redemption-rename-constan",
+        "server-cpu-throttle-level-cpu-throttle-comment-constants",
+        "download-speed-rating-download-speed-rating-extract-clamp",
+        "word-count-badge-label-word-count-badge-label-off-by-one-loop",
+        "sleep-dose-recommender-rename-hours-var"
+      ],
+      "odd": 4,
+      "novelty": [
+        27,
+        9,
+        57,
+        6,
+        24,
+        21
+      ],
+      "familiarity": [
+        0.663,
+        0.878,
+        0.321,
+        0.872,
+        0.51,
+        0.724
+      ],
+      "share": [
+        0.43915921559956334,
+        0.4276769354477268,
+        0.7599357215646312,
+        0.3532985974467549,
+        0.673872064910052,
+        0.3708263494370856
+      ],
+      "logistic": [
+        0.09131177680180093,
+        0.0030638416466659195,
+        0.11354128934504279,
+        0.005890046135610267,
+        0.6338991605968823,
+        0.001310556448711636
+      ],
+      "lookedNovelty": 2,
+      "lookedValence": 2,
+      "lookedLogistic": 4
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "parking-fee-calculator-parking-fee-extract-rate",
+        "ticket-discount-tier-free-boundary-flip",
+        "tip-amount-calculator-tip-lookup-table",
+        "calorie-burn-estimator-calorie-burn-estimator-lookup-table",
+        "fuel-surcharge-calculator-fuel-surcharge-reorder-guards",
+        "calorie-burn-estimator-calorie-burn-estimator-reorder-guards"
+      ],
+      "odd": 1,
+      "novelty": [
+        10,
+        21,
+        23,
+        8,
+        4,
+        17
+      ],
+      "familiarity": [
+        0.857,
+        0.417,
+        0.566,
+        0.892,
+        0.907,
+        0.667
+      ],
+      "share": [
+        0.3606040709126724,
+        0.9408004091548395,
+        0.3624012948158321,
+        0.35818710902786255,
+        0.45442584490520577,
+        0.42371723725774785
+      ],
+      "logistic": [
+        0.005102471853988629,
+        0.9839979088320042,
+        0.007104549146170175,
+        0.00699033397611723,
+        0.0025714564222445303,
+        0.01255247992664402
+      ],
+      "lookedNovelty": 2,
+      "lookedValence": 1,
+      "lookedLogistic": 1
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "blood-pressure-category-inline-guard-comment",
+        "return-shipping-label-generator-ternary-carrier-and-fee",
+        "return-shipping-label-generator-lookup-table-reason-codes",
+        "blood-pressure-category-extract-low-helper",
+        "battery-charge-status-battery-charge-status-low-threshold-rais",
+        "tax-bracket-lookup-tax-bracket-reorder-guards"
+      ],
+      "odd": 4,
+      "novelty": [
+        18,
+        20,
+        27,
+        5,
+        47,
+        68
+      ],
+      "familiarity": [
+        0.723,
+        0.737,
+        0.64,
+        0.857,
+        0.203,
+        0.292
+      ],
+      "share": [
+        0.44247984962885084,
+        0.45002350558709725,
+        0.39651840891287315,
+        0.3639509911468875,
+        0.9763456353494667,
+        0.7505195961995249
+      ],
+      "logistic": [
+        0.015155104589587964,
+        0.016434832439448585,
+        0.006122150583622214,
+        0.0024694278206933234,
+        0.9948488063659449,
+        0.059884770993703235
+      ],
+      "lookedNovelty": 5,
+      "lookedValence": 4,
+      "lookedLogistic": 4
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "battery-charge-status-battery-charge-status-reorder-full-check",
+        "hotel-cancellation-fee-hotel-cancellation-fee-comment-cleanup",
+        "battery-charge-status-battery-charge-status-extract-helper",
+        "signal-strength-label-signal-strength-label-control-1",
+        "hotel-cancellation-fee-hotel-cancellation-fee-extract-tier",
+        "ticket-discount-tier-senior-boundary-flip"
+      ],
+      "odd": 5,
+      "novelty": [
+        39,
+        37,
+        29,
+        2,
+        9,
+        10
+      ],
+      "familiarity": [
+        0.536,
+        0.413,
+        0.623,
+        0.95,
+        0.855,
+        0.6
+      ],
+      "share": [
+        0.6101694915254238,
+        0.5631471330375012,
+        0.34294407630081475,
+        0.4018556385538817,
+        0.42273995028193784,
+        0.9224874005581241
+      ],
+      "logistic": [
+        0.054353622203633906,
+        0.059461729750123225,
+        0.001992844472247121,
+        0.005863090732380728,
+        0.00853932996913456,
+        0.9862155859910242
+      ],
+      "lookedNovelty": 0,
+      "lookedValence": 5,
+      "lookedLogistic": 5
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "bowling-frame-score-bowling-frame-score-extract-helper",
+        "reading-level-grade-classifier-rclc-control-guard-reorder",
+        "word-count-badge-label-word-count-badge-label-control-lookup",
+        "bowling-frame-score-bowling-frame-score-comment-reorder",
+        "commission-rate-calculator-commission-rate-precedence-drop",
+        "reading-level-grade-classifier-rclc-control-extract-avg"
+      ],
+      "odd": 4,
+      "novelty": [
+        14,
+        7,
+        2,
+        14,
+        62,
+        14
+      ],
+      "familiarity": [
+        0.808,
+        0.825,
+        0.946,
+        0.774,
+        0.279,
+        0.781
+      ],
+      "share": [
+        0.3727148703956344,
+        0.44476952948373544,
+        0.4670086541097232,
+        0.4586241134751773,
+        0.8926610169491526,
+        0.4432426296500503
+      ],
+      "logistic": [
+        0.00185172821330603,
+        0.02926100018998756,
+        0.024723771794740747,
+        0.0019580710292375716,
+        0.9713318081849869,
+        0.0018381000491547812
+      ],
+      "lookedNovelty": 4,
+      "lookedValence": 4,
+      "lookedLogistic": 4
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "sprint-velocity-cap-sprint-velocity-cap-c1",
+        "sleep-dose-recommender-rename-hours-var",
+        "sleep-dose-recommender-extract-clamp-helper",
+        "loyalty-points-redemption-loyalty-points-redemption-drop-cap",
+        "loyalty-points-redemption-loyalty-points-redemption-extract-helper",
+        "loyalty-points-redemption-loyalty-points-redemption-rename-constan"
+      ],
+      "odd": 3,
+      "novelty": [
+        3,
+        25,
+        12,
+        36,
+        17,
+        3
+      ],
+      "familiarity": [
+        0.951,
+        0.671,
+        0.829,
+        0.455,
+        0.788,
+        0.959
+      ],
+      "share": [
+        0.3796804312253345,
+        0.3521666456414785,
+        0.401089430894309,
+        0.9336606076688337,
+        0.43581752726881956,
+        0.4259925921112483
+      ],
+      "logistic": [
+        0.010157918405215977,
+        0.001310556448711636,
+        0.007816764504518367,
+        0.9997455284722463,
+        0.09131177680180093,
+        0.0030638416466659195
+      ],
+      "lookedNovelty": 3,
+      "lookedValence": 3,
+      "lookedLogistic": 3
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "subscription-late-fee-calculator-late-fee-ternary-refactor",
+        "blood-alcohol-content-warning-bac-remove-negative-guard",
+        "interest-accrual-daily-rate-control-reorder-guards",
+        "subscription-late-fee-calculator-late-fee-extract-rate-helper",
+        "session-timeout-checker-session-timeout-checker-ctrl-2",
+        "interest-accrual-daily-rate-control-extract-daily-rate-helper"
+      ],
+      "odd": 1,
+      "novelty": [
+        4,
+        60,
+        10,
+        6,
+        57,
+        4
+      ],
+      "familiarity": [
+        0.938,
+        0.326,
+        0.844,
+        0.9,
+        0.424,
+        0.935
+      ],
+      "share": [
+        0.3604789038569217,
+        0.9470144417134402,
+        0.49111634534298765,
+        0.3980201551770267,
+        0.6258876143656971,
+        0.3825442660404899
+      ],
+      "logistic": [
+        0.003984896745951233,
+        0.9797464829345159,
+        0.056256647112234645,
+        0.002378080391264083,
+        0.6169013212121887,
+        0.006683661665318186
+      ],
+      "lookedNovelty": 1,
+      "lookedValence": 1,
+      "lookedLogistic": 1
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "audit-log",
+        "calorie-burn-estimator-calorie-burn-estimator-reorder-guards",
+        "currency-exchange-fee-calculator-currency-exchange-fee-inline-min",
+        "tip-amount-calculator-tip-ternary-chain",
+        "parking-fee-calculator-parking-fee-ternary-refactor",
+        "fuel-surcharge-calculator-fuel-surcharge-extract-rate-lookup"
+      ],
+      "odd": 0,
+      "novelty": [
+        26,
+        16,
+        35,
+        9,
+        6,
+        65
+      ],
+      "familiarity": [
+        0.35,
+        0.686,
+        0.628,
+        0.862,
+        0.915,
+        0.301
+      ],
+      "share": [
+        0.8356405529953917,
+        0.4221824686940966,
+        0.4337715503597882,
+        0.34709487867889166,
+        0.41330481010233244,
+        0.6099726775956285
+      ],
+      "logistic": [
+        0.9692484121063089,
+        0.01255247992664402,
+        0.09801350609861735,
+        0.003962493738886104,
+        0.02782792833718463,
+        0.12545672990744944
+      ],
+      "lookedNovelty": 5,
+      "lookedValence": 0,
+      "lookedLogistic": 0
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "age-restricted-content-gate-age-restricted-content-gate-c1",
+        "loan-eligibility-check-loan-eligibility-extract-helper",
+        "wind-chill-comfort-level-wind-chill-comfort-level-control-reorder",
+        "voltage-drop-severity-constant-return-overvoltage-early-exit",
+        "blood-alcohol-content-warning-bac-lookup-table",
+        "loan-eligibility-check-loan-eligibility-reorder-guards"
+      ],
+      "odd": 3,
+      "novelty": [
+        23,
+        12,
+        56,
+        71,
+        4,
+        4
+      ],
+      "familiarity": [
+        0.667,
+        0.815,
+        0.282,
+        0.317,
+        0.915,
+        0.923
+      ],
+      "share": [
+        0.36532674517962627,
+        0.41593693827404804,
+        0.8471287195368251,
+        0.821192483582219,
+        0.36697492441757074,
+        0.43495730788548465
+      ],
+      "logistic": [
+        0.021081292083424092,
+        0.012288382628333601,
+        0.17166676966100683,
+        0.6826824734731911,
+        0.0041347503355372225,
+        0.02184130711359898
+      ],
+      "lookedNovelty": 3,
+      "lookedValence": 2,
+      "lookedLogistic": 3
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "currency-exchange-fee-calculator-currency-exchange-fee-floor-instead-of-r",
+        "hotel-cancellation-fee-hotel-cancellation-fee-comment-cleanup",
+        "battery-charge-status-battery-charge-status-extract-helper",
+        "hotel-cancellation-fee-hotel-cancellation-fee-extract-tier",
+        "signal-strength-label-signal-strength-label-control-2",
+        "battery-charge-status-battery-charge-status-reorder-full-check"
+      ],
+      "odd": 0,
+      "novelty": [
+        30,
+        37,
+        26,
+        5,
+        21,
+        39
+      ],
+      "familiarity": [
+        0.444,
+        0.413,
+        0.662,
+        0.919,
+        0.691,
+        0.536
+      ],
+      "share": [
+        0.9280771779500379,
+        0.5673829787234043,
+        0.3357664233576642,
+        0.4366351988195793,
+        0.36196724264761077,
+        0.6075949367088608
+      ],
+      "logistic": [
+        0.9897819866995442,
+        0.059461729750123225,
+        0.001992844472247121,
+        0.00853932996913456,
+        0.004974565740983833,
+        0.054353622203633906
+      ],
+      "lookedNovelty": 5,
+      "lookedValence": 0,
+      "lookedLogistic": 0
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "subscription-late-fee-calculator-late-fee-ternary-refactor",
+        "subscription-late-fee-calculator-late-fee-extract-rate-helper",
+        "interest-accrual-daily-rate-control-reorder-guards",
+        "interest-accrual-daily-rate-control-extract-daily-rate-helper",
+        "session-timeout-checker-session-timeout-checker-ctrl-2",
+        "tax-bracket-lookup-tax-bracket-swallow-negative"
+      ],
+      "odd": 5,
+      "novelty": [
+        3,
+        6,
+        10,
+        3,
+        57,
+        62
+      ],
+      "familiarity": [
+        0.954,
+        0.9,
+        0.844,
+        0.952,
+        0.424,
+        0.319
+      ],
+      "share": [
+        0.3644764886106301,
+        0.4085381474058558,
+        0.4955329073388995,
+        0.3875099819103339,
+        0.6258876143656971,
+        0.92813005824738
+      ],
+      "logistic": [
+        0.003984896745951233,
+        0.002378080391264083,
+        0.056256647112234645,
+        0.006683661665318186,
+        0.6169013212121887,
+        0.9952447732928517
+      ],
+      "lookedNovelty": 5,
+      "lookedValence": 5,
+      "lookedLogistic": 5
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "coupon-code-validator-coupon-extract-trim-helper",
+        "inventory-reorder-label-inventory-reorder-label-v3",
+        "search-race",
+        "employee-display-name-formatter-reorder-empty-checks",
+        "product-review-summary-label-ctrl-lookup-table",
+        "product-review-summary-label-ctrl-early-return-reorder"
+      ],
+      "odd": 2,
+      "novelty": [
+        19,
+        5,
+        21,
+        5,
+        79,
+        12
+      ],
+      "familiarity": [
+        0.759,
+        0.907,
+        0.543,
+        0.909,
+        0.342,
+        0.81
+      ],
+      "share": [
+        0.35008032942864714,
+        0.3568540977581771,
+        0.7906302717059689,
+        0.4307161921708185,
+        0.836962689049324,
+        0.4243923141088493
+      ],
+      "logistic": [
+        0.0019196369990989327,
+        0.0022747139971225536,
+        0.995949445183719,
+        0.017745926004436186,
+        0.561257414940807,
+        0.07336669762261386
+      ],
+      "lookedNovelty": 4,
+      "lookedValence": 4,
+      "lookedLogistic": 2
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "bowling-frame-score-bowling-frame-score-comment-reorder",
+        "reading-level-grade-classifier-rclc-control-extract-avg",
+        "reading-level-grade-classifier-rclc-control-guard-reorder",
+        "word-count-badge-label-word-count-badge-label-control-lookup",
+        "bowling-frame-score-bowling-frame-score-extract-helper",
+        "audit-log"
+      ],
+      "odd": 5,
+      "novelty": [
+        17,
+        14,
+        7,
+        2,
+        11,
+        27
+      ],
+      "familiarity": [
+        0.726,
+        0.781,
+        0.825,
+        0.946,
+        0.849,
+        0.325
+      ],
+      "share": [
+        0.4600985915492958,
+        0.44543993767346735,
+        0.44476952948373544,
+        0.46829894567571423,
+        0.37977352222452926,
+        0.8289173410563554
+      ],
+      "logistic": [
+        0.0019580710292375716,
+        0.0018381000491547812,
+        0.02926100018998756,
+        0.024723771794740747,
+        0.00185172821330603,
+        0.9692484121063089
+      ],
+      "lookedNovelty": 5,
+      "lookedValence": 5,
+      "lookedLogistic": 5
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "return-shipping-label-generator-ternary-carrier-and-fee",
+        "tax-bracket-lookup-tax-bracket-reorder-guards",
+        "tax-bracket-lookup-tax-bracket-extract-helper",
+        "blood-pressure-category-inline-guard-comment",
+        "blood-pressure-category-extract-low-helper",
+        "fuel-surcharge-calculator-fuel-surcharge-early-floor"
+      ],
+      "odd": 5,
+      "novelty": [
+        11,
+        66,
+        1,
+        17,
+        5,
+        6
+      ],
+      "familiarity": [
+        0.855,
+        0.313,
+        0.98,
+        0.738,
+        0.857,
+        0.895
+      ],
+      "share": [
+        0.44740390476366393,
+        0.7536149068322981,
+        0.36546336649946554,
+        0.45167106907296395,
+        0.3609196495064252,
+        0.527313212085751
+      ],
+      "logistic": [
+        0.016434832439448585,
+        0.059884770993703235,
+        0.003986857662799733,
+        0.015155104589587964,
+        0.0024694278206933234,
+        0.2879536256961716
+      ],
+      "lookedNovelty": 1,
+      "lookedValence": 1,
+      "lookedLogistic": 5
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "sleep-dose-recommender-extract-clamp-helper",
+        "sprint-velocity-cap-sprint-velocity-cap-c1",
+        "retry-delay",
+        "sleep-dose-recommender-rename-hours-var",
+        "loyalty-points-redemption-loyalty-points-redemption-rename-constan",
+        "loyalty-points-redemption-loyalty-points-redemption-extract-helper"
+      ],
+      "odd": 2,
+      "novelty": [
+        11,
+        4,
+        57,
+        26,
+        3,
+        16
+      ],
+      "familiarity": [
+        0.843,
+        0.934,
+        0.23,
+        0.658,
+        0.959,
+        0.8
+      ],
+      "share": [
+        0.39445,
+        0.3719675694543608,
+        0.8822881585877771,
+        0.35078377784060566,
+        0.4292010141637795,
+        0.4372087182206346
+      ],
+      "logistic": [
+        0.007816764504518367,
+        0.010157918405215977,
+        0.9997831445749944,
+        0.001310556448711636,
+        0.0030638416466659195,
+        0.09131177680180093
+      ],
+      "lookedNovelty": 2,
+      "lookedValence": 2,
+      "lookedLogistic": 2
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "session-timeout-checker-session-timeout-checker-ctrl-2",
+        "session-timeout-checker-session-timeout-checker-ctrl-1",
+        "subscription-late-fee-calculator-late-fee-ternary-refactor",
+        "interest-accrual-daily-rate-control-extract-daily-rate-helper",
+        "interest-accrual-daily-rate-control-reorder-guards",
+        "tax-bracket-lookup-tax-bracket-swallow-negative"
+      ],
+      "odd": 5,
+      "novelty": [
+        51,
+        17,
+        4,
+        4,
+        11,
+        65
+      ],
+      "familiarity": [
+        0.485,
+        0.813,
+        0.938,
+        0.935,
+        0.828,
+        0.286
+      ],
+      "share": [
+        0.6312753942565938,
+        0.4662853158411239,
+        0.361668016194332,
+        0.3786008230452675,
+        0.49729810642915945,
+        0.9271134958811502
+      ],
+      "logistic": [
+        0.6169013212121887,
+        0.007166707226196543,
+        0.003984896745951233,
+        0.006683661665318186,
+        0.056256647112234645,
+        0.9952447732928517
+      ],
+      "lookedNovelty": 5,
+      "lookedValence": 5,
+      "lookedLogistic": 5
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "inventory-reorder-label-inventory-reorder-label-v3",
+        "inventory-reorder-label-inventory-reorder-label-v4",
+        "token-expiry",
+        "employee-display-name-formatter-reorder-empty-checks",
+        "coupon-code-validator-coupon-reorder-guards",
+        "product-review-summary-label-ctrl-early-return-reorder"
+      ],
+      "odd": 2,
+      "novelty": [
+        9,
+        19,
+        24,
+        11,
+        19,
+        16
+      ],
+      "familiarity": [
+        0.833,
+        0.513,
+        0.368,
+        0.8,
+        0.736,
+        0.746
+      ],
+      "share": [
+        0.35084710445751655,
+        0.5643732970027249,
+        0.7647950041145302,
+        0.4327128281018771,
+        0.534676089160601,
+        0.4218181818181818
+      ],
+      "logistic": [
+        0.0022747139971225536,
+        0.17224989990046072,
+        0.9626874288440592,
+        0.017745926004436186,
+        0.06406056956660112,
+        0.07336669762261386
+      ],
+      "lookedNovelty": 2,
+      "lookedValence": 2,
+      "lookedLogistic": 2
+    },
+    {
+      "direction": "odd-regression",
+      "hunks": [
+        "loyalty-points-redemption-loyalty-points-redemption-rename-constan",
+        "download-speed-rating-download-speed-rating-extract-clamp",
+        "sleep-dose-recommender-extract-clamp-helper",
+        "loyalty-points-redemption-loyalty-points-redemption-extract-helper",
+        "voltage-drop-severity-constant-return-overvoltage-early-exit",
+        "download-speed-rating-download-speed-rating-simplify-condition"
+      ],
+      "odd": 4,
+      "novelty": [
+        7,
+        4,
+        13,
+        22,
+        77,
+        20
+      ],
+      "familiarity": [
+        0.905,
+        0.915,
+        0.814,
+        0.725,
+        0.26,
+        0.722
+      ],
+      "share": [
+        0.4249700984451191,
+        0.35204733192156606,
+        0.3977508738159161,
+        0.4341795305268409,
+        0.8195287205986406,
+        0.43882862550960977
+      ],
+      "logistic": [
+        0.0030638416466659195,
+        0.005890046135610267,
+        0.007816764504518367,
+        0.09131177680180093,
+        0.6826824734731911,
+        0.11567839372731785
+      ],
+      "lookedNovelty": 4,
+      "lookedValence": 4,
+      "lookedLogistic": 4
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "product-review-summary-label-reg-zero-count-bypassed",
+        "product-review-summary-label-reg-zero-treated-as-invalid",
+        "support-ticket-priority-label-stpl-regression-raw-length",
+        "promo-code-discount-amount-promo-zero-total-gives-flat500",
+        "support-ticket-priority-label-stpl-regression-empty-becomes-normal",
+        "age-restricted-content-gate-age-restricted-content-gate-c2"
+      ],
+      "odd": 5,
+      "novelty": [
+        26,
+        33,
+        26,
+        22,
+        46,
+        32
+      ],
+      "familiarity": [
+        0.708,
+        0.663,
+        0.69,
+        0.756,
+        0.521,
+        0.529
+      ],
+      "share": [
+        0.9286014911014911,
+        0.947604307731992,
+        0.9411714069278975,
+        0.9439529748936233,
+        0.9425984410697487,
+        0.776115781263541
+      ],
+      "logistic": [
+        0.9876553951255906,
+        0.9985921443770076,
+        0.9799257510675319,
+        0.9996616321977974,
+        0.9928144133761581,
+        0.5328961680660105
+      ],
+      "lookedNovelty": 4,
+      "lookedValence": 5,
+      "lookedLogistic": 5
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "reading-level-grade-classifier-rclc-off-by-one-advanced-bound",
+        "bowling-frame-score-bowling-frame-score-fence-post",
+        "reading-level-grade-classifier-rclc-off-by-one-upper-intermediate",
+        "referral-bonus-calculator-referral-bonus-guard-reorder",
+        "bowling-frame-score-bowling-frame-score-loop-off-by-one",
+        "word-count-badge-label-word-count-badge-label-off-by-one-bounda"
+      ],
+      "odd": 3,
+      "novelty": [
+        4,
+        15,
+        3,
+        16,
+        23,
+        3
+      ],
+      "familiarity": [
+        0.871,
+        0.595,
+        0.857,
+        0.652,
+        0.465,
+        0.813
+      ],
+      "share": [
+        0.924887323943662,
+        0.8978542611303509,
+        0.8834844504702991,
+        0.4682262569832402,
+        0.6872953983563465,
+        0.8686007510055724
+      ],
+      "logistic": [
+        0.9673563569434198,
+        0.9810042577062308,
+        0.9496675420877495,
+        0.07428132076039361,
+        0.9161222879958321,
+        0.9690338692501034
+      ],
+      "lookedNovelty": 4,
+      "lookedValence": 3,
+      "lookedLogistic": 3
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "age-restricted-content-gate-age-restricted-content-gate-r1",
+        "overtime-pay-calculator-overtime-rename-intermediate",
+        "loan-eligibility-check-loan-eligibility-remove-default-guard",
+        "loan-eligibility-check-loan-eligibility-remove-income-guard",
+        "gift-card-redemption-validator-remove-unverified-guard",
+        "blood-alcohol-content-warning-bac-skip-impaired-guard"
+      ],
+      "odd": 1,
+      "novelty": [
+        48,
+        25,
+        2,
+        13,
+        47,
+        48
+      ],
+      "familiarity": [
+        0.484,
+        0.519,
+        0.929,
+        0.711,
+        0.466,
+        0.333
+      ],
+      "share": [
+        0.9448411940678506,
+        0.41241387871640495,
+        0.9264862525797217,
+        0.914281193132368,
+        0.945450240926942,
+        0.9376356560137714
+      ],
+      "logistic": [
+        0.9977489811750407,
+        0.0012072908213053032,
+        0.9554261575598132,
+        0.9920846653482844,
+        0.9885228600739264,
+        0.9890035507040167
+      ],
+      "lookedNovelty": 0,
+      "lookedValence": 1,
+      "lookedLogistic": 1
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "water-quality-index-rating-wqir-constant-very-poor-short-circuit",
+        "water-quality-index-rating-wqir-constant-advisory-ignored",
+        "voltage-drop-severity-constant-return-overvoltage-early-exit",
+        "voltage-drop-severity-constant-return-critical-hardcoded",
+        "freight-weight-surcharge-freight-constant-express-high",
+        "document-total"
+      ],
+      "odd": 5,
+      "novelty": [
+        33,
+        9,
+        72,
+        22,
+        28,
+        44
+      ],
+      "familiarity": [
+        0.421,
+        0.654,
+        0.308,
+        0.551,
+        0.481,
+        0.397
+      ],
+      "share": [
+        0.96662550478924,
+        0.8774130872250364,
+        0.8189331970006817,
+        0.890865822299596,
+        0.9497840007353167,
+        0.8686431232684775
+      ],
+      "logistic": [
+        0.9928191151165542,
+        0.9390180942403761,
+        0.6826824734731911,
+        0.9965022955728869,
+        0.9996197066907766,
+        0.3738614367285987
+      ],
+      "lookedNovelty": 2,
+      "lookedValence": 2,
+      "lookedLogistic": 5
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "support-ticket-priority-label-stpl-regression-empty-becomes-normal",
+        "api-error-response-formatter-reorder-guard-checks",
+        "product-review-summary-label-reg-zero-count-bypassed",
+        "product-review-summary-label-reg-zero-treated-as-invalid",
+        "promo-code-discount-amount-promo-zero-total-gives-flat500",
+        "support-ticket-priority-label-stpl-regression-raw-length"
+      ],
+      "odd": 1,
+      "novelty": [
+        49,
+        40,
+        25,
+        31,
+        23,
+        25
+      ],
+      "familiarity": [
+        0.49,
+        0.494,
+        0.719,
+        0.684,
+        0.744,
+        0.702
+      ],
+      "share": [
+        0.9510439044038668,
+        0.45385413520009454,
+        0.9286014911014911,
+        0.9506933004941865,
+        0.9528488692363809,
+        0.9411714069278975
+      ],
+      "logistic": [
+        0.9928144133761581,
+        0.1360965493011592,
+        0.9876553951255906,
+        0.9985921443770076,
+        0.9996616321977974,
+        0.9799257510675319
+      ],
+      "lookedNovelty": 0,
+      "lookedValence": 1,
+      "lookedLogistic": 1
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "sprint-velocity-cap-sprint-velocity-cap-r2",
+        "loyalty-points-redemption-loyalty-points-redemption-raise-cap",
+        "server-cpu-throttle-level-cpu-throttle-comment-constants",
+        "loyalty-points-redemption-loyalty-points-redemption-drop-cap",
+        "sprint-velocity-cap-sprint-velocity-cap-r1",
+        "server-cpu-throttle-level-cpu-throttle-none-cap-raised"
+      ],
+      "odd": 2,
+      "novelty": [
+        39,
+        11,
+        58,
+        23,
+        31,
+        27
+      ],
+      "familiarity": [
+        0.48,
+        0.725,
+        0.31,
+        0.652,
+        0.587,
+        0.5
+      ],
+      "share": [
+        0.9567515851265669,
+        0.9739091697168175,
+        0.7569297627437163,
+        0.9355419356758203,
+        0.9828523568825672,
+        0.9688497756941358
+      ],
+      "logistic": [
+        0.9994736816198304,
+        0.9984767747472538,
+        0.11354128934504279,
+        0.9997455284722463,
+        0.9968562194906394,
+        0.9942569535642174
+      ],
+      "lookedNovelty": 2,
+      "lookedValence": 2,
+      "lookedLogistic": 2
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "calorie-burn-estimator-calorie-burn-estimator-early-floor",
+        "parking-fee-calculator-parking-fee-round-weekend",
+        "api-error-response-formatter-extract-label-lookup",
+        "fuel-surcharge-calculator-fuel-surcharge-early-floor",
+        "tip-amount-calculator-tip-floor-instead-of-round",
+        "currency-exchange-fee-calculator-currency-exchange-fee-floor-instead-of-r"
+      ],
+      "odd": 2,
+      "novelty": [
+        41,
+        24,
+        33,
+        21,
+        47,
+        19
+      ],
+      "familiarity": [
+        0.461,
+        0.613,
+        0.476,
+        0.632,
+        0.382,
+        0.648
+      ],
+      "share": [
+        0.9075347449610711,
+        0.8868941236545412,
+        0.396731824801165,
+        0.5365853658536586,
+        0.9758192440128448,
+        0.9259616710326761
+      ],
+      "logistic": [
+        0.9884532979004932,
+        0.9794289714411772,
+        0.011521510983469627,
+        0.2879536256961716,
+        0.9946160107421463,
+        0.9897819866995442
+      ],
+      "lookedNovelty": 4,
+      "lookedValence": 2,
+      "lookedLogistic": 2
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "currency-exchange-fee-calculator-currency-exchange-fee-floor-instead-of-r",
+        "tip-amount-calculator-tip-floor-instead-of-round",
+        "fuel-surcharge-calculator-fuel-surcharge-early-floor",
+        "parking-fee-calculator-parking-fee-ceil-weekend",
+        "flip-equality",
+        "parking-fee-calculator-parking-fee-round-weekend"
+      ],
+      "odd": 4,
+      "novelty": [
+        15,
+        55,
+        24,
+        17,
+        55,
+        17
+      ],
+      "familiarity": [
+        0.722,
+        0.276,
+        0.579,
+        0.702,
+        0.337,
+        0.726
+      ],
+      "share": [
+        0.9272654886227911,
+        0.9805193540217794,
+        0.5197805043866748,
+        0.88905190800288,
+        0.5271517900350131,
+        0.8877329171835194
+      ],
+      "logistic": [
+        0.9897819866995442,
+        0.9946160107421463,
+        0.2879536256961716,
+        0.9850845557516877,
+        0.04128896809168492,
+        0.9794289714411772
+      ],
+      "lookedNovelty": 1,
+      "lookedValence": 2,
+      "lookedLogistic": 4
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "product-review-summary-label-reg-zero-count-bypassed",
+        "support-ticket-priority-label-stpl-regression-empty-becomes-normal",
+        "promo-code-discount-amount-promo-zero-total-gives-flat500",
+        "mortgage-monthly-payment-calculator-mortgage-control-factor-rename",
+        "support-ticket-priority-label-stpl-regression-raw-length",
+        "product-review-summary-label-reg-zero-treated-as-invalid"
+      ],
+      "odd": 3,
+      "novelty": [
+        29,
+        52,
+        29,
+        45,
+        29,
+        37
+      ],
+      "familiarity": [
+        0.674,
+        0.458,
+        0.678,
+        0.366,
+        0.655,
+        0.622
+      ],
+      "share": [
+        0.9286014911014911,
+        0.9417210603436792,
+        0.9461614129876231,
+        0.33047863247863246,
+        0.9411714069278975,
+        0.9476979030882376
+      ],
+      "logistic": [
+        0.9876553951255906,
+        0.9928144133761581,
+        0.9996616321977974,
+        0.0016112642256468355,
+        0.9799257510675319,
+        0.9985921443770076
+      ],
+      "lookedNovelty": 1,
+      "lookedValence": 3,
+      "lookedLogistic": 3
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "parking-fee-calculator-parking-fee-round-weekend",
+        "parking-fee-calculator-parking-fee-ceil-weekend",
+        "currency-exchange-fee-calculator-currency-exchange-fee-floor-instead-of-r",
+        "audit-log-entry-formatter-audit-log-ternary-refactor",
+        "tip-amount-calculator-tip-floor-instead-of-round",
+        "calorie-burn-estimator-calorie-burn-estimator-early-floor"
+      ],
+      "odd": 3,
+      "novelty": [
+        20,
+        17,
+        17,
+        50,
+        48,
+        41
+      ],
+      "familiarity": [
+        0.677,
+        0.702,
+        0.685,
+        0.351,
+        0.368,
+        0.461
+      ],
+      "share": [
+        0.8878963582796335,
+        0.8870515201214471,
+        0.9272654886227911,
+        0.38560011519907844,
+        0.9743105475148875,
+        0.9075347449610711
+      ],
+      "logistic": [
+        0.9794289714411772,
+        0.9850845557516877,
+        0.9897819866995442,
+        0.029315855145483814,
+        0.9946160107421463,
+        0.9884532979004932
+      ],
+      "lookedNovelty": 3,
+      "lookedValence": 3,
+      "lookedLogistic": 3
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "tax-bracket-lookup-tax-bracket-swallow-status",
+        "tax-bracket-lookup-tax-bracket-swallow-negative",
+        "return-shipping-label-generator-swallow-invalid-reason",
+        "signal-strength-label-signal-strength-label-regression-2",
+        "age-restricted-content-gate-age-restricted-content-gate-r2",
+        "interest-accrual-daily-rate-control-reorder-guards"
+      ],
+      "odd": 5,
+      "novelty": [
+        19,
+        25,
+        52,
+        33,
+        39,
+        11
+      ],
+      "familiarity": [
+        0.782,
+        0.725,
+        0.544,
+        0.645,
+        0.571,
+        0.828
+      ],
+      "share": [
+        0.9170658563447938,
+        0.930045871559633,
+        0.9630843743539765,
+        0.9552979392349987,
+        0.5874653465346535,
+        0.5020186267508125
+      ],
+      "logistic": [
+        0.9937431761790873,
+        0.9952447732928517,
+        0.9973239685023904,
+        0.9979880159126724,
+        0.8196352999080178,
+        0.056256647112234645
+      ],
+      "lookedNovelty": 2,
+      "lookedValence": 5,
+      "lookedLogistic": 5
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "water-quality-index-rating-wqir-constant-very-poor-short-circuit",
+        "voltage-drop-severity-constant-return-critical-hardcoded",
+        "voltage-drop-severity-constant-return-overvoltage-early-exit",
+        "water-quality-index-rating-wqir-constant-advisory-ignored",
+        "freight-weight-surcharge-freight-constant-fragile-early-return",
+        "name-threshold"
+      ],
+      "odd": 5,
+      "novelty": [
+        39,
+        24,
+        74,
+        6,
+        23,
+        37
+      ],
+      "familiarity": [
+        0.316,
+        0.51,
+        0.288,
+        0.769,
+        0.439,
+        0.393
+      ],
+      "share": [
+        0.9738842309113094,
+        0.8977370517928287,
+        0.816327412593457,
+        0.8736032061897273,
+        0.898345337745766,
+        0.42896866775907444
+      ],
+      "logistic": [
+        0.9928191151165542,
+        0.9965022955728869,
+        0.6826824734731911,
+        0.9390180942403761,
+        0.9992744982621967,
+        0.008027240743200723
+      ],
+      "lookedNovelty": 2,
+      "lookedValence": 5,
+      "lookedLogistic": 5
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "blood-pressure-category-inline-guard-comment",
+        "session-timeout-checker-session-timeout-checker-reg-1",
+        "subscription-late-fee-calculator-late-fee-dollars-not-cents",
+        "interest-accrual-daily-rate-unit-mismatch-rate-not-converted",
+        "session-timeout-checker-session-timeout-checker-reg-2",
+        "interest-accrual-daily-rate-unit-mismatch-principal-dollars"
+      ],
+      "odd": 0,
+      "novelty": [
+        25,
+        33,
+        42,
+        37,
+        29,
+        41
+      ],
+      "familiarity": [
+        0.615,
+        0.548,
+        0.323,
+        0.513,
+        0.603,
+        0.481
+      ],
+      "share": [
+        0.44424897645854655,
+        0.8640668664567606,
+        0.9154179104477612,
+        0.9108024616282746,
+        0.8290807032694202,
+        0.7621670338473863
+      ],
+      "logistic": [
+        0.015155104589587964,
+        0.9955421193998978,
+        0.9951352965237548,
+        0.9717101154194892,
+        0.9887707828003004,
+        0.9201624689833566
+      ],
+      "lookedNovelty": 2,
+      "lookedValence": 0,
+      "lookedLogistic": 0
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "loan-eligibility-check-loan-eligibility-remove-income-guard",
+        "gift-card-redemption-validator-remove-zero-balance-guard",
+        "age-restricted-content-gate-age-restricted-content-gate-r1",
+        "blood-alcohol-content-warning-bac-skip-impaired-guard",
+        "shorter-names",
+        "gift-card-redemption-validator-remove-unverified-guard"
+      ],
+      "odd": 4,
+      "novelty": [
+        18,
+        38,
+        36,
+        46,
+        24,
+        30
+      ],
+      "familiarity": [
+        0.6,
+        0.6,
+        0.613,
+        0.361,
+        0.51,
+        0.659
+      ],
+      "share": [
+        0.914281193132368,
+        0.9325011619414382,
+        0.9448411940678506,
+        0.9406806645563692,
+        0.4465670493429711,
+        0.946557541619029
+      ],
+      "logistic": [
+        0.9920846653482844,
+        0.9757407672882336,
+        0.9977489811750407,
+        0.9890035507040167,
+        0.0019051716606375737,
+        0.9885228600739264
+      ],
+      "lookedNovelty": 3,
+      "lookedValence": 4,
+      "lookedLogistic": 4
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "commission-rate-calculator-commission-rate-extract-bonus",
+        "reading-level-grade-classifier-rclc-off-by-one-advanced-bound",
+        "reading-level-grade-classifier-rclc-off-by-one-upper-intermediate",
+        "word-count-badge-label-word-count-badge-label-off-by-one-loop",
+        "bowling-frame-score-bowling-frame-score-fence-post",
+        "bowling-frame-score-bowling-frame-score-loop-off-by-one"
+      ],
+      "odd": 0,
+      "novelty": [
+        41,
+        5,
+        5,
+        32,
+        14,
+        22
+      ],
+      "familiarity": [
+        0.359,
+        0.839,
+        0.762,
+        0.347,
+        0.622,
+        0.488
+      ],
+      "share": [
+        0.39466410287225095,
+        0.924887323943662,
+        0.8876538251914746,
+        0.6753487802888145,
+        0.9038687963084096,
+        0.693174078278466
+      ],
+      "logistic": [
+        0.0028773232282989975,
+        0.9673563569434198,
+        0.9496675420877495,
+        0.6338991605968823,
+        0.9810042577062308,
+        0.9161222879958321
+      ],
+      "lookedNovelty": 0,
+      "lookedValence": 0,
+      "lookedLogistic": 0
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "ticket-discount-tier-senior-boundary-flip",
+        "gift-card-redemption-validator-extract-balance-check-helper",
+        "wind-chill-comfort-level-wind-chill-comfort-level-boundary-flip-w",
+        "wind-chill-comfort-level-wind-chill-comfort-level-boundary-flip-c",
+        "uv-index-exposure-warning-uv-boundary-flip-upper-guard",
+        "ticket-discount-tier-free-boundary-flip"
+      ],
+      "odd": 1,
+      "novelty": [
+        5,
+        25,
+        1,
+        0,
+        86,
+        12
+      ],
+      "familiarity": [
+        0.8,
+        0.528,
+        0.962,
+        1,
+        0.204,
+        0.667
+      ],
+      "share": [
+        0.9166666666666666,
+        0.3280556658666713,
+        0.9140261793432387,
+        0.9103222659052429,
+        0.9615435334454225,
+        0.9350693509768642
+      ],
+      "logistic": [
+        0.9862155859910242,
+        0.0031375784778258117,
+        0.9721156804563073,
+        0.9111312099778943,
+        0.9947952119032862,
+        0.9839979088320042
+      ],
+      "lookedNovelty": 4,
+      "lookedValence": 1,
+      "lookedLogistic": 1
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "session-timeout-checker-session-timeout-checker-reg-2",
+        "tip-amount-calculator-tip-lookup-table",
+        "session-timeout-checker-session-timeout-checker-reg-1",
+        "subscription-late-fee-calculator-late-fee-dollars-not-cents",
+        "interest-accrual-daily-rate-unit-mismatch-rate-not-converted",
+        "interest-accrual-daily-rate-unit-mismatch-principal-dollars"
+      ],
+      "odd": 1,
+      "novelty": [
+        30,
+        61,
+        33,
+        42,
+        38,
+        45
+      ],
+      "familiarity": [
+        0.589,
+        0,
+        0.548,
+        0.323,
+        0.5,
+        0.43
+      ],
+      "share": [
+        0.8322561209399135,
+        0.33857746911393005,
+        0.8606385252807223,
+        0.9147114154563926,
+        0.9108024616282746,
+        0.7621670338473863
+      ],
+      "logistic": [
+        0.9887707828003004,
+        0.007104549146170175,
+        0.9955421193998978,
+        0.9951352965237548,
+        0.9717101154194892,
+        0.9201624689833566
+      ],
+      "lookedNovelty": 1,
+      "lookedValence": 1,
+      "lookedLogistic": 1
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "commission-rate-calculator-commission-rate-extract-bonus",
+        "access-level-permission-check-access-level-member-or-admin",
+        "flight-upgrade-eligibility-upgrade-negate-online-check",
+        "flight-upgrade-eligibility-upgrade-or-instead-of-and",
+        "access-level-permission-check-access-level-not-restricted-flip",
+        "parking-permit-eligibility-parking-permit-eligibility-reg-or-zone"
+      ],
+      "odd": 0,
+      "novelty": [
+        40,
+        6,
+        6,
+        0,
+        4,
+        48
+      ],
+      "familiarity": [
+        0.375,
+        0.8,
+        0.85,
+        1,
+        0.871,
+        0.314
+      ],
+      "share": [
+        0.4017566003997055,
+        0.922938281666301,
+        0.7740887029776568,
+        0.9102355993142892,
+        0.8721078094625605,
+        0.9131823864425614
+      ],
+      "logistic": [
+        0.0028773232282989975,
+        0.9867677651152706,
+        0.8681509102295664,
+        0.9660711256960878,
+        0.981637722720544,
+        0.9885365168251613
+      ],
+      "lookedNovelty": 5,
+      "lookedValence": 0,
+      "lookedLogistic": 0
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "session-timeout-checker-session-timeout-checker-reg-1",
+        "session-timeout-checker-session-timeout-checker-reg-2",
+        "interest-accrual-daily-rate-unit-mismatch-principal-dollars",
+        "blood-pressure-category-inline-guard-comment",
+        "subscription-late-fee-calculator-late-fee-dollars-not-cents",
+        "interest-accrual-daily-rate-unit-mismatch-rate-not-converted"
+      ],
+      "odd": 3,
+      "novelty": [
+        31,
+        29,
+        41,
+        25,
+        41,
+        37
+      ],
+      "familiarity": [
+        0.575,
+        0.603,
+        0.481,
+        0.615,
+        0.339,
+        0.513
+      ],
+      "share": [
+        0.8625829284690422,
+        0.8299319727891157,
+        0.7621670338473863,
+        0.43689593074165245,
+        0.9167052083488744,
+        0.9108024616282746
+      ],
+      "logistic": [
+        0.9955421193998978,
+        0.9887707828003004,
+        0.9201624689833566,
+        0.015155104589587964,
+        0.9951352965237548,
+        0.9717101154194892
+      ],
+      "lookedNovelty": 2,
+      "lookedValence": 3,
+      "lookedLogistic": 3
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "loan-eligibility-check-loan-eligibility-remove-income-guard",
+        "blood-alcohol-content-warning-bac-remove-negative-guard",
+        "gift-card-redemption-validator-remove-unverified-guard",
+        "gift-card-redemption-validator-remove-zero-balance-guard",
+        "age-restricted-content-gate-age-restricted-content-gate-r1",
+        "mortgage-monthly-payment-calculator-mortgage-control-factor-rename"
+      ],
+      "odd": 5,
+      "novelty": [
+        16,
+        22,
+        17,
+        22,
+        25,
+        46
+      ],
+      "familiarity": [
+        0.644,
+        0.753,
+        0.807,
+        0.768,
+        0.731,
+        0.352
+      ],
+      "share": [
+        0.914281193132368,
+        0.9433925647401298,
+        0.946557541619029,
+        0.9326005091757718,
+        0.9448411940678506,
+        0.3380262646407626
+      ],
+      "logistic": [
+        0.9920846653482844,
+        0.9797464829345159,
+        0.9885228600739264,
+        0.9757407672882336,
+        0.9977489811750407,
+        0.0016112642256468355
+      ],
+      "lookedNovelty": 5,
+      "lookedValence": 5,
+      "lookedLogistic": 5
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "wind-chill-comfort-level-wind-chill-comfort-level-boundary-flip-c",
+        "ticket-discount-tier-senior-boundary-flip",
+        "ticket-discount-tier-free-boundary-flip",
+        "refactor",
+        "uv-index-exposure-warning-uv-boundary-flip-moderate-high",
+        "uv-index-exposure-warning-uv-boundary-flip-upper-guard"
+      ],
+      "odd": 3,
+      "novelty": [
+        0,
+        6,
+        12,
+        42,
+        19,
+        78
+      ],
+      "familiarity": [
+        1,
+        0.76,
+        0.667,
+        0.4,
+        0.612,
+        0.278
+      ],
+      "share": [
+        0.9103222659052429,
+        0.9251214512369773,
+        0.937372391107078,
+        0.3937658318671309,
+        0.9040566062142653,
+        0.9600680676711604
+      ],
+      "logistic": [
+        0.9111312099778943,
+        0.9862155859910242,
+        0.9839979088320042,
+        0.0021415121648984,
+        0.9720040315344671,
+        0.9947952119032862
+      ],
+      "lookedNovelty": 5,
+      "lookedValence": 3,
+      "lookedLogistic": 3
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "reading-level-grade-classifier-rclc-off-by-one-upper-intermediate",
+        "word-count-badge-label-word-count-badge-label-off-by-one-bounda",
+        "word-count-badge-label-word-count-badge-label-off-by-one-loop",
+        "bowling-frame-score-bowling-frame-score-loop-off-by-one",
+        "reading-level-grade-classifier-rclc-off-by-one-advanced-bound",
+        "age-restricted-content-gate-age-restricted-content-gate-c2"
+      ],
+      "odd": 5,
+      "novelty": [
+        4,
+        3,
+        27,
+        25,
+        4,
+        42
+      ],
+      "familiarity": [
+        0.81,
+        0.813,
+        0.449,
+        0.419,
+        0.871,
+        0.382
+      ],
+      "share": [
+        0.8923969803609944,
+        0.8680355776082768,
+        0.6730698865715331,
+        0.6911300816213872,
+        0.9247697103923035,
+        0.7718933527363442
+      ],
+      "logistic": [
+        0.9496675420877495,
+        0.9690338692501034,
+        0.6338991605968823,
+        0.9161222879958321,
+        0.9673563569434198,
+        0.5328961680660105
+      ],
+      "lookedNovelty": 5,
+      "lookedValence": 2,
+      "lookedLogistic": 5
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "uv-index-exposure-warning-uv-boundary-flip-upper-guard",
+        "wind-chill-comfort-level-wind-chill-comfort-level-boundary-flip-c",
+        "refactor",
+        "subscription-late-fee-calculator-late-fee-grace-boundary-flip",
+        "wind-chill-comfort-level-wind-chill-comfort-level-boundary-flip-w",
+        "ticket-discount-tier-senior-boundary-flip"
+      ],
+      "odd": 2,
+      "novelty": [
+        75,
+        0,
+        44,
+        46,
+        5,
+        8
+      ],
+      "familiarity": [
+        0.306,
+        1,
+        0.371,
+        0.425,
+        0.808,
+        0.68
+      ],
+      "share": [
+        0.963265306122449,
+        0.9103222659052429,
+        0.3945831718204894,
+        0.9368756520372143,
+        0.9140261793432387,
+        0.9185460334306182
+      ],
+      "logistic": [
+        0.9947952119032862,
+        0.9111312099778943,
+        0.0021415121648984,
+        0.9633839236077361,
+        0.9721156804563073,
+        0.9862155859910242
+      ],
+      "lookedNovelty": 0,
+      "lookedValence": 2,
+      "lookedLogistic": 2
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "age-restricted-content-gate-age-restricted-content-gate-r2",
+        "tax-bracket-lookup-tax-bracket-swallow-negative",
+        "return-shipping-label-generator-swallow-invalid-weight-zero",
+        "overtime-pay-calculator-overtime-extract-validate-helper",
+        "return-shipping-label-generator-swallow-invalid-reason",
+        "signal-strength-label-signal-strength-label-regression-2"
+      ],
+      "odd": 3,
+      "novelty": [
+        40,
+        29,
+        26,
+        35,
+        54,
+        34
+      ],
+      "familiarity": [
+        0.56,
+        0.681,
+        0.683,
+        0.507,
+        0.526,
+        0.634
+      ],
+      "share": [
+        0.5974249648190544,
+        0.930045871559633,
+        0.9163860830527497,
+        0.3753552166096387,
+        0.9619677248365628,
+        0.9540420076621499
+      ],
+      "logistic": [
+        0.8196352999080178,
+        0.9952447732928517,
+        0.9980742016735125,
+        0.007201014261788995,
+        0.9973239685023904,
+        0.9979880159126724
+      ],
+      "lookedNovelty": 4,
+      "lookedValence": 3,
+      "lookedLogistic": 3
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "fuel-surcharge-calculator-fuel-surcharge-early-floor",
+        "currency-exchange-fee-calculator-currency-exchange-fee-floor-instead-of-r",
+        "document-total",
+        "calorie-burn-estimator-calorie-burn-estimator-early-floor",
+        "tip-amount-calculator-tip-floor-instead-of-round",
+        "parking-fee-calculator-parking-fee-round-weekend"
+      ],
+      "odd": 2,
+      "novelty": [
+        29,
+        20,
+        43,
+        33,
+        41,
+        25
+      ],
+      "familiarity": [
+        0.491,
+        0.63,
+        0.411,
+        0.566,
+        0.461,
+        0.597
+      ],
+      "share": [
+        0.5318885650552778,
+        0.925835558420035,
+        0.8688621985291756,
+        0.9104648833694484,
+        0.9803493878834326,
+        0.891380885831004
+      ],
+      "logistic": [
+        0.2879536256961716,
+        0.9897819866995442,
+        0.3738614367285987,
+        0.9884532979004932,
+        0.9946160107421463,
+        0.9794289714411772
+      ],
+      "lookedNovelty": 2,
+      "lookedValence": 0,
+      "lookedLogistic": 0
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "bowling-frame-score-bowling-frame-score-comment-reorder",
+        "loyalty-points-redemption-loyalty-points-redemption-raise-cap",
+        "loyalty-points-redemption-loyalty-points-redemption-drop-cap",
+        "server-cpu-throttle-level-cpu-throttle-high-cap-raised",
+        "server-cpu-throttle-level-cpu-throttle-none-cap-raised",
+        "sprint-velocity-cap-sprint-velocity-cap-r1"
+      ],
+      "odd": 0,
+      "novelty": [
+        39,
+        9,
+        27,
+        33,
+        22,
+        41
+      ],
+      "familiarity": [
+        0.371,
+        0.775,
+        0.591,
+        0.459,
+        0.593,
+        0.453
+      ],
+      "share": [
+        0.4671965900581764,
+        0.9739091697168175,
+        0.9345900959601944,
+        0.9722143636584084,
+        0.9707081458868895,
+        0.9815650532401262
+      ],
+      "logistic": [
+        0.0019580710292375716,
+        0.9984767747472538,
+        0.9997455284722463,
+        0.9953712691945783,
+        0.9942569535642174,
+        0.9968562194906394
+      ],
+      "lookedNovelty": 5,
+      "lookedValence": 0,
+      "lookedLogistic": 0
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "hotel-cancellation-fee-hotel-cancellation-fee-threshold-30-to-2",
+        "signal-strength-label-signal-strength-label-regression-1",
+        "mortgage-monthly-payment-calculator-mortgage-control-factor-rename",
+        "hotel-cancellation-fee-hotel-cancellation-fee-75pct-to-50pct",
+        "battery-charge-status-battery-charge-status-dead-level-changed",
+        "battery-charge-status-battery-charge-status-low-threshold-rais"
+      ],
+      "odd": 2,
+      "novelty": [
+        43,
+        22,
+        46,
+        29,
+        18,
+        29
+      ],
+      "familiarity": [
+        0.419,
+        0.56,
+        0.352,
+        0.547,
+        0.571,
+        0.508
+      ],
+      "share": [
+        0.9659447959083032,
+        0.9607878129106572,
+        0.3358810092231593,
+        0.9543936466094027,
+        0.9167415024022271,
+        0.9744561111536904
+      ],
+      "logistic": [
+        0.9965252963254522,
+        0.9974518092664332,
+        0.0016112642256468355,
+        0.9982230289457127,
+        0.986081359627645,
+        0.9948488063659449
+      ],
+      "lookedNovelty": 2,
+      "lookedValence": 2,
+      "lookedLogistic": 2
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "product-review-summary-label-reg-zero-count-bypassed",
+        "support-ticket-priority-label-stpl-regression-raw-length",
+        "product-review-summary-label-reg-zero-treated-as-invalid",
+        "support-ticket-priority-label-stpl-regression-empty-becomes-normal",
+        "promo-code-discount-amount-promo-zero-total-gives-flat500",
+        "gift-card-redemption-validator-extract-balance-check-helper"
+      ],
+      "odd": 5,
+      "novelty": [
+        29,
+        29,
+        37,
+        51,
+        27,
+        27
+      ],
+      "familiarity": [
+        0.674,
+        0.655,
+        0.622,
+        0.469,
+        0.7,
+        0.491
+      ],
+      "share": [
+        0.9286014911014911,
+        0.9411714069278975,
+        0.9476979030882376,
+        0.9510439044038668,
+        0.9529266625048307,
+        0.31930124007245364
+      ],
+      "logistic": [
+        0.9876553951255906,
+        0.9799257510675319,
+        0.9985921443770076,
+        0.9928144133761581,
+        0.9996616321977974,
+        0.0031375784778258117
+      ],
+      "lookedNovelty": 3,
+      "lookedValence": 5,
+      "lookedLogistic": 5
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "gift-card-redemption-validator-extract-balance-check-helper",
+        "net-promoter-score-category-nps-precedence-missing-parens",
+        "commission-rate-calculator-commission-rate-precedence-drop",
+        "mortgage-monthly-payment-calculator-mortgage-regression-precedence-conversio",
+        "bmi-category-classifier-bmi-precedence-division-exponent",
+        "mortgage-monthly-payment-calculator-mortgage-regression-precedence-rate"
+      ],
+      "odd": 0,
+      "novelty": [
+        27,
+        24,
+        45,
+        34,
+        50,
+        36
+      ],
+      "familiarity": [
+        0.491,
+        0.529,
+        0.477,
+        0.507,
+        0.39,
+        0.52
+      ],
+      "share": [
+        0.3229500446498923,
+        0.877096384526786,
+        0.8924026224450443,
+        0.8221357933929376,
+        0.8948088888888889,
+        0.9409102286000334
+      ],
+      "logistic": [
+        0.0031375784778258117,
+        0.9753183477773328,
+        0.9713318081849869,
+        0.7917634288011955,
+        0.9675564625136694,
+        0.9778913694138777
+      ],
+      "lookedNovelty": 4,
+      "lookedValence": 0,
+      "lookedLogistic": 0
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "uv-index-exposure-warning-uv-control-ternary-to-lookup",
+        "word-count-badge-label-word-count-badge-label-off-by-one-loop",
+        "bowling-frame-score-bowling-frame-score-fence-post",
+        "bowling-frame-score-bowling-frame-score-loop-off-by-one",
+        "reading-level-grade-classifier-rclc-off-by-one-advanced-bound",
+        "reading-level-grade-classifier-rclc-off-by-one-upper-intermediate"
+      ],
+      "odd": 0,
+      "novelty": [
+        3,
+        29,
+        14,
+        21,
+        6,
+        4
+      ],
+      "familiarity": [
+        0.9,
+        0.408,
+        0.622,
+        0.512,
+        0.806,
+        0.81
+      ],
+      "share": [
+        0.5261900306593928,
+        0.6805625000000001,
+        0.9014266255645565,
+        0.696558443475608,
+        0.9224740640505187,
+        0.893449260537868
+      ],
+      "logistic": [
+        0.07402524692493606,
+        0.6338991605968823,
+        0.9810042577062308,
+        0.9161222879958321,
+        0.9673563569434198,
+        0.9496675420877495
+      ],
+      "lookedNovelty": 1,
+      "lookedValence": 0,
+      "lookedLogistic": 0
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "referral-bonus-calculator-referral-bonus-guard-reorder",
+        "net-promoter-score-category-nps-precedence-missing-parens",
+        "bmi-category-classifier-bmi-precedence-division-exponent",
+        "commission-rate-calculator-commission-rate-precedence-drop",
+        "mortgage-monthly-payment-calculator-mortgage-regression-precedence-conversio",
+        "mortgage-monthly-payment-calculator-mortgage-regression-precedence-rate"
+      ],
+      "odd": 0,
+      "novelty": [
+        12,
+        23,
+        48,
+        45,
+        34,
+        35
+      ],
+      "familiarity": [
+        0.739,
+        0.549,
+        0.415,
+        0.477,
+        0.507,
+        0.533
+      ],
+      "share": [
+        0.47250531563897646,
+        0.8762694532771156,
+        0.8936999503933102,
+        0.8922019889799758,
+        0.8221357933929376,
+        0.9409102286000334
+      ],
+      "logistic": [
+        0.07428132076039361,
+        0.9753183477773328,
+        0.9675564625136694,
+        0.9713318081849869,
+        0.7917634288011955,
+        0.9778913694138777
+      ],
+      "lookedNovelty": 2,
+      "lookedValence": 0,
+      "lookedLogistic": 0
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "age-restricted-content-gate-age-restricted-content-gate-r2",
+        "return-shipping-label-generator-swallow-invalid-weight-zero",
+        "return-shipping-label-generator-swallow-invalid-reason",
+        "tax-bracket-lookup-tax-bracket-swallow-negative",
+        "signal-strength-label-signal-strength-label-regression-2",
+        "hotel-cancellation-fee-hotel-cancellation-fee-comment-cleanup"
+      ],
+      "odd": 5,
+      "novelty": [
+        46,
+        25,
+        53,
+        32,
+        35,
+        35
+      ],
+      "familiarity": [
+        0.495,
+        0.695,
+        0.535,
+        0.648,
+        0.624,
+        0.444
+      ],
+      "share": [
+        0.5923316538791211,
+        0.9163860830527497,
+        0.9606509486854141,
+        0.930045871559633,
+        0.95441978740076,
+        0.5766023970818135
+      ],
+      "logistic": [
+        0.8196352999080178,
+        0.9980742016735125,
+        0.9973239685023904,
+        0.9952447732928517,
+        0.9979880159126724,
+        0.059461729750123225
+      ],
+      "lookedNovelty": 2,
+      "lookedValence": 5,
+      "lookedLogistic": 5
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "flight-upgrade-eligibility-upgrade-or-instead-of-and",
+        "promo-code-discount-amount-promo-lookup-table-refactor",
+        "flight-upgrade-eligibility-upgrade-negate-online-check",
+        "access-level-permission-check-access-level-not-restricted-flip",
+        "parking-permit-eligibility-parking-permit-eligibility-reg-or-zone",
+        "access-level-permission-check-access-level-member-or-admin"
+      ],
+      "odd": 1,
+      "novelty": [
+        0,
+        23,
+        5,
+        4,
+        47,
+        6
+      ],
+      "familiarity": [
+        1,
+        0.549,
+        0.875,
+        0.871,
+        0.329,
+        0.8
+      ],
+      "share": [
+        0.9102355993142892,
+        0.4025827230076026,
+        0.7858893712530639,
+        0.8721078094625605,
+        0.9129587076108906,
+        0.922938281666301
+      ],
+      "logistic": [
+        0.9660711256960878,
+        0.008842311789388619,
+        0.8681509102295664,
+        0.981637722720544,
+        0.9885365168251613,
+        0.9867677651152706
+      ],
+      "lookedNovelty": 4,
+      "lookedValence": 1,
+      "lookedLogistic": 1
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "freight-weight-surcharge-freight-constant-express-high",
+        "water-quality-index-rating-wqir-constant-very-poor-short-circuit",
+        "voltage-drop-severity-control-ternary-chain",
+        "freight-weight-surcharge-freight-constant-fragile-early-return",
+        "voltage-drop-severity-constant-return-critical-hardcoded",
+        "voltage-drop-severity-constant-return-overvoltage-early-exit"
+      ],
+      "odd": 2,
+      "novelty": [
+        26,
+        34,
+        10,
+        23,
+        25,
+        77
+      ],
+      "familiarity": [
+        0.519,
+        0.404,
+        0.697,
+        0.439,
+        0.49,
+        0.26
+      ],
+      "share": [
+        0.9497840007353167,
+        0.9702566161464083,
+        0.4699596257369905,
+        0.9025265127885215,
+        0.8950331228812242,
+        0.8141579763396555
+      ],
+      "logistic": [
+        0.9996197066907766,
+        0.9928191151165542,
+        0.04319937024845586,
+        0.9992744982621967,
+        0.9965022955728869,
+        0.6826824734731911
+      ],
+      "lookedNovelty": 5,
+      "lookedValence": 2,
+      "lookedLogistic": 2
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "loyalty-points-redemption-loyalty-points-redemption-raise-cap",
+        "mortgage-monthly-payment-calculator-mortgage-control-factor-rename",
+        "server-cpu-throttle-level-cpu-throttle-high-cap-raised",
+        "server-cpu-throttle-level-cpu-throttle-none-cap-raised",
+        "loyalty-points-redemption-loyalty-points-redemption-drop-cap",
+        "sprint-velocity-cap-sprint-velocity-cap-r1"
+      ],
+      "odd": 1,
+      "novelty": [
+        8,
+        40,
+        31,
+        22,
+        24,
+        44
+      ],
+      "familiarity": [
+        0.8,
+        0.437,
+        0.492,
+        0.593,
+        0.636,
+        0.413
+      ],
+      "share": [
+        0.9739091697168175,
+        0.3470802109827083,
+        0.9747331824062095,
+        0.9681353067240841,
+        0.9330028138818169,
+        0.9827680403998641
+      ],
+      "logistic": [
+        0.9984767747472538,
+        0.0016112642256468355,
+        0.9953712691945783,
+        0.9942569535642174,
+        0.9997455284722463,
+        0.9968562194906394
+      ],
+      "lookedNovelty": 5,
+      "lookedValence": 1,
+      "lookedLogistic": 1
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "audit-log-entry-formatter-audit-log-leak-secret-admin-only",
+        "api-error-response-formatter-leaked-token-internal-only",
+        "return-shipping-label-generator-ternary-carrier-and-fee",
+        "audit-log-entry-formatter-audit-log-leak-secret-in-base",
+        "api-key-masked-display-api-key-masked-display-v2",
+        "api-error-response-formatter-leaked-token-in-external-response"
+      ],
+      "odd": 2,
+      "novelty": [
+        32,
+        22,
+        49,
+        30,
+        56,
+        33
+      ],
+      "familiarity": [
+        0.568,
+        0.662,
+        0.355,
+        0.444,
+        0.3,
+        0.593
+      ],
+      "share": [
+        0.8845431275391589,
+        0.8870904676602439,
+        0.43293028701044506,
+        0.818235988532239,
+        0.7596254980079681,
+        0.871727895218016
+      ],
+      "logistic": [
+        0.9897067152918682,
+        0.9855808188759616,
+        0.016434832439448585,
+        0.9769507338690582,
+        0.992432791011213,
+        0.9896260834853324
+      ],
+      "lookedNovelty": 4,
+      "lookedValence": 2,
+      "lookedLogistic": 2
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "session-timeout-checker-session-timeout-checker-reg-1",
+        "subscription-late-fee-calculator-late-fee-dollars-not-cents",
+        "interest-accrual-daily-rate-unit-mismatch-rate-not-converted",
+        "document-total",
+        "interest-accrual-daily-rate-unit-mismatch-principal-dollars",
+        "session-timeout-checker-session-timeout-checker-reg-2"
+      ],
+      "odd": 3,
+      "novelty": [
+        29,
+        41,
+        37,
+        26,
+        39,
+        26
+      ],
+      "familiarity": [
+        0.603,
+        0.339,
+        0.513,
+        0.644,
+        0.506,
+        0.644
+      ],
+      "share": [
+        0.8610785910617937,
+        0.9119905849691446,
+        0.9071395692516414,
+        0.8702518071332115,
+        0.7621670338473863,
+        0.8311255576107062
+      ],
+      "logistic": [
+        0.9955421193998978,
+        0.9951352965237548,
+        0.9717101154194892,
+        0.3738614367285987,
+        0.9201624689833566,
+        0.9887707828003004
+      ],
+      "lookedNovelty": 1,
+      "lookedValence": 4,
+      "lookedLogistic": 3
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "age-restricted-content-gate-age-restricted-content-gate-r1",
+        "gift-card-redemption-validator-remove-unverified-guard",
+        "blood-alcohol-content-warning-bac-skip-impaired-guard",
+        "loan-eligibility-check-loan-eligibility-remove-income-guard",
+        "loan-eligibility-check-loan-eligibility-remove-default-guard",
+        "hotel-cancellation-fee-hotel-cancellation-fee-comment-cleanup"
+      ],
+      "odd": 5,
+      "novelty": [
+        49,
+        46,
+        39,
+        14,
+        3,
+        37
+      ],
+      "familiarity": [
+        0.473,
+        0.477,
+        0.458,
+        0.689,
+        0.893,
+        0.413
+      ],
+      "share": [
+        0.9447631431339555,
+        0.9451960880332433,
+        0.9347148906008095,
+        0.914281193132368,
+        0.9264862525797217,
+        0.5612797339926677
+      ],
+      "logistic": [
+        0.9977489811750407,
+        0.9885228600739264,
+        0.9890035507040167,
+        0.9920846653482844,
+        0.9554261575598132,
+        0.059461729750123225
+      ],
+      "lookedNovelty": 0,
+      "lookedValence": 5,
+      "lookedLogistic": 5
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "parking-permit-eligibility-parking-permit-eligibility-reg-or-zone",
+        "flight-upgrade-eligibility-upgrade-or-instead-of-and",
+        "access-level-permission-check-access-level-not-restricted-flip",
+        "access-level-permission-check-access-level-member-or-admin",
+        "flight-upgrade-eligibility-upgrade-negate-online-check",
+        "overtime-pay-calculator-overtime-rename-intermediate"
+      ],
+      "odd": 5,
+      "novelty": [
+        47,
+        0,
+        5,
+        6,
+        5,
+        27
+      ],
+      "familiarity": [
+        0.329,
+        1,
+        0.839,
+        0.8,
+        0.875,
+        0.481
+      ],
+      "share": [
+        0.9184985096870343,
+        0.9102355993142892,
+        0.8708418020441884,
+        0.922938281666301,
+        0.7753900843543758,
+        0.40782530247043264
+      ],
+      "logistic": [
+        0.9885365168251613,
+        0.9660711256960878,
+        0.981637722720544,
+        0.9867677651152706,
+        0.8681509102295664,
+        0.0012072908213053032
+      ],
+      "lookedNovelty": 0,
+      "lookedValence": 5,
+      "lookedLogistic": 5
+    },
+    {
+      "direction": "odd-control",
+      "hunks": [
+        "voltage-drop-severity-constant-return-critical-hardcoded",
+        "water-quality-index-rating-wqir-constant-advisory-ignored",
+        "water-quality-index-rating-wqir-constant-very-poor-short-circuit",
+        "voltage-drop-severity-constant-return-overvoltage-early-exit",
+        "freight-weight-surcharge-freight-constant-express-high",
+        "shorter-names"
+      ],
+      "odd": 5,
+      "novelty": [
+        25,
+        9,
+        33,
+        76,
+        28,
+        24
+      ],
+      "familiarity": [
+        0.49,
+        0.654,
+        0.421,
+        0.269,
+        0.481,
+        0.51
+      ],
+      "share": [
+        0.8856202523747874,
+        0.8774130872250364,
+        0.96662550478924,
+        0.811393675399825,
+        0.9497840007353167,
+        0.4502250005090509
+      ],
+      "logistic": [
+        0.9965022955728869,
+        0.9390180942403761,
+        0.9928191151165542,
+        0.6826824734731911,
+        0.9996197066907766,
+        0.0019051716606375737
+      ],
+      "lookedNovelty": 3,
+      "lookedValence": 5,
+      "lookedLogistic": 5
+    }
+  ]
+}

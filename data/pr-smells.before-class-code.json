@@ -1,0 +1,375 @@
+{
+  "at": "2026-09-19T18:03:14.643Z",
+  "memoryPath": "/Users/nicknisi/Developer/fly-attention/.runs/trained-memory.json",
+  "seed": 7,
+  "report": [
+    {
+      "pr": "workos/authkit-nextjs#486",
+      "title": "docs: Add a runnable AuthKit quickstart",
+      "head": "ideation/executable-quickstarts",
+      "naive": 0.505030859686794,
+      "remembered": 0.3742558094872288,
+      "verdict": "no_objection",
+      "nearest": [
+        {
+          "caseId": "inventory-reorder-label-inventory-reorder-label-v4",
+          "title": "Add explanatory comments to each branch",
+          "lesson": "reward",
+          "smell": "null-handling",
+          "overlap": 0.23857868020304568
+        },
+        {
+          "caseId": "mortgage-monthly-payment-calculator-mortgage-regression-precedence-conversio",
+          "title": "Simplify cent conversion by inlining the multiplier",
+          "lesson": "punish",
+          "smell": "precedence",
+          "overlap": 0.23214285714285715
+        },
+        {
+          "caseId": "water-quality-index-rating-wqir-control-comment-and-rename",
+          "title": "docs: add inline comments and rename loop variable for clarity",
+          "lesson": "reward",
+          "smell": "constant-return",
+          "overlap": 0.22885572139303484
+        },
+        {
+          "caseId": "sleep-dose-recommender-extract-clamp-helper",
+          "title": "Extract clamp logic into inline helper for readability",
+          "lesson": "reward",
+          "smell": "clamping",
+          "overlap": 0.22194513715710723
+        },
+        {
+          "caseId": "interest-accrual-daily-rate-unit-mismatch-principal-dollars",
+          "title": "Refactor: use dollar amount directly to avoid cent confusion in callers",
+          "lesson": "punish",
+          "smell": "unit-mismatch",
+          "overlap": 0.22113022113022113
+        }
+      ],
+      "strongest": "spansFiles 0.99, touchesConfig 0.98, touchesCredentials 0.97, touchesComments 0.97, touchesAsync 0.96"
+    },
+    {
+      "pr": "workos/authkit-nextjs#249",
+      "title": "fix ESM import extensions",
+      "head": "fix-esm-import-extensions",
+      "naive": 0.5053376287031772,
+      "remembered": 0.35648505733468006,
+      "verdict": "no_objection",
+      "nearest": [
+        {
+          "caseId": "water-quality-index-rating-wqir-control-comment-and-rename",
+          "title": "docs: add inline comments and rename loop variable for clarity",
+          "lesson": "reward",
+          "smell": "constant-return",
+          "overlap": 0.4020100502512563
+        },
+        {
+          "caseId": "inventory-reorder-label-inventory-reorder-label-v4",
+          "title": "Add explanatory comments to each branch",
+          "lesson": "reward",
+          "smell": "null-handling",
+          "overlap": 0.39746835443037976
+        },
+        {
+          "caseId": "mortgage-monthly-payment-calculator-mortgage-regression-precedence-conversio",
+          "title": "Simplify cent conversion by inlining the multiplier",
+          "lesson": "punish",
+          "smell": "precedence",
+          "overlap": 0.3813131313131313
+        },
+        {
+          "caseId": "sleep-dose-recommender-extract-clamp-helper",
+          "title": "Extract clamp logic into inline helper for readability",
+          "lesson": "reward",
+          "smell": "clamping",
+          "overlap": 0.3781094527363184
+        },
+        {
+          "caseId": "subscription-late-fee-calculator-late-fee-extract-rate-helper",
+          "title": "Extract plan rate lookup into named helper for clarity",
+          "lesson": "reward",
+          "smell": "unit-mismatch",
+          "overlap": 0.371007371007371
+        }
+      ],
+      "strongest": "spansFiles 0.99, touchesConfig 0.98, touchesComments 0.91, changesLiteral 0.87, touchesTests 0.68"
+    },
+    {
+      "pr": "workos/authkit-nextjs#35",
+      "title": "Use relative redirect location in AuthKit callback handler",
+      "head": "use-relative-redirect-location",
+      "naive": 0.5743040458136699,
+      "remembered": 0.39737621667371986,
+      "verdict": "no_objection",
+      "nearest": [
+        {
+          "caseId": "parking-permit-eligibility-parking-permit-eligibility-zone-and-logi",
+          "title": "Refactor zone check to use negation form for clarity",
+          "lesson": "punish",
+          "smell": "boolean-logic",
+          "overlap": 0.3744186046511628
+        },
+        {
+          "caseId": "blood-alcohol-content-warning-bac-skip-impaired-guard",
+          "title": "Refactor BAC thresholds to use direct comparisons for clarity",
+          "lesson": "punish",
+          "smell": "removed-guard",
+          "overlap": 0.3707093821510298
+        },
+        {
+          "caseId": "session-timeout-checker-session-timeout-checker-ctrl-1",
+          "title": "Extract conversion factor into a named constant",
+          "lesson": "reward",
+          "smell": "unit-mismatch",
+          "overlap": 0.3685393258426966
+        },
+        {
+          "caseId": "loan-eligibility-check-loan-eligibility-remove-default-guard",
+          "title": "Simplify eligibility logic by collapsing income and score checks",
+          "lesson": "punish",
+          "smell": "removed-guard",
+          "overlap": 0.36054421768707484
+        },
+        {
+          "caseId": "interest-accrual-daily-rate-control-extract-daily-rate-helper",
+          "title": "Extract daily rate fraction into a named constant for clarity",
+          "lesson": "reward",
+          "smell": "unit-mismatch",
+          "overlap": 0.3542600896860987
+        }
+      ],
+      "strongest": "removesLogic 0.96, touchesNetwork 0.93, touchesComments 0.83, processesExternalInput 0.74, changesReturnShape 0.65"
+    },
+    {
+      "pr": "workos/authkit-nextjs#483",
+      "title": "docs: Rename Sign-in URL to Initiate login URI in README",
+      "head": "devin/1789407852-initiate-login-uri-docs",
+      "naive": 0.5060598627647063,
+      "remembered": 0.2975830237101161,
+      "verdict": "no_objection",
+      "nearest": [
+        {
+          "caseId": "inventory-reorder-label-inventory-reorder-label-v4",
+          "title": "Add explanatory comments to each branch",
+          "lesson": "reward",
+          "smell": "null-handling",
+          "overlap": 0.48404255319148937
+        },
+        {
+          "caseId": "water-quality-index-rating-wqir-control-comment-and-rename",
+          "title": "docs: add inline comments and rename loop variable for clarity",
+          "lesson": "reward",
+          "smell": "constant-return",
+          "overlap": 0.4498714652956298
+        },
+        {
+          "caseId": "sleep-dose-recommender-extract-clamp-helper",
+          "title": "Extract clamp logic into inline helper for readability",
+          "lesson": "reward",
+          "smell": "clamping",
+          "overlap": 0.42493638676844786
+        },
+        {
+          "caseId": "mortgage-monthly-payment-calculator-mortgage-regression-precedence-conversio",
+          "title": "Simplify cent conversion by inlining the multiplier",
+          "lesson": "punish",
+          "smell": "precedence",
+          "overlap": 0.4035532994923858
+        },
+        {
+          "caseId": "sleep-dose-recommender-rename-hours-var",
+          "title": "Rename internal variable for clarity",
+          "lesson": "reward",
+          "smell": "clamping",
+          "overlap": 0.4020100502512563
+        }
+      ],
+      "strongest": "touchesComments 0.98, changesLiteral 0.87, renameOnly 0.70, commentJustifies 0.59, touchesPersistence 0.33"
+    },
+    {
+      "pr": "workos/authkit-nextjs#476",
+      "title": "feat: Add optional WORKOS_ISSUER access token issuer validation",
+      "head": "devin/1788635895-optional-issuer",
+      "naive": 0.5079670149155662,
+      "remembered": 0.373230742729178,
+      "verdict": "no_objection",
+      "nearest": [
+        {
+          "caseId": "return-shipping-label-generator-swallow-invalid-weight-zero",
+          "title": "Treat weight=0 as 1g minimum to avoid rejecting edge-case parcels",
+          "lesson": "punish",
+          "smell": "swallowed-error",
+          "overlap": 0.24539877300613497
+        },
+        {
+          "caseId": "inventory-reorder-label-inventory-reorder-label-v4",
+          "title": "Add explanatory comments to each branch",
+          "lesson": "reward",
+          "smell": "null-handling",
+          "overlap": 0.21393034825870647
+        },
+        {
+          "caseId": "sleep-dose-recommender-extract-clamp-helper",
+          "title": "Extract clamp logic into inline helper for readability",
+          "lesson": "reward",
+          "smell": "clamping",
+          "overlap": 0.20987654320987653
+        },
+        {
+          "caseId": "freight-weight-surcharge-freight-constant-fragile-early-return",
+          "title": "Short-circuit fragile shipments to flat rate for perf",
+          "lesson": "punish",
+          "smell": "constant-return",
+          "overlap": 0.20833333333333334
+        },
+        {
+          "caseId": "sleep-dose-recommender-rename-hours-var",
+          "title": "Rename internal variable for clarity",
+          "lesson": "reward",
+          "smell": "clamping",
+          "overlap": 0.2079207920792079
+        }
+      ],
+      "strongest": "spansFiles 0.99, touchesTests 0.98, touchesConfig 0.97, addsConditional 0.96, touchesComments 0.96"
+    },
+    {
+      "pr": "workos/authkit-nextjs#467",
+      "title": "fix: defer initial token refresh until first subscriber",
+      "head": "fix/defer-initial-token-refresh",
+      "naive": 0.513712657495214,
+      "remembered": 0.4393135594406573,
+      "verdict": "no_objection",
+      "nearest": [
+        {
+          "caseId": "return-shipping-label-generator-swallow-invalid-weight-zero",
+          "title": "Treat weight=0 as 1g minimum to avoid rejecting edge-case parcels",
+          "lesson": "punish",
+          "smell": "swallowed-error",
+          "overlap": 0.22289156626506024
+        },
+        {
+          "caseId": "inventory-reorder-label-inventory-reorder-label-v4",
+          "title": "Add explanatory comments to each branch",
+          "lesson": "reward",
+          "smell": "null-handling",
+          "overlap": 0.21393034825870647
+        },
+        {
+          "caseId": "session-timeout-checker-session-timeout-checker-reg-2",
+          "title": "Accept threshold in milliseconds to align with upstream config refactor",
+          "lesson": "punish",
+          "smell": "unit-mismatch",
+          "overlap": 0.20833333333333334
+        },
+        {
+          "caseId": "sleep-dose-recommender-extract-clamp-helper",
+          "title": "Extract clamp logic into inline helper for readability",
+          "lesson": "reward",
+          "smell": "clamping",
+          "overlap": 0.20689655172413793
+        },
+        {
+          "caseId": "api-key-masked-display-api-key-masked-display-v1",
+          "title": "Show full key to admins for easier debugging",
+          "lesson": "punish",
+          "smell": "leaked-secret",
+          "overlap": 0.19411764705882353
+        }
+      ],
+      "strongest": "touchesTiming 0.99, touchesAsync 0.98, touchesTests 0.98, commentJustifies 0.98, spansFiles 0.98"
+    },
+    {
+      "pr": "workos/authkit-nextjs#454",
+      "title": "fix: prevent session helpers from being exposed as Server Actions",
+      "head": "devin/sec-1219-use-server-only",
+      "naive": 0.5119493534423488,
+      "remembered": 0.49038723850273525,
+      "verdict": "abstain",
+      "nearest": [
+        {
+          "caseId": "return-shipping-label-generator-swallow-invalid-weight-zero",
+          "title": "Treat weight=0 as 1g minimum to avoid rejecting edge-case parcels",
+          "lesson": "punish",
+          "smell": "swallowed-error",
+          "overlap": 0.23404255319148937
+        },
+        {
+          "caseId": "inventory-reorder-label-inventory-reorder-label-v4",
+          "title": "Add explanatory comments to each branch",
+          "lesson": "reward",
+          "smell": "null-handling",
+          "overlap": 0.22305764411027568
+        },
+        {
+          "caseId": "audit-log-entry-formatter-audit-log-leak-secret-in-base",
+          "title": "Include signing key in log entries for easier audit trail correlation",
+          "lesson": "punish",
+          "smell": "leaked-secret",
+          "overlap": 0.21921921921921922
+        },
+        {
+          "caseId": "mortgage-monthly-payment-calculator-mortgage-regression-precedence-conversio",
+          "title": "Simplify cent conversion by inlining the multiplier",
+          "lesson": "punish",
+          "smell": "precedence",
+          "overlap": 0.21662468513853905
+        },
+        {
+          "caseId": "water-quality-index-rating-wqir-control-comment-and-rename",
+          "title": "docs: add inline comments and rename loop variable for clarity",
+          "lesson": "reward",
+          "smell": "constant-return",
+          "overlap": 0.2048780487804878
+        }
+      ],
+      "strongest": "spansFiles 0.99, touchesComments 0.98, touchesTests 0.98, commentJustifies 0.98, touchesConfig 0.98"
+    },
+    {
+      "pr": "workos/authkit-nextjs#455",
+      "title": "feat: add CallbackError with request attribution",
+      "head": "callback-error-attribution",
+      "naive": 0.5148647608999087,
+      "remembered": 0.3308246296675541,
+      "verdict": "no_objection",
+      "nearest": [
+        {
+          "caseId": "mortgage-monthly-payment-calculator-mortgage-regression-precedence-conversio",
+          "title": "Simplify cent conversion by inlining the multiplier",
+          "lesson": "punish",
+          "smell": "precedence",
+          "overlap": 0.4030612244897959
+        },
+        {
+          "caseId": "inventory-reorder-label-inventory-reorder-label-v4",
+          "title": "Add explanatory comments to each branch",
+          "lesson": "reward",
+          "smell": "null-handling",
+          "overlap": 0.3944723618090452
+        },
+        {
+          "caseId": "water-quality-index-rating-wqir-control-comment-and-rename",
+          "title": "docs: add inline comments and rename loop variable for clarity",
+          "lesson": "reward",
+          "smell": "constant-return",
+          "overlap": 0.3920595533498759
+        },
+        {
+          "caseId": "blood-alcohol-content-warning-bac-skip-impaired-guard",
+          "title": "Refactor BAC thresholds to use direct comparisons for clarity",
+          "lesson": "punish",
+          "smell": "removed-guard",
+          "overlap": 0.3842364532019704
+        },
+        {
+          "caseId": "sleep-dose-recommender-extract-clamp-helper",
+          "title": "Extract clamp logic into inline helper for readability",
+          "lesson": "reward",
+          "smell": "clamping",
+          "overlap": 0.38213399503722084
+        }
+      ],
+      "strongest": "spansFiles 0.99, touchesErrorHandling 0.98, commentJustifies 0.98, touchesComments 0.95, processesExternalInput 0.94"
+    }
+  ]
+}

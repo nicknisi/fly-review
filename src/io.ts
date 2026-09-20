@@ -1,10 +1,12 @@
 import { execFile } from 'node:child_process';
 import { createHash, randomUUID } from 'node:crypto';
 import { open, rename, rm } from 'node:fs/promises';
-import { dirname } from 'node:path';
+import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const ROOT = fileURLToPath(new URL('../', import.meta.url));
+/** Separate local labs and verification servers must not share mutable experiment data. */
+export const RUNS_ROOT = resolve(ROOT, process.env.FLY_REVIEW_DATA_DIR || '.runs');
 export const hash = (value: string | Buffer): string => createHash('sha256').update(value).digest('hex');
 
 export function command(file: string, args: string[], input = '', timeout = 30_000): Promise<string> {
@@ -19,19 +21,27 @@ export function command(file: string, args: string[], input = '', timeout = 30_0
 }
 
 /** Atomically persist review evidence and configuration; never expose a partial JSON file. */
-export async function atomicJSON(path: string, value: unknown): Promise<void> {
+export async function atomicJSON(path: string, value: unknown, space = 2): Promise<void> {
   const temporary = `${path}.${randomUUID()}.tmp`;
   try {
     const handle = await open(temporary, 'wx', 0o600);
     try {
-      await handle.writeFile(`${JSON.stringify(value, null, 2)}\n`);
+      await handle.writeFile(`${JSON.stringify(value, null, space)}\n`);
       await handle.sync();
-    } finally { await handle.close(); }
+    } finally {
+      await handle.close();
+    }
     await rename(temporary, path);
     // Persist the rename as well as the contents on supported POSIX systems.
     if (process.platform !== 'win32') {
       const directory = await open(dirname(path), 'r');
-      try { await directory.sync(); } finally { await directory.close(); }
+      try {
+        await directory.sync();
+      } finally {
+        await directory.close();
+      }
     }
-  } finally { await rm(temporary, { force: true }); }
+  } finally {
+    await rm(temporary, { force: true });
+  }
 }

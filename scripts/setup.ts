@@ -12,7 +12,9 @@ await mkdir(runtime, { recursive: true });
 await mkdir(join(ROOT, 'data'), { recursive: true });
 
 async function download(url: string, destination: string, expectedHash: string): Promise<void> {
-  try { if (hash(await readFile(destination)) === expectedHash) return; } catch {}
+  try {
+    if (hash(await readFile(destination)) === expectedHash) return;
+  } catch {}
   console.log(`Downloading ${url}`);
   const response = await fetch(url, { signal: AbortSignal.timeout(300_000) });
   if (!response.ok || !response.body) throw new Error(`Download failed: HTTP ${response.status}`);
@@ -22,7 +24,9 @@ async function download(url: string, destination: string, expectedHash: string):
     if (hash(await readFile(temporary)) !== expectedHash) throw new Error('Checksum mismatch');
     const { rename } = await import('node:fs/promises');
     await rename(temporary, destination);
-  } finally { await rm(temporary, { force: true }); }
+  } finally {
+    await rm(temporary, { force: true });
+  }
 }
 
 let java = process.env.JAVA_HOME ? join(process.env.JAVA_HOME, 'bin/java') : 'java';
@@ -38,9 +42,12 @@ try {
   if (!directory) {
     const os = process.platform === 'darwin' ? 'mac' : 'linux';
     const arch = process.arch === 'arm64' ? 'aarch64' : 'x64';
-    const response = await fetch(`https://api.adoptium.net/v3/assets/latest/21/hotspot?architecture=${arch}&image_type=jdk&os=${os}&vendor=eclipse`, { signal: AbortSignal.timeout(30_000) });
+    const response = await fetch(
+      `https://api.adoptium.net/v3/assets/latest/21/hotspot?architecture=${arch}&image_type=jdk&os=${os}&vendor=eclipse`,
+      { signal: AbortSignal.timeout(30_000) },
+    );
     if (!response.ok) throw new Error(`JDK metadata HTTP ${response.status}`);
-    const assets = await response.json() as { binary: { package: { link: string; checksum: string } } }[];
+    const assets = (await response.json()) as { binary: { package: { link: string; checksum: string } } }[];
     const asset = assets[0]?.binary.package;
     if (!asset?.link || !/^[a-f0-9]{64}$/.test(asset.checksum)) throw new Error('Invalid JDK metadata');
     const archive = join(runtime, 'jdk.tar.gz');
@@ -56,11 +63,26 @@ try {
 }
 await download(
   `https://raw.githubusercontent.com/XprismDev/FlyBrainMC/${revision}/src/main/resources/connectome/malecns-v1.0.flyb.gz`,
-  join(ROOT, 'data/malecns-v1.0.flyb.gz'), dataHash,
+  join(ROOT, 'data/malecns-v1.0.flyb.gz'),
+  dataHash,
 );
 await mkdir(join(runtime, 'classes'), { recursive: true });
-await command(javac, ['-d', join(runtime, 'classes'), ...['Connectome', 'LifConfig', 'LifNetwork'].map(name => join(ROOT, `vendor/flybrain/${name}.java`)), join(ROOT, 'brain/ReviewBrainBridge.java')]);
+await command(javac, [
+  '-d',
+  join(runtime, 'classes'),
+  ...['Connectome', 'LifConfig', 'LifNetwork'].map(name => join(ROOT, `vendor/flybrain/${name}.java`)),
+  join(ROOT, 'brain/ReviewBrainBridge.java'),
+]);
 await atomicJSON(join(runtime, 'config.json'), { java, revision, dataHash });
-const anatomy = JSON.parse(await command(java, ['-Xmx512m', '-cp', join(runtime, 'classes'), 'ReviewBrainBridge', join(ROOT, 'data/malecns-v1.0.flyb.gz'), '--anatomy']));
+const anatomy = JSON.parse(
+  await command(java, [
+    '-Xmx512m',
+    '-cp',
+    join(runtime, 'classes'),
+    'ReviewBrainBridge',
+    join(ROOT, 'data/malecns-v1.0.flyb.gz'),
+    '--anatomy',
+  ]),
+);
 await atomicJSON(join(runtime, 'review-anatomy.json'), anatomy);
 console.log('fly-review is ready. Run npm run demo, then open http://localhost:4488.');

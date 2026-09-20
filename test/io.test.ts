@@ -12,17 +12,23 @@ test('review evidence is atomically replaced and a failed serialization preserve
     await atomicJSON(path, { verdict: 'abstain' });
     await atomicJSON(path, { verdict: 'changes_requested' });
     assert.deepEqual(JSON.parse(await readFile(path, 'utf8')), { verdict: 'changes_requested' });
-    const circular: Record<string, unknown> = {}; circular.self = circular;
+    const circular: Record<string, unknown> = {};
+    circular.self = circular;
     await assert.rejects(atomicJSON(path, circular), /circular/i);
     assert.deepEqual(JSON.parse(await readFile(path, 'utf8')), { verdict: 'changes_requested' });
     assert.deepEqual(await readdir(dir), ['review.json']);
     if (process.platform !== 'win32') assert.equal((await stat(path)).mode & 0o777, 0o600);
-  } finally { await rm(dir, { recursive: true, force: true }); }
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
 });
 
 test('subprocess boundary carries input and fails on errors or deadline expiry', async () => {
   const output = await command(process.execPath, ['-e', 'process.stdin.pipe(process.stdout)'], 'measured data');
   assert.equal(output, 'measured data');
-  await assert.rejects(command(process.execPath, ['-e', 'console.error("simulation failed"); process.exit(2)']), /simulation failed/);
+  await assert.rejects(
+    command(process.execPath, ['-e', 'console.error("simulation failed"); process.exit(2)']),
+    /simulation failed/,
+  );
   await assert.rejects(command(process.execPath, ['-e', 'setInterval(() => {}, 1000)'], '', 100));
 });

@@ -1,0 +1,123 @@
+.memory-lab {
+  margin: 28px 0;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+.memory-lab h3 {
+  margin: 20px 0 8px;
+  font-size: 1rem;
+}
+.memory-lab p {
+  margin: 8px 0;
+  color: var(--muted);
+}
+.lab-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 16px 0;
+}
+.vote-history {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+  gap: 12px;
+  padding: 0;
+  list-style: none;
+}
+.vote-history li,
+.lab-pair > div {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--bg);
+  overflow-wrap: anywhere;
+}
+.vote-history p {
+  font: 11px/1.7 var(--mono);
+}
+.lab-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 12px 0;
+}
+#historical-recording {
+  padding: 12px;
+  border-left: 3px solid var(--red);
+  color: var(--ink);
+}
+#comparison-bin {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+}
+#comparison-bin-output {
+  display: block;
+  font: 11px/1.6 var(--mono);
+}
+.odor-lineup {
+  margin-top: 20px;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+.odor-lineup summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+.odor-lineup ol {
+  padding-left: 20px;
+}
+.odor-lineup li {
+  margin: 12px 0;
+}
+.sensory-lab {
+  border-top: 1px solid var(--line);
+  margin-top: 20px;
+}
+.code-disclosure,
+.lab-receipt {
+  width: min(760px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 24px;
+  color: var(--ink);
+  background: var(--bg);
+}
+.code-disclosure p {
+  margin: 16px 0;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+.code-disclosure pre,
+.lab-receipt pre {
+  max-width: 100%;
+  overflow: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: 11px/1.6 var(--mono);
+  background: var(--surface);
+  padding: 15px;
+}
+.code-disclosure form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+.lab-receipt h2 {
+  margin-bottom: 12px;
+}
+@media (max-width: 600px) {
+  .memory-lab {
+    padding: 15px;
+  }
+  .lab-pair {
+    grid-template-columns: 1fr;
+  }
+}

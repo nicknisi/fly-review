@@ -1,0 +1,767 @@
+{
+  "at": "2026-09-19T22:13:42.793Z",
+  "memoryPath": "/Users/nicknisi/Developer/fly-attention/.runs/trained-memory.json",
+  "seed": 7,
+  "report": [
+    {
+      "pr": "workos/authkit-nextjs#486",
+      "title": "docs: Add a runnable AuthKit quickstart",
+      "head": "ideation/executable-quickstarts",
+      "naive": 0.5867194895347615,
+      "remembered": 0.49674356993045593,
+      "verdict": "abstain",
+      "nearest": [
+        {
+          "caseId": "water-quality-index-rating-wqir-control-comment-and-rename",
+          "title": "docs: add inline comments and rename loop variable for clarity",
+          "lesson": "reward",
+          "smell": "constant-return",
+          "overlap": 0.20581113801452786
+        },
+        {
+          "caseId": "ticket-discount-tier-reorder-comments",
+          "title": "Add descriptive comments above each guard",
+          "lesson": "reward",
+          "smell": "boundary-flip",
+          "overlap": 0.19883040935672514
+        },
+        {
+          "caseId": "inventory-reorder-label-inventory-reorder-label-v4",
+          "title": "Add explanatory comments to each branch",
+          "lesson": "reward",
+          "smell": "null-handling",
+          "overlap": 0.18840579710144928
+        },
+        {
+          "caseId": "shipping-insurance-premium-shipping-insurance-premium-control-terna",
+          "title": "Add explanatory comments and extract guard to helper expression",
+          "lesson": "reward",
+          "smell": "precedence",
+          "overlap": 0.18333333333333332
+        },
+        {
+          "caseId": "mortgage-monthly-payment-calculator-mortgage-regression-precedence-conversio",
+          "title": "Simplify cent conversion by inlining the multiplier",
+          "lesson": "punish",
+          "smell": "precedence",
+          "overlap": 0.17478510028653296
+        }
+      ],
+      "strongest": "spansFiles 0.99, touchesConfig 0.98, touchesCredentials 0.97, touchesComments 0.97, touchesAsync 0.96",
+      "attention": {
+        "granularity": "hunk",
+        "units": 19,
+        "looked": 16,
+        "lookedName": "examples/vinext/README.md hunk 1",
+        "quiet": 13,
+        "ranked": [
+          {
+            "index": 16,
+            "name": "examples/vinext/README.md hunk 1",
+            "header": "@@ -51,7 +51,7 @@ This example demonstrates how to use [`@workos-inc/authkit-nextjs`](https://gith",
+            "noveltyHz": 14,
+            "naiveNoveltyHz": 65,
+            "share": 0.6721785306177321
+          },
+          {
+            "index": 3,
+            "name": "examples/quickstart.spec.ts hunk 1",
+            "header": "@@ -0,0 +1,48 @@",
+            "noveltyHz": 11,
+            "naiveNoveltyHz": 79,
+            "share": 0.5134059936545511
+          },
+          {
+            "index": 12,
+            "name": "examples/showcase/package.json hunk 1",
+            "header": "@@ -1,5 +1,5 @@",
+            "noveltyHz": 9,
+            "naiveNoveltyHz": 65,
+            "share": 0.549293356983464
+          },
+          {
+            "index": 17,
+            "name": "package.json hunk 1",
+            "header": "@@ -81,7 +81,8 @@",
+            "noveltyHz": 6,
+            "naiveNoveltyHz": 57,
+            "share": 0.5823168109010202
+          },
+          {
+            "index": 10,
+            "name": "examples/quickstart/src/app/page.tsx hunk 1",
+            "header": "@@ -0,0 +1,24 @@",
+            "noveltyHz": 3,
+            "naiveNoveltyHz": 65,
+            "share": 0.44935084668501296
+          },
+          {
+            "index": 6,
+            "name": "examples/quickstart/README.md hunk 1",
+            "header": "@@ -0,0 +1,61 @@",
+            "noveltyHz": 1,
+            "naiveNoveltyHz": 76,
+            "share": 0.4809755018748052
+          }
+        ]
+      }
+    },
+    {
+      "pr": "workos/authkit-nextjs#249",
+      "title": "fix ESM import extensions",
+      "head": "fix-esm-import-extensions",
+      "naive": 0.5803196449074894,
+      "remembered": 0.49148411403713194,
+      "verdict": "abstain",
+      "nearest": [
+        {
+          "caseId": "water-quality-index-rating-wqir-control-comment-and-rename",
+          "title": "docs: add inline comments and rename loop variable for clarity",
+          "lesson": "reward",
+          "smell": "constant-return",
+          "overlap": 0.2146341463414634
+        },
+        {
+          "caseId": "mortgage-monthly-payment-calculator-mortgage-regression-precedence-conversio",
+          "title": "Simplify cent conversion by inlining the multiplier",
+          "lesson": "punish",
+          "smell": "precedence",
+          "overlap": 0.20588235294117646
+        },
+        {
+          "caseId": "ticket-discount-tier-reorder-comments",
+          "title": "Add descriptive comments above each guard",
+          "lesson": "reward",
+          "smell": "boundary-flip",
+          "overlap": 0.19883040935672514
+        },
+        {
+          "caseId": "inventory-reorder-label-inventory-reorder-label-v4",
+          "title": "Add explanatory comments to each branch",
+          "lesson": "reward",
+          "smell": "null-handling",
+          "overlap": 0.19533527696793002
+        },
+        {
+          "caseId": "sprint-velocity-cap-sprint-velocity-cap-r1",
+          "title": "Raise new-team cap to match standard onboarding guideline update",
+          "lesson": "punish",
+          "smell": "clamping",
+          "overlap": 0.18155619596541786
+        }
+      ],
+      "strongest": "spansFiles 0.99, touchesConfig 0.98, touchesComments 0.91, changesLiteral 0.87, touchesTests 0.68",
+      "attention": {
+        "granularity": "hunk",
+        "units": 22,
+        "looked": 1,
+        "lookedName": "README.md hunk 1",
+        "quiet": 18,
+        "ranked": [
+          {
+            "index": 1,
+            "name": "README.md hunk 1",
+            "header": "@@ -169,7 +169,7 @@ export default function RootLayout({ children }: { children: React.ReactNode })",
+            "noveltyHz": 21,
+            "naiveNoveltyHz": 74,
+            "share": 0.6175
+          },
+          {
+            "index": 0,
+            "name": ".eslintrc.cjs hunk 1",
+            "header": "@@ -1,10 +1,30 @@",
+            "noveltyHz": 16,
+            "naiveNoveltyHz": 83,
+            "share": 0.5990150498253225
+          },
+          {
+            "index": 14,
+            "name": "package.json hunk 1",
+            "header": "@@ -51,9 +51,11 @@",
+            "noveltyHz": 8,
+            "naiveNoveltyHz": 55,
+            "share": 0.6285191637630662
+          },
+          {
+            "index": 2,
+            "name": "__tests__/auth.spec.ts hunk 1",
+            "header": "@@ -2,20 +2,20 @@ import { describe, it, expect, beforeEach, jest } from '@jest/globals';",
+            "noveltyHz": 3,
+            "naiveNoveltyHz": 84,
+            "share": 0.625
+          },
+          {
+            "index": 3,
+            "name": "__tests__/authkit-callback-route.spec.ts hunk 1",
+            "header": "@@ -1,9 +1,9 @@",
+            "noveltyHz": 0,
+            "naiveNoveltyHz": 43,
+            "share": 0.6022966693065164
+          },
+          {
+            "index": 4,
+            "name": "__tests__/get-authorization-url.spec.ts hunk 1",
+            "header": "@@ -1,9 +1,9 @@",
+            "noveltyHz": 0,
+            "naiveNoveltyHz": 55,
+            "share": 0.6516745840573333
+          }
+        ]
+      }
+    },
+    {
+      "pr": "workos/authkit-nextjs#35",
+      "title": "Use relative redirect location in AuthKit callback handler",
+      "head": "use-relative-redirect-location",
+      "naive": 0.5881094023731274,
+      "remembered": 0.6140350877192982,
+      "verdict": "abstain",
+      "nearest": [
+        {
+          "caseId": "session-timeout-checker-session-timeout-checker-reg-1",
+          "title": "Simplify comparison by dropping intermediate variables",
+          "lesson": "punish",
+          "smell": "unit-mismatch",
+          "overlap": 0.20943952802359883
+        },
+        {
+          "caseId": "parking-permit-eligibility-parking-permit-eligibility-zone-and-logi",
+          "title": "Refactor zone check to use negation form for clarity",
+          "lesson": "punish",
+          "smell": "boolean-logic",
+          "overlap": 0.19883040935672514
+        },
+        {
+          "caseId": "parking-permit-eligibility-parking-permit-eligibility-reg-or-zone",
+          "title": "Simplify eligibility: registration check combined with zone check",
+          "lesson": "punish",
+          "smell": "boolean-logic",
+          "overlap": 0.19533527696793002
+        },
+        {
+          "caseId": "blood-alcohol-content-warning-bac-skip-impaired-guard",
+          "title": "Refactor BAC thresholds to use direct comparisons for clarity",
+          "lesson": "punish",
+          "smell": "removed-guard",
+          "overlap": 0.19186046511627908
+        },
+        {
+          "caseId": "mortgage-monthly-payment-calculator-mortgage-regression-precedence-rate",
+          "title": "Refactor: precompute rate divisor as a named constant",
+          "lesson": "punish",
+          "smell": "precedence",
+          "overlap": 0.19186046511627908
+        }
+      ],
+      "strongest": "removesLogic 0.96, touchesNetwork 0.93, touchesComments 0.83, processesExternalInput 0.74, changesReturnShape 0.65",
+      "attention": {
+        "granularity": "hunk",
+        "units": 1,
+        "looked": 0,
+        "lookedName": "src/authkit-callback-route.ts hunk 1",
+        "quiet": 0,
+        "ranked": [
+          {
+            "index": 0,
+            "name": "src/authkit-callback-route.ts hunk 1",
+            "header": "@@ -22,16 +22,8 @@ export function handleAuth(options: HandleAuthOptions = {}) {",
+            "noveltyHz": 65,
+            "naiveNoveltyHz": 96,
+            "share": 0.5878455928288127
+          }
+        ]
+      }
+    },
+    {
+      "pr": "workos/authkit-nextjs#467",
+      "title": "fix: defer initial token refresh until first subscriber",
+      "head": "fix/defer-initial-token-refresh",
+      "naive": 0.5862573841474604,
+      "remembered": 0.49000287610383797,
+      "verdict": "abstain",
+      "nearest": [
+        {
+          "caseId": "ticket-discount-tier-reorder-comments",
+          "title": "Add descriptive comments above each guard",
+          "lesson": "reward",
+          "smell": "boundary-flip",
+          "overlap": 0.20943952802359883
+        },
+        {
+          "caseId": "session-timeout-checker-session-timeout-checker-reg-2",
+          "title": "Accept threshold in milliseconds to align with upstream config refactor",
+          "lesson": "punish",
+          "smell": "unit-mismatch",
+          "overlap": 0.20943952802359883
+        },
+        {
+          "caseId": "return-shipping-label-generator-swallow-invalid-weight-zero",
+          "title": "Treat weight=0 as 1g minimum to avoid rejecting edge-case parcels",
+          "lesson": "punish",
+          "smell": "swallowed-error",
+          "overlap": 0.20234604105571846
+        },
+        {
+          "caseId": "parking-permit-eligibility-parking-permit-eligibility-reg-or-zone",
+          "title": "Simplify eligibility: registration check combined with zone check",
+          "lesson": "punish",
+          "smell": "boolean-logic",
+          "overlap": 0.18497109826589594
+        },
+        {
+          "caseId": "inventory-reorder-label-inventory-reorder-label-v4",
+          "title": "Add explanatory comments to each branch",
+          "lesson": "reward",
+          "smell": "null-handling",
+          "overlap": 0.18497109826589594
+        }
+      ],
+      "strongest": "touchesTiming 0.99, touchesAsync 0.98, touchesTests 0.98, commentJustifies 0.98, spansFiles 0.98",
+      "attention": {
+        "granularity": "hunk",
+        "units": 3,
+        "looked": 2,
+        "lookedName": "src/components/tokenStore.ts hunk 2",
+        "quiet": 0,
+        "ranked": [
+          {
+            "index": 2,
+            "name": "src/components/tokenStore.ts hunk 2",
+            "header": "@@ -60,6 +59,17 @@ export class TokenStore {",
+            "noveltyHz": 44,
+            "naiveNoveltyHz": 98,
+            "share": 0.5757010263713599
+          },
+          {
+            "index": 1,
+            "name": "src/components/tokenStore.ts hunk 1",
+            "header": "@@ -41,15 +41,14 @@ export class TokenStore {",
+            "noveltyHz": 43,
+            "naiveNoveltyHz": 91,
+            "share": 0.541778205161525
+          },
+          {
+            "index": 0,
+            "name": "src/components/tokenStore.spec.ts hunk 1",
+            "header": "@@ -827,5 +827,79 @@ describe('tokenStore', () => {",
+            "noveltyHz": 39,
+            "naiveNoveltyHz": 88,
+            "share": 0.5903160207216969
+          }
+        ]
+      }
+    },
+    {
+      "pr": "workos/authkit-nextjs#454",
+      "title": "fix: prevent session helpers from being exposed as Server Actions",
+      "head": "devin/sec-1219-use-server-only",
+      "naive": 0.5978734105590745,
+      "remembered": 0.6104832970303435,
+      "verdict": "abstain",
+      "nearest": [
+        {
+          "caseId": "return-shipping-label-generator-swallow-invalid-weight-zero",
+          "title": "Treat weight=0 as 1g minimum to avoid rejecting edge-case parcels",
+          "lesson": "punish",
+          "smell": "swallowed-error",
+          "overlap": 0.23493975903614459
+        },
+        {
+          "caseId": "audit-log-entry-formatter-audit-log-leak-secret-in-base",
+          "title": "Include signing key in log entries for easier audit trail correlation",
+          "lesson": "punish",
+          "smell": "leaked-secret",
+          "overlap": 0.18497109826589594
+        },
+        {
+          "caseId": "water-quality-index-rating-wqir-control-comment-and-rename",
+          "title": "docs: add inline comments and rename loop variable for clarity",
+          "lesson": "reward",
+          "smell": "constant-return",
+          "overlap": 0.1828978622327791
+        },
+        {
+          "caseId": "signal-strength-label-signal-strength-label-regression-2",
+          "title": "Treat out-of-range RSSI as No Signal instead of Invalid for graceful degradation",
+          "lesson": "punish",
+          "smell": "swallowed-error",
+          "overlap": 0.17142857142857143
+        },
+        {
+          "caseId": "shipping-insurance-premium-shipping-insurance-premium-control-terna",
+          "title": "Add explanatory comments and extract guard to helper expression",
+          "lesson": "reward",
+          "smell": "precedence",
+          "overlap": 0.16941176470588235
+        }
+      ],
+      "strongest": "spansFiles 0.99, touchesComments 0.98, touchesTests 0.98, commentJustifies 0.98, touchesConfig 0.98",
+      "attention": {
+        "granularity": "hunk",
+        "units": 13,
+        "looked": 6,
+        "lookedName": "src/session.ts hunk 3",
+        "quiet": 5,
+        "ranked": [
+          {
+            "index": 6,
+            "name": "src/session.ts hunk 3",
+            "header": "@@ -521,6 +522,22 @@ async function withAuth(options?: { ensureSignedIn?: boolean }): Promise<UserInf",
+            "noveltyHz": 14,
+            "naiveNoveltyHz": 96,
+            "share": 0.6017336355841623
+          },
+          {
+            "index": 2,
+            "name": "src/interfaces.ts hunk 1",
+            "header": "@@ -66,6 +66,12 @@ export interface NoUserInfo {",
+            "noveltyHz": 13,
+            "naiveNoveltyHz": 74,
+            "share": 0.625
+          },
+          {
+            "index": 5,
+            "name": "src/session.ts hunk 2",
+            "header": "@@ -512,6 +512,7 @@ async function withAuth(options?: { ensureSignedIn?: boolean }): Promise<UserInf",
+            "noveltyHz": 11,
+            "naiveNoveltyHz": 76,
+            "share": 0.2991923191478179
+          },
+          {
+            "index": 12,
+            "name": "vitest.server-only-stub.ts hunk 1",
+            "header": "@@ -0,0 +1,7 @@",
+            "noveltyHz": 11,
+            "naiveNoveltyHz": 79,
+            "share": 0.47894242976210183
+          },
+          {
+            "index": 3,
+            "name": "src/session.spec.ts hunk 1",
+            "header": "@@ -111,6 +111,42 @@ describe('session.ts', () => {",
+            "noveltyHz": 7,
+            "naiveNoveltyHz": 119,
+            "share": 0.5544684594918327
+          },
+          {
+            "index": 7,
+            "name": "src/test-helpers.ts hunk 1",
+            "header": "@@ -8,6 +8,7 @@ import { User } from '@workos-inc/node';",
+            "noveltyHz": 6,
+            "naiveNoveltyHz": 75,
+            "share": 0.7258394786723301
+          }
+        ]
+      }
+    },
+    {
+      "pr": "workos/authkit-nextjs#483",
+      "title": "docs: Rename Sign-in URL to Initiate login URI in README",
+      "head": "devin/1789407852-initiate-login-uri-docs",
+      "naive": 0.5921467276049739,
+      "remembered": 0.4603760663401271,
+      "verdict": "abstain",
+      "nearest": [
+        {
+          "caseId": "inventory-reorder-label-inventory-reorder-label-v4",
+          "title": "Add explanatory comments to each branch",
+          "lesson": "reward",
+          "smell": "null-handling",
+          "overlap": 0.25382262996941896
+        },
+        {
+          "caseId": "ticket-discount-tier-reorder-comments",
+          "title": "Add descriptive comments above each guard",
+          "lesson": "reward",
+          "smell": "boundary-flip",
+          "overlap": 0.23867069486404835
+        },
+        {
+          "caseId": "mortgage-monthly-payment-calculator-mortgage-regression-precedence-conversio",
+          "title": "Simplify cent conversion by inlining the multiplier",
+          "lesson": "punish",
+          "smell": "precedence",
+          "overlap": 0.23867069486404835
+        },
+        {
+          "caseId": "water-quality-index-rating-wqir-control-comment-and-rename",
+          "title": "docs: add inline comments and rename loop variable for clarity",
+          "lesson": "reward",
+          "smell": "constant-return",
+          "overlap": 0.22058823529411764
+        },
+        {
+          "caseId": "hotel-cancellation-fee-hotel-cancellation-fee-threshold-30-to-2",
+          "title": "Adjust free-cancellation window to 28 days to match updated policy doc",
+          "lesson": "punish",
+          "smell": "default-change",
+          "overlap": 0.20943952802359883
+        }
+      ],
+      "strongest": "touchesComments 0.98, changesLiteral 0.87, renameOnly 0.70, commentJustifies 0.59, touchesPersistence 0.33",
+      "attention": {
+        "granularity": "hunk",
+        "units": 6,
+        "looked": 4,
+        "lookedName": "README.md hunk 5",
+        "quiet": 1,
+        "ranked": [
+          {
+            "index": 4,
+            "name": "README.md hunk 5",
+            "header": "@@ -867,7 +867,7 @@ Render the `Impersonation` component in your app so that it is clear when someon",
+            "noveltyHz": 15,
+            "naiveNoveltyHz": 59,
+            "share": 0.5478558764311687
+          },
+          {
+            "index": 1,
+            "name": "README.md hunk 2",
+            "header": "@@ -142,9 +142,9 @@ The `onSuccess` callback receives the following data:",
+            "noveltyHz": 11,
+            "naiveNoveltyHz": 60,
+            "share": 0.5523082032547326
+          },
+          {
+            "index": 5,
+            "name": "README.md hunk 6",
+            "header": "@@ -1066,7 +1066,7 @@ If the cookie is missing or doesn't match, authentication will fail with one of:",
+            "noveltyHz": 11,
+            "naiveNoveltyHz": 68,
+            "share": 0.6441694200751965
+          },
+          {
+            "index": 0,
+            "name": "README.md hunk 1",
+            "header": "@@ -41,7 +41,7 @@ NEXT_PUBLIC_WORKOS_REDIRECT_URI=\"http://localhost:3000/callback\" # configured in",
+            "noveltyHz": 9,
+            "naiveNoveltyHz": 57,
+            "share": 0.5590657327902001
+          },
+          {
+            "index": 2,
+            "name": "README.md hunk 3",
+            "header": "@@ -157,10 +157,10 @@ export const GET = async () => {",
+            "noveltyHz": 8,
+            "naiveNoveltyHz": 56,
+            "share": 0.4541370273305878
+          },
+          {
+            "index": 3,
+            "name": "README.md hunk 4",
+            "header": "@@ -853,9 +853,9 @@ Note that when several requests land inside the buffer window at the same time,",
+            "noveltyHz": 0,
+            "naiveNoveltyHz": 33,
+            "share": 0.4268689303827697
+          }
+        ]
+      }
+    },
+    {
+      "pr": "workos/authkit-nextjs#476",
+      "title": "feat: Add optional WORKOS_ISSUER access token issuer validation",
+      "head": "devin/1788635895-optional-issuer",
+      "naive": 0.5841668247070756,
+      "remembered": 0.5064527965613043,
+      "verdict": "abstain",
+      "nearest": [
+        {
+          "caseId": "return-shipping-label-generator-swallow-invalid-weight-zero",
+          "title": "Treat weight=0 as 1g minimum to avoid rejecting edge-case parcels",
+          "lesson": "punish",
+          "smell": "swallowed-error",
+          "overlap": 0.2275449101796407
+        },
+        {
+          "caseId": "ticket-discount-tier-reorder-comments",
+          "title": "Add descriptive comments above each guard",
+          "lesson": "reward",
+          "smell": "boundary-flip",
+          "overlap": 0.16809116809116809
+        },
+        {
+          "caseId": "water-quality-index-rating-wqir-control-comment-and-rename",
+          "title": "docs: add inline comments and rename loop variable for clarity",
+          "lesson": "reward",
+          "smell": "constant-return",
+          "overlap": 0.16627634660421545
+        },
+        {
+          "caseId": "tax-bracket-lookup-tax-bracket-swallow-status",
+          "title": "Return default rate instead of throwing for unknown status",
+          "lesson": "punish",
+          "smell": "swallowed-error",
+          "overlap": 0.15819209039548024
+        },
+        {
+          "caseId": "tax-bracket-lookup-tax-bracket-reorder-guards",
+          "title": "Reorder validation guards and add explanatory comments",
+          "lesson": "reward",
+          "smell": "swallowed-error",
+          "overlap": 0.15492957746478872
+        }
+      ],
+      "strongest": "spansFiles 0.99, touchesTests 0.98, touchesConfig 0.97, addsConditional 0.96, touchesComments 0.96",
+      "attention": {
+        "granularity": "hunk",
+        "units": 6,
+        "looked": 3,
+        "lookedName": "src/session.spec.ts hunk 1",
+        "quiet": 0,
+        "ranked": [
+          {
+            "index": 3,
+            "name": "src/session.spec.ts hunk 1",
+            "header": "@@ -321,6 +321,95 @@ describe('session.ts', () => {",
+            "noveltyHz": 25,
+            "naiveNoveltyHz": 100,
+            "share": 0.6220218731604549
+          },
+          {
+            "index": 1,
+            "name": "src/env-variables.ts hunk 1",
+            "header": "@@ -13,6 +13,7 @@ const WORKOS_COOKIE_MAX_AGE = getEnvVariable('WORKOS_COOKIE_MAX_AGE');",
+            "noveltyHz": 17,
+            "naiveNoveltyHz": 104,
+            "share": 0.6130558579683444
+          },
+          {
+            "index": 2,
+            "name": "src/env-variables.ts hunk 2",
+            "header": "@@ -33,4 +34,5 @@ export {",
+            "noveltyHz": 15,
+            "naiveNoveltyHz": 96,
+            "share": 0.615320781411547
+          },
+          {
+            "index": 5,
+            "name": "src/session.ts hunk 2",
+            "header": "@@ -595,9 +601,20 @@ async function withAuth(options?: { ensureSignedIn?: boolean }): Promise<UserInf",
+            "noveltyHz": 7,
+            "naiveNoveltyHz": 92,
+            "share": 0.6253159955719313
+          },
+          {
+            "index": 4,
+            "name": "src/session.ts hunk 1",
+            "header": "@@ -6,7 +6,13 @@ import { cookies, headers } from 'next/headers';",
+            "noveltyHz": 3,
+            "naiveNoveltyHz": 91,
+            "share": 0.6523690663864073
+          },
+          {
+            "index": 0,
+            "name": "README.md hunk 1",
+            "header": "@@ -47,15 +47,16 @@ To use the `signOut` method, you'll need to set a default Logout URI in your Wor",
+            "noveltyHz": 2,
+            "naiveNoveltyHz": 42,
+            "share": 0.4176512611969006
+          }
+        ]
+      }
+    },
+    {
+      "pr": "workos/authkit-nextjs#455",
+      "title": "feat: add CallbackError with request attribution",
+      "head": "callback-error-attribution",
+      "naive": 0.5892857883107893,
+      "remembered": 0.5761636916719279,
+      "verdict": "abstain",
+      "nearest": [
+        {
+          "caseId": "return-shipping-label-generator-swallow-invalid-weight-zero",
+          "title": "Treat weight=0 as 1g minimum to avoid rejecting edge-case parcels",
+          "lesson": "punish",
+          "smell": "swallowed-error",
+          "overlap": 0.2852664576802508
+        },
+        {
+          "caseId": "uv-index-exposure-warning-uv-boundary-flip-upper-guard",
+          "title": "Refactor: align outer validity check with WHO scale upper bound (inclusive 15)",
+          "lesson": "punish",
+          "smell": "boundary-flip",
+          "overlap": 0.24620060790273557
+        },
+        {
+          "caseId": "return-shipping-label-generator-swallow-invalid-reason",
+          "title": "Fall back to unknown code instead of throwing for unrecognised reasons",
+          "lesson": "punish",
+          "smell": "swallowed-error",
+          "overlap": 0.23493975903614459
+        },
+        {
+          "caseId": "signal-strength-label-signal-strength-label-regression-2",
+          "title": "Treat out-of-range RSSI as No Signal instead of Invalid for graceful degradation",
+          "lesson": "punish",
+          "smell": "swallowed-error",
+          "overlap": 0.2275449101796407
+        },
+        {
+          "caseId": "ticket-discount-tier-reorder-comments",
+          "title": "Add descriptive comments above each guard",
+          "lesson": "reward",
+          "smell": "boundary-flip",
+          "overlap": 0.22388059701492538
+        }
+      ],
+      "strongest": "spansFiles 0.99, touchesErrorHandling 0.98, commentJustifies 0.98, touchesComments 0.95, processesExternalInput 0.94",
+      "attention": {
+        "granularity": "hunk",
+        "units": 7,
+        "looked": 4,
+        "lookedName": "src/errors.ts hunk 1",
+        "quiet": 3,
+        "ranked": [
+          {
+            "index": 4,
+            "name": "src/errors.ts hunk 1",
+            "header": "@@ -12,6 +12,40 @@ export class AuthKitError extends Error {",
+            "noveltyHz": 27,
+            "naiveNoveltyHz": 99,
+            "share": 0.6235327105186016
+          },
+          {
+            "index": 1,
+            "name": "src/authkit-callback-route.ts hunk 2",
+            "header": "@@ -32,12 +33,21 @@ export function handleAuth(options: HandleAuthOptions = {}) {",
+            "noveltyHz": 12,
+            "naiveNoveltyHz": 111,
+            "share": 0.7164819389730921
+          },
+          {
+            "index": 2,
+            "name": "src/authkit-callback-route.ts hunk 3",
+            "header": "@@ -50,11 +60,15 @@ export function handleAuth(options: HandleAuthOptions = {}) {",
+            "noveltyHz": 5,
+            "naiveNoveltyHz": 109,
+            "share": 0.6291848854662926
+          },
+          {
+            "index": 3,
+            "name": "src/authkit-callback-route.ts hunk 4",
+            "header": "@@ -72,7 +86,7 @@ export function handleAuth(options: HandleAuthOptions = {}) {",
+            "noveltyHz": 4,
+            "naiveNoveltyHz": 107,
+            "share": 0.6975687389272023
+          },
+          {
+            "index": 0,
+            "name": "src/authkit-callback-route.ts hunk 1",
+            "header": "@@ -1,6 +1,7 @@",
+            "noveltyHz": 0,
+            "naiveNoveltyHz": 71,
+            "share": 0.6344780481056873
+          },
+          {
+            "index": 5,
+            "name": "src/index.ts hunk 1",
+            "header": "@@ -1,6 +1,6 @@",
+            "noveltyHz": 0,
+            "naiveNoveltyHz": 70,
+            "share": 0.6098135001432232
+          }
+        ]
+      }
+    }
+  ]
+}

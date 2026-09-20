@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=24" },
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "setup": "node scripts/setup.ts",
     "build:web": "tsc -p tsconfig.web.json",
@@ -12,10 +14,20 @@
     "measure:examples": "node --env-file-if-exists=.env src/example-reactions.ts",
     "demo": "npm run dev",
     "test": "node --test test/*.test.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.web.json --noEmit",
+    "format": "prettier --write \"src/**/*.ts\" \"web/**/*.{ts,css}\" \"test/**/*.ts\" \"scripts/**/*.ts\" \"*.json\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"web/**/*.{ts,css}\" \"test/**/*.ts\" \"scripts/**/*.ts\" \"*.json\"",
+    "learn": "node --env-file-if-exists=.env src/review-learn.ts",
+    "grow-cases": "node --env-file-if-exists=.env src/review-grow.ts",
+    "train": "node --env-file-if-exists=.env src/review-train.ts",
+    "smell:prs": "node --env-file-if-exists=.env src/review-smell-prs.ts",
+    "memory:install": "node src/review-install-memory.ts",
+    "baseline": "node src/review-baseline.ts",
+    "bench:attention": "node --env-file-if-exists=.env src/review-attention-bench.ts"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
+    "prettier": "^3.9.8",
     "typescript": "^5.9.3"
   }
 }
