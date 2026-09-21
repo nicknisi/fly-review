@@ -1,0 +1,34 @@
+{
+  "repo": "workos/authkit-js",
+  "commit": "220f46557dd89401036cd0dbed01bded391d1788",
+  "at": "2026-09-21T12:15:31.017Z",
+  "runner": "jest",
+  "baselineTests": 324,
+  "killed": 285,
+  "functions": 36,
+  "mutants": 91,
+  "rewrites": 50,
+  "rewritesRejected": 1,
+  "byMutator": {
+    "BooleanLiteral": 9,
+    "ConditionalExpression": 18,
+    "LogicalOperator": 3,
+    "StringLiteral": 14,
+    "CallExpression": 11,
+    "EqualityOperator": 6,
+    "ObjectLiteral": 7,
+    "BlockStatement": 15,
+    "ArithmeticOperator": 5,
+    "ArrowFunction": 2,
+    "MethodExpression": 1
+  },
+  "byRewrite": {
+    "invert-equality": 12,
+    "rename-local": 29,
+    "flip-if-else": 7,
+    "swap-comparison": 2
+  },
+  "rejectedRewrites": [
+    "perform: rename name to nameValue"
+  ]
+}

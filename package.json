@@ -23,7 +23,9 @@
     "smell:prs": "node --env-file-if-exists=.env src/review-smell-prs.ts",
     "memory:install": "node src/review-install-memory.ts",
     "baseline": "node src/review-baseline.ts",
-    "bench:attention": "node --env-file-if-exists=.env src/review-attention-bench.ts"
+    "bench:attention": "node --env-file-if-exists=.env src/review-attention-bench.ts",
+    "mutate:repo": "node --env-file-if-exists=.env src/review-mutate.ts",
+    "wobble": "node --env-file-if-exists=.env src/review-wobble.ts"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",

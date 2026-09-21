@@ -10,14 +10,16 @@ import { VERDICT_RULE } from './review-verdict.ts';
  * fly was taught (from .runs/training.json), applies the fly's own three-way vote bands to its probability, and reports
  * the two side by side on the held-out grown cases, the bundled examples, and any smelled pull requests.
  *
- *   npm run baseline
+ *   npm run baseline                                   TRAINING=.runs/training.<tag>.json to score another run
  */
 type Cached = Record<string, { features: Descriptors }>;
 const odors = JSON.parse(await readFile(join(ROOT, '.runs/odors.json'), 'utf8')) as Cached;
-const training = JSON.parse(await readFile(join(ROOT, '.runs/training.json'), 'utf8')) as {
+const trainingPath = join(ROOT, process.env.TRAINING ?? '.runs/training.json');
+const training = JSON.parse(await readFile(trainingPath, 'utf8')) as {
   results: {
     caseId: string;
-    set: 'training' | 'holdout' | 'bundled';
+    set: 'training' | 'holdout' | 'bundled' | 'excluded';
+    corpus?: 'grown' | 'mined' | 'bundled';
     control: boolean;
     status: string;
     trained: { verdict: string; share: number };
@@ -33,8 +35,17 @@ const verdict = (p: number) =>
   p >= VERDICT_RULE.objection ? 'changes_requested' : p <= VERDICT_RULE.approval ? 'no_objection' : 'abstain';
 
 const sets = {} as Record<string, unknown>;
-for (const set of ['holdout', 'bundled', 'training'] as const) {
-  const rows = training.results.filter(r => r.set === set);
+const views: [string, (r: (typeof training.results)[number]) => boolean][] = [
+  ['holdout', r => r.set === 'holdout'],
+  ['holdout/grown', r => r.set === 'holdout' && r.corpus === 'grown'],
+  ['holdout/mined', r => r.set === 'holdout' && r.corpus === 'mined'],
+  ['bundled', r => r.set === 'bundled'],
+  ['excluded', r => r.set === 'excluded'],
+  ['training', r => r.set === 'training'],
+];
+for (const [set, pick] of views) {
+  const rows = training.results.filter(pick);
+  if (rows.length === 0) continue;
   const scored = rows.map(r => {
     const p = predictLogistic(model, odors[r.caseId].features);
     const expected = r.control ? 'no_objection' : 'changes_requested';
@@ -51,7 +62,7 @@ for (const set of ['holdout', 'bundled', 'training'] as const) {
     logistic = tally(r => r.logistic.verdict);
   sets[set] = { judged: rows.length, fly, logistic };
   console.log(
-    `${set.padEnd(9)} fly ${fly.agree}/${rows.length} (regressions ${fly.regressionsCaught}, controls ${fly.controlsApproved}, false alarms ${fly.falseAlarms})   logistic ${logistic.agree}/${rows.length} (regressions ${logistic.regressionsCaught}, controls ${logistic.controlsApproved}, false alarms ${logistic.falseAlarms})`,
+    `${set.padEnd(14)} fly ${fly.agree}/${rows.length} (regressions ${fly.regressionsCaught}, controls ${fly.controlsApproved}, false alarms ${fly.falseAlarms})   logistic ${logistic.agree}/${rows.length} (regressions ${logistic.regressionsCaught}, controls ${logistic.controlsApproved}, false alarms ${logistic.falseAlarms})`,
   );
 }
 const strongest = Object.entries(model.weights)
@@ -73,7 +84,8 @@ try {
 } catch {
   /* no pull requests smelled yet */
 }
-await atomicJSON(join(ROOT, '.runs/baseline.json'), {
+const outPath = trainingPath.replace(/training(\.[^/]*)?\.json$/, 'baseline$1.json');
+await atomicJSON(outPath, {
   at: new Date().toISOString(),
   note: 'Logistic regression over the thirty descriptors, fit on the same training split as the fly, judged with the fly’s vote bands. The fly column is copied from .runs/training.json.',
   model,
@@ -81,4 +93,4 @@ await atomicJSON(join(ROOT, '.runs/baseline.json'), {
   sets,
   pulls,
 });
-console.log('Evidence: .runs/baseline.json');
+console.log(`Evidence: ${outPath}`);

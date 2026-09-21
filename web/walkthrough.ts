@@ -757,7 +757,7 @@ export class Walkthrough {
             trained = lessons.filter(l => l.source === 'training').length;
           const memory = mem
             ? trained
-              ? `This fly was taught ${trained} lessons by executed tests before you met it${lessons.length > trained ? `, and ${lessons.length - trained} more on this page` : ''}.`
+              ? `This fly was taught ${trained} lessons by executed tests before you met it: mutations of three real TypeScript libraries that their own suites caught, harmless rewrites of the same functions that the suites passed, and small drafted scenarios run against a reference${lessons.length > trained ? `; and ${lessons.length - trained} more on this page` : ''}.`
               : `This fly remembers ${lessons.length} lesson${lessons.length === 1 ? '' : 's'}.`
             : 'This fly has never been taught anything.';
           const near = (s?.nearest ?? []).find(n => n.shared > 0);
@@ -877,7 +877,7 @@ export class Walkthrough {
         target: byId('record'),
         title: () => 'Same smell, same answer.',
         body: () =>
-          'Same smell, same fly, same memory: <b>the same answer every time, to the bit</b>. Jev’s sniff wobbles a little between calls, like anyone sniffing twice, so asking Jev again shifts the smell a hair. The fly’s vote is only as good as what taught it. So is anyone’s. And does the wiring matter, or is the brain decoration? Rewire which dopamine neuron reaches which output cell, degrees preserved, teach that fly the same 126 lessons, and it catches no regressions and reaches for everything. Thirty logistic weights classify about as well as this fly does; they have no wiring to shuffle.',
+          'Same smell, same fly, same memory: <b>the same answer every time, to the bit</b>. Jev’s sniff wobbles a little between calls, like anyone sniffing twice, so asking Jev again shifts the smell a hair. The fly’s vote is only as good as what taught it. So is anyone’s. And does the wiring matter, or is the brain decoration? Rewire which dopamine neuron reaches which output cell, degrees preserved, teach that fly the same lessons, and it catches no regressions and reaches for most of them. Thirty logistic weights classify about as well as this fly does; they have no wiring to shuffle.',
         scene: (_s, host) => {
           host.append(sameScene());
         },

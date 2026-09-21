@@ -1,0 +1,102 @@
+{
+  "at": "2026-09-21T16:03:08.168Z",
+  "jitter": 0.03,
+  "repeats": 4,
+  "report": {
+    ".runs/trained-memory.json": {
+      "changed": 2,
+      "rows": [
+        {
+          "caseId": "rounding",
+          "control": false,
+          "verdicts": "CCCC",
+          "changes": false
+        },
+        {
+          "caseId": "refactor",
+          "control": true,
+          "verdicts": "RRRR",
+          "changes": false
+        },
+        {
+          "caseId": "discount",
+          "control": false,
+          "verdicts": "aaRa",
+          "changes": true
+        },
+        {
+          "caseId": "agent-tools",
+          "control": false,
+          "verdicts": "CCCC",
+          "changes": false
+        },
+        {
+          "caseId": "audit-log",
+          "control": false,
+          "verdicts": "CCCC",
+          "changes": false
+        },
+        {
+          "caseId": "retry-delay",
+          "control": false,
+          "verdicts": "CCCC",
+          "changes": false
+        },
+        {
+          "caseId": "token-expiry",
+          "control": false,
+          "verdicts": "CCCC",
+          "changes": false
+        },
+        {
+          "caseId": "retention",
+          "control": false,
+          "verdicts": "CCCC",
+          "changes": false
+        },
+        {
+          "caseId": "search-race",
+          "control": false,
+          "verdicts": "CCCC",
+          "changes": false
+        },
+        {
+          "caseId": "leg-count",
+          "control": true,
+          "verdicts": "RRRR",
+          "changes": false
+        },
+        {
+          "caseId": "document-total",
+          "control": true,
+          "verdicts": "CCCC",
+          "changes": false
+        },
+        {
+          "caseId": "shorter-names",
+          "control": true,
+          "verdicts": "RRRR",
+          "changes": false
+        },
+        {
+          "caseId": "name-threshold",
+          "control": true,
+          "verdicts": "RRRR",
+          "changes": false
+        },
+        {
+          "caseId": "flip-equality",
+          "control": true,
+          "verdicts": "Raaa",
+          "changes": true
+        },
+        {
+          "caseId": "template-line",
+          "control": true,
+          "verdicts": "aaaa",
+          "changes": false
+        }
+      ]
+    }
+  }
+}

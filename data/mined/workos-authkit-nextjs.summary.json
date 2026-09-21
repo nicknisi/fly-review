@@ -1,0 +1,37 @@
+{
+  "repo": "workos/authkit-nextjs",
+  "commit": "df58a23f556ca0f9a1bc88a698034bcc8e13b1d0",
+  "at": "2026-09-21T12:02:09.994Z",
+  "runner": "vitest",
+  "baselineTests": 420,
+  "killed": 892,
+  "functions": 78,
+  "mutants": 203,
+  "rewrites": 103,
+  "rewritesRejected": 1,
+  "byMutator": {
+    "CallExpression": 20,
+    "ConditionalExpression": 45,
+    "BlockStatement": 22,
+    "BooleanLiteral": 36,
+    "ArrowFunction": 4,
+    "ArithmeticOperator": 8,
+    "EqualityOperator": 19,
+    "StringLiteral": 17,
+    "LogicalOperator": 10,
+    "ObjectLiteral": 9,
+    "Regex": 1,
+    "MethodExpression": 5,
+    "ArrayDeclaration": 5,
+    "OptionalChaining": 2
+  },
+  "byRewrite": {
+    "rename-local": 58,
+    "invert-equality": 31,
+    "flip-if-else": 7,
+    "swap-comparison": 7
+  },
+  "rejectedRewrites": [
+    "signOut: rename sessionId to sessionIdValue"
+  ]
+}

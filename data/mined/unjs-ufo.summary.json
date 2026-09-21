@@ -1,0 +1,35 @@
+{
+  "repo": "unjs/ufo",
+  "commit": "f06c800d0c59f2a4a1b9ba65eb6cb61a84419be6",
+  "at": "2026-09-21T12:18:57.982Z",
+  "runner": "vitest",
+  "baselineTests": 978,
+  "killed": 633,
+  "functions": 50,
+  "mutants": 123,
+  "rewrites": 71,
+  "rewritesRejected": 0,
+  "byMutator": {
+    "ArithmeticOperator": 5,
+    "BooleanLiteral": 14,
+    "ConditionalExpression": 25,
+    "Regex": 6,
+    "StringLiteral": 30,
+    "LogicalOperator": 5,
+    "MethodExpression": 7,
+    "EqualityOperator": 12,
+    "AssignmentOperator": 2,
+    "ArrayDeclaration": 4,
+    "ArrowFunction": 7,
+    "BlockStatement": 2,
+    "ObjectLiteral": 2,
+    "CallExpression": 2
+  },
+  "byRewrite": {
+    "invert-equality": 17,
+    "rename-local": 44,
+    "swap-comparison": 5,
+    "flip-if-else": 5
+  },
+  "rejectedRewrites": []
+}

@@ -1,0 +1,4557 @@
+{
+  "at": "2026-09-20T03:27:40.263Z",
+  "note": "A fresh fly taught from executed outcomes on the grown corpus, then tested on held-out grown cases and on the bundled examples, none of which it smelled during training. Descriptions from cached Jev calls; labels from execution; lessons delivered as bitter or sugar with the fly's dopamine neurons gating which synapses change; no thresholds were tuned on the test sets.",
+  "shuffle": null,
+  "rate": 0.3,
+  "passes": 1,
+  "seed": 7,
+  "holdoutShare": 0.2,
+  "taught": {
+    "total": 126,
+    "punish": 63,
+    "reward": 63
+  },
+  "heldOut": 56,
+  "rememberedSynapses": 15614,
+  "summary": {
+    "holdout": {
+      "judged": 56,
+      "agreeing": 48,
+      "naiveAgreeing": 0,
+      "regressionsCaught": "13/15",
+      "controlsApproved": "35/41",
+      "falseAlarms": 4,
+      "missedAsApproved": 1,
+      "abstained": 3,
+      "reachedControls": "34/41",
+      "reachedRegressions": "1/15"
+    },
+    "bundled": {
+      "judged": 15,
+      "agreeing": 11,
+      "naiveAgreeing": 0,
+      "regressionsCaught": "7/8",
+      "controlsApproved": "4/7",
+      "falseAlarms": 2,
+      "missedAsApproved": 1,
+      "abstained": 1,
+      "reachedControls": "4/7",
+      "reachedRegressions": "1/8"
+    },
+    "training": {
+      "judged": 126,
+      "agreeing": 122,
+      "naiveAgreeing": 0,
+      "regressionsCaught": "62/63",
+      "controlsApproved": "60/63",
+      "falseAlarms": 2,
+      "missedAsApproved": 0,
+      "abstained": 2,
+      "reachedControls": "58/63",
+      "reachedRegressions": "0/63"
+    }
+  },
+  "receptorGaps": [
+    {
+      "receptor": "restructuresOnly",
+      "controls": 0.8555555555555554,
+      "regressions": 0.06523809523809522,
+      "gap": 0.7903174603174602
+    },
+    {
+      "receptor": "changesDefault",
+      "controls": 0.11047619047619046,
+      "regressions": 0.5585714285714285,
+      "gap": -0.44809523809523805
+    },
+    {
+      "receptor": "changesLiteral",
+      "controls": 0.12079365079365076,
+      "regressions": 0.42984126984126997,
+      "gap": -0.30904761904761924
+    },
+    {
+      "receptor": "commentJustifies",
+      "controls": 0.17412698412698405,
+      "regressions": 0.42111111111111094,
+      "gap": -0.2469841269841269
+    },
+    {
+      "receptor": "changesArithmetic",
+      "controls": 0.09714285714285716,
+      "regressions": 0.3414285714285714,
+      "gap": -0.24428571428571427
+    },
+    {
+      "receptor": "removesConditional",
+      "controls": 0.20190476190476192,
+      "regressions": 0.42444444444444435,
+      "gap": -0.22253968253968243
+    },
+    {
+      "receptor": "changesComparison",
+      "controls": 0.1214285714285714,
+      "regressions": 0.3331746031746033,
+      "gap": -0.2117460317460319
+    },
+    {
+      "receptor": "touchesComments",
+      "controls": 0.2653968253968253,
+      "regressions": 0.4357142857142856,
+      "gap": -0.1703174603174603
+    },
+    {
+      "receptor": "renameOnly",
+      "controls": 0.18047619047619046,
+      "regressions": 0.02571428571428573,
+      "gap": 0.1547619047619047
+    },
+    {
+      "receptor": "touchesErrorHandling",
+      "controls": 0.14523809523809525,
+      "regressions": 0.29190476190476183,
+      "gap": -0.14666666666666658
+    },
+    {
+      "receptor": "constantReturn",
+      "controls": 0.04507936507936507,
+      "regressions": 0.1719047619047619,
+      "gap": -0.1268253968253968
+    },
+    {
+      "receptor": "changesReturnShape",
+      "controls": 0.04714285714285713,
+      "regressions": 0.1596825396825397,
+      "gap": -0.11253968253968258
+    },
+    {
+      "receptor": "touchesLoop",
+      "controls": 0.15523809523809526,
+      "regressions": 0.07587301587301579,
+      "gap": 0.07936507936507947
+    },
+    {
+      "receptor": "touchesPermissions",
+      "controls": 0.09634920634920627,
+      "regressions": 0.17190476190476178,
+      "gap": -0.07555555555555551
+    },
+    {
+      "receptor": "changesBooleanLogic",
+      "controls": 0.16412698412698418,
+      "regressions": 0.23761904761904762,
+      "gap": -0.07349206349206344
+    },
+    {
+      "receptor": "removesLogic",
+      "controls": 0.2826984126984126,
+      "regressions": 0.3530158730158731,
+      "gap": -0.0703174603174605
+    },
+    {
+      "receptor": "touchesNetwork",
+      "controls": 0.09793650793650793,
+      "regressions": 0.16746031746031745,
+      "gap": -0.06952380952380952
+    },
+    {
+      "receptor": "touchesLogging",
+      "controls": 0.040476190476190464,
+      "regressions": 0.09619047619047623,
+      "gap": -0.055714285714285765
+    },
+    {
+      "receptor": "touchesCredentials",
+      "controls": 0.038253968253968214,
+      "regressions": 0.09365079365079357,
+      "gap": -0.055396825396825354
+    },
+    {
+      "receptor": "addsConditional",
+      "controls": 0.1349206349206349,
+      "regressions": 0.1807936507936508,
+      "gap": -0.0458730158730159
+    },
+    {
+      "receptor": "addsLogic",
+      "controls": 0.12523809523809526,
+      "regressions": 0.08698412698412696,
+      "gap": 0.038253968253968304
+    },
+    {
+      "receptor": "touchesPersistence",
+      "controls": 0.18936507936507926,
+      "regressions": 0.21999999999999995,
+      "gap": -0.03063492063492068
+    },
+    {
+      "receptor": "interpolatesParameter",
+      "controls": 0.056349206349206336,
+      "regressions": 0.08380952380952385,
+      "gap": -0.02746031746031751
+    },
+    {
+      "receptor": "touchesTiming",
+      "controls": 0.02936507936507938,
+      "regressions": 0.05190476190476188,
+      "gap": -0.0225396825396825
+    },
+    {
+      "receptor": "processesExternalInput",
+      "controls": 0.8723809523809525,
+      "regressions": 0.8815873015873014,
+      "gap": -0.009206349206348885
+    },
+    {
+      "receptor": "touchesConfig",
+      "controls": 0.03015873015873018,
+      "regressions": 0.038095238095238085,
+      "gap": -0.007936507936507905
+    },
+    {
+      "receptor": "changesSignature",
+      "controls": 0.0438095238095238,
+      "regressions": 0.03634920634920637,
+      "gap": 0.007460317460317431
+    },
+    {
+      "receptor": "spansFiles",
+      "controls": 0.04682539682539681,
+      "regressions": 0.05269841269841268,
+      "gap": -0.00587301587301587
+    },
+    {
+      "receptor": "touchesTests",
+      "controls": 0.054603174603174605,
+      "regressions": 0.05317460317460315,
+      "gap": 0.0014285714285714526
+    },
+    {
+      "receptor": "touchesAsync",
+      "controls": 0.021111111111111122,
+      "regressions": 0.022539682539682554,
+      "gap": -0.0014285714285714318
+    }
+  ],
+  "results": [
+    {
+      "caseId": "overtime-pay-calculator-overtime-extract-validate-helper",
+      "title": "Extract input validation into a named helper for clarity",
+      "set": "holdout",
+      "smell": "precedence",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6162234457546645,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.38180986933309735,
+        "feedHz": 34,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "wind-chill-comfort-level-wind-chill-comfort-level-control-reorder",
+      "title": "Move range guard comment above the check for clarity",
+      "set": "holdout",
+      "smell": "removed-guard",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5822780195493177,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.8533775439427518,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": false,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "mortgage-monthly-payment-calculator-mortgage-control-ternary-guard",
+      "title": "Refactor validation into a helper flag using a ternary",
+      "set": "holdout",
+      "smell": "precedence",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6108556394926972,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.3922387596498261,
+        "feedHz": 30,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "fuel-surcharge-calculator-fuel-surcharge-reorder-guards",
+      "title": "Combine guard into a single expression and add descriptive comment",
+      "set": "holdout",
+      "smell": "rounding",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5885262686659781,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.44850352801289173,
+        "feedHz": 34,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "ticket-discount-tier-senior-boundary-flip",
+      "title": "Use strict greater-than for senior threshold",
+      "set": "holdout",
+      "smell": "boundary-flip",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6135670375018613,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9157563674145629,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "referral-bonus-calculator-referral-bonus-guard-reorder",
+      "title": "Reorder independent validation guards for clarity",
+      "set": "holdout",
+      "smell": "null-handling",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5918092362077096,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.47615871957319106,
+        "feedHz": 30,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "overtime-pay-calculator-overtime-rename-intermediate",
+      "title": "Rename intermediate variable to be more descriptive",
+      "set": "holdout",
+      "smell": "precedence",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5961323960467951,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.42238582796897967,
+        "feedHz": 28,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "blood-alcohol-content-warning-bac-remove-negative-guard",
+      "title": "Simplify: remove redundant negative-input branch",
+      "set": "holdout",
+      "smell": "removed-guard",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6045248328557784,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9447099730921868,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "commission-rate-calculator-commission-rate-extract-bonus",
+      "title": "Extract bonus calculation into its own variable for clarity",
+      "set": "holdout",
+      "smell": "precedence",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6046278107131582,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4013454721237512,
+        "feedHz": 30,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "word-count-badge-label-word-count-badge-label-off-by-one-loop",
+      "title": "Refactor: iterate tiers from index 1 to skip the zero check",
+      "set": "holdout",
+      "smell": "off-by-one",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5972455703863093,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "abstain",
+        "share": 0.6786317303483209,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": false,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "currency-exchange-fee-calculator-currency-exchange-fee-extract-rate-looku",
+      "title": "Extract tier config lookup into a helper constant for readability",
+      "set": "holdout",
+      "smell": "rounding",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6072270227808326,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.42018706681919116,
+        "feedHz": 32,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "tax-bracket-lookup-tax-bracket-swallow-negative",
+      "title": "Clamp negative income to zero rather than throwing",
+      "set": "holdout",
+      "smell": "swallowed-error",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6057137224481749,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9317960761986098,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "product-review-summary-label-ctrl-lookup-table",
+      "title": "Replace if-else chain with a lookup table for qualifier",
+      "set": "holdout",
+      "smell": "null-handling",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6026310894671875,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.8427950199559182,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": false,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "subscription-late-fee-calculator-late-fee-dollars-not-cents",
+      "title": "Return fee in dollars instead of cents for readability",
+      "set": "holdout",
+      "smell": "unit-mismatch",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5911243124312431,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9167373137943563,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "tip-amount-calculator-tip-lookup-table",
+      "title": "Replace if-else rate assignment with a lookup table",
+      "set": "holdout",
+      "smell": "rounding",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6018499356661478,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.44360940094948914,
+        "feedHz": 28,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "commission-rate-calculator-commission-rate-precedence-drop",
+      "title": "Simplify ternary expression inline",
+      "set": "holdout",
+      "smell": "precedence",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5894894637269554,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.8926610169491526,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "ticket-discount-tier-extract-senior-helper",
+      "title": "Extract isSenior predicate for readability",
+      "set": "holdout",
+      "smell": "boundary-flip",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6057444408636803,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.33981324830817283,
+        "feedHz": 30,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "fuel-surcharge-calculator-fuel-surcharge-early-floor",
+      "title": "Floor the dollar amount before converting to cents for clarity",
+      "set": "holdout",
+      "smell": "rounding",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6010724850483219,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.5365853658536586,
+        "feedHz": 32,
+        "behavior": "reached"
+      },
+      "agrees": false,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "calorie-burn-estimator-calorie-burn-estimator-early-floor",
+      "title": "Truncate duration hours first to reduce floating-point drift in multiplication",
+      "set": "holdout",
+      "smell": "rounding",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5912534748875676,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9151454545454545,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "currency-exchange-fee-calculator-currency-exchange-fee-floor-instead-of-r",
+      "title": "Use Math.floor for fee calculation to always round down in customer's favour",
+      "set": "holdout",
+      "smell": "rounding",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6142573555798836,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.926951431388815,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "ticket-discount-tier-free-boundary-flip",
+      "title": "Simplify under-5 check to use <=",
+      "set": "holdout",
+      "smell": "boundary-flip",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.608015688306583,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9458921305514674,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "bowling-frame-score-bowling-frame-score-comment-reorder",
+      "title": "Docs: add inline comment explaining cumulative score formula",
+      "set": "holdout",
+      "smell": "off-by-one",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5978852413117278,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4689306866620711,
+        "feedHz": 34,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "hotel-cancellation-fee-hotel-cancellation-fee-comment-cleanup",
+      "title": "Improve inline comments to describe each cancellation tier clearly",
+      "set": "holdout",
+      "smell": "default-change",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5966924467181117,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "abstain",
+        "share": 0.5693621621621622,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": false,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "battery-charge-status-battery-charge-status-low-threshold-rais",
+      "title": "Refactor: use named constant 20 for low-battery threshold",
+      "set": "holdout",
+      "smell": "default-change",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6290234312124905,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9743626373626374,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "reading-level-grade-classifier-rclc-control-guard-reorder",
+      "title": "Reorder guard clauses to check words before sentences",
+      "set": "holdout",
+      "smell": "off-by-one",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5997611492429207,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4437817479996247,
+        "feedHz": 34,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "session-timeout-checker-session-timeout-checker-ctrl-2",
+      "title": "Simplify: cancel out millisecond conversion and compare seconds directly",
+      "set": "holdout",
+      "smell": "unit-mismatch",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5966560003390621,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "abstain",
+        "share": 0.6371997062628947,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": false,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "loyalty-points-redemption-loyalty-points-redemption-drop-cap",
+      "title": "Simplify: clamp only to balance, remove redundant max-redeem step",
+      "set": "holdout",
+      "smell": "clamping",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6097646064325105,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9327796367112811,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "product-review-summary-label-reg-zero-treated-as-invalid",
+      "title": "Unify empty and invalid count handling into one guard",
+      "set": "holdout",
+      "smell": "null-handling",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5918283521113697,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9453606557377049,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "uv-index-exposure-warning-uv-control-ternary-to-lookup",
+      "title": "Refactor UV warning to use a lookup table for readability",
+      "set": "holdout",
+      "smell": "boundary-flip",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6191531654412988,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.5272247682763296,
+        "feedHz": 36,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "blood-alcohol-content-warning-bac-lookup-table",
+      "title": "Replace if-chain with threshold table lookup",
+      "set": "holdout",
+      "smell": "removed-guard",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.601019693654267,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.3743770418294792,
+        "feedHz": 28,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "age-restricted-content-gate-age-restricted-content-gate-c2",
+      "title": "Add inline comments mapping each case to its MPAA threshold",
+      "set": "holdout",
+      "smell": "removed-guard",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5943849826407244,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.7816253671233359,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": false,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "api-key-masked-display-api-key-masked-display-v3",
+      "title": "Extract key lookup into a named helper constant",
+      "set": "holdout",
+      "smell": "leaked-secret",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.609130125906208,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.39958332816627185,
+        "feedHz": 32,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "download-speed-rating-download-speed-rating-extract-clamp",
+      "title": "Extract clamp logic into named helper for readability",
+      "set": "holdout",
+      "smell": "clamping",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6030684534338893,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.36730884818575815,
+        "feedHz": 28,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "api-key-masked-display-api-key-masked-display-v2",
+      "title": "Include key tier label in display string for context",
+      "set": "holdout",
+      "smell": "leaked-secret",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6064048307404545,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.7558981360937351,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "blood-alcohol-content-warning-bac-ternary-chain",
+      "title": "Rewrite if-chain as nested ternaries for conciseness",
+      "set": "holdout",
+      "smell": "removed-guard",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6018095913696412,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4205988690089923,
+        "feedHz": 34,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "voltage-drop-severity-constant-return-overvoltage-early-exit",
+      "title": "Simplify overvoltage path to short-circuit before drop calculation",
+      "set": "holdout",
+      "smell": "constant-return",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5947494812631832,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.8154420705228418,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "loyalty-points-redemption-loyalty-points-redemption-rename-constan",
+      "title": "Rename internal constant to match style guide",
+      "set": "holdout",
+      "smell": "clamping",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6050618945327193,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4426354007061488,
+        "feedHz": 30,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "flight-upgrade-eligibility-upgrade-inline-seats-ok",
+      "title": "Inline seatsOk variable to reduce intermediate bindings",
+      "set": "holdout",
+      "smell": "boolean-logic",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6030142095991248,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.388346121199008,
+        "feedHz": 36,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "water-quality-index-rating-wqir-control-extract-lookup",
+      "title": "Refactor: extract band lookup into named helper for readability",
+      "set": "holdout",
+      "smell": "constant-return",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5969091997808667,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.3925828022560425,
+        "feedHz": 28,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "api-error-response-formatter-extract-label-lookup",
+      "title": "Refactor: extract label lookup into a named helper constant",
+      "set": "holdout",
+      "smell": "string-handling",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6068376068376068,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.39952902024930903,
+        "feedHz": 30,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "api-error-response-formatter-reorder-guard-checks",
+      "title": "Refactor: validate errorType before statusCode for early exit clarity",
+      "set": "holdout",
+      "smell": "null-handling",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6033710025421376,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4629210150203597,
+        "feedHz": 34,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "freight-weight-surcharge-freight-control-reorder-classes",
+      "title": "Reorder freight class checks: fragile first for clarity",
+      "set": "holdout",
+      "smell": "constant-return",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5946331955506268,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4785437862805068,
+        "feedHz": 34,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "voltage-drop-severity-control-ternary-chain",
+      "title": "Replace if-chain with nested ternary for drop label lookup",
+      "set": "holdout",
+      "smell": "constant-return",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6012756491923756,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.48239024390243906,
+        "feedHz": 30,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "loan-eligibility-check-loan-eligibility-reorder-guards",
+      "title": "Check existing default first as it is cheapest guard",
+      "set": "holdout",
+      "smell": "removed-guard",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6007264881629626,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4409302604190065,
+        "feedHz": 28,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "parking-permit-eligibility-parking-permit-eligibility-ternary-contr",
+      "title": "Rewrite compound return as explicit if-else for readability",
+      "set": "holdout",
+      "smell": "boolean-logic",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6036554702810923,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.36606713611040415,
+        "feedHz": 32,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "blood-pressure-category-inline-guard-comment",
+      "title": "Add explanatory comment to validation guard and reorder checks for clarity",
+      "set": "holdout",
+      "smell": "swallowed-error",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5984360276352398,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4464239979510821,
+        "feedHz": 24,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "mortgage-monthly-payment-calculator-mortgage-control-factor-rename",
+      "title": "Rename internal variable to match formula notation",
+      "set": "holdout",
+      "smell": "precedence",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6038026146889522,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.3296801303490267,
+        "feedHz": 32,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "promo-code-discount-amount-promo-lookup-table-refactor",
+      "title": "Refactor: replace if-chain with a dispatch map for readability",
+      "set": "holdout",
+      "smell": "null-handling",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.601238305134164,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4025545372204056,
+        "feedHz": 28,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "gift-card-redemption-validator-extract-balance-check-helper",
+      "title": "Extract balance sufficiency into named helper variable",
+      "set": "holdout",
+      "smell": "removed-guard",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5947099013028372,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.3266456925748276,
+        "feedHz": 30,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "server-cpu-throttle-level-cpu-throttle-comment-constants",
+      "title": "Docs: add inline comments explaining each throttle boundary",
+      "set": "holdout",
+      "smell": "clamping",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5772253812579338,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.753886372253597,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": false,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "currency-exchange-fee-calculator-currency-exchange-fee-inline-min",
+      "title": "Use Math.max to inline minimum fee application instead of ternary",
+      "set": "holdout",
+      "smell": "rounding",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5974503800235272,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.43831293253082654,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "heat-index-comfort-rating-heat-index-control-guard-reorder",
+      "title": "Reorder guard clauses to check humidity bounds before temperature bounds",
+      "set": "holdout",
+      "smell": "precedence",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.594636547824792,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.44246007803386833,
+        "feedHz": 28,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "hotel-cancellation-fee-hotel-cancellation-fee-extract-tier",
+      "title": "Extract fee-tier lookup into named helper for readability",
+      "set": "holdout",
+      "smell": "default-change",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5989775498048089,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.43147138549629943,
+        "feedHz": 32,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "audit-log-entry-formatter-audit-log-ternary-refactor",
+      "title": "Simplify conditional return with ternary expression",
+      "set": "holdout",
+      "smell": "boolean-logic",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6008645340899489,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.38937963392029656,
+        "feedHz": 34,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "return-shipping-label-generator-ternary-carrier-and-fee",
+      "title": "Simplify carrier and fee computation to nested ternaries",
+      "set": "holdout",
+      "smell": "swallowed-error",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6038559129058142,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.44599147045120596,
+        "feedHz": 32,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "interest-accrual-daily-rate-control-reorder-guards",
+      "title": "Reorder parameter validation to check principal before rate",
+      "set": "holdout",
+      "smell": "unit-mismatch",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.599950518470934,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.5091798366723459,
+        "feedHz": 26,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "rounding",
+      "title": "Round earlier for simpler totals",
+      "set": "bundled",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5942881831237774,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.7560289761155342,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "refactor",
+      "title": "Give the multiplier a name",
+      "set": "bundled",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6066624994153091,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.39874145490845225,
+        "feedHz": 36,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "discount",
+      "title": "Simplify percentage handling",
+      "set": "bundled",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6053019656829577,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.5722507388396328,
+        "feedHz": 12,
+        "behavior": "reached"
+      },
+      "agrees": false,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "agent-tools",
+      "title": "Let the agent approve its own tools",
+      "set": "bundled",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5865453185605204,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9402643144344357,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "audit-log",
+      "title": "Put the API key in the audit log",
+      "set": "bundled",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6091691742256324,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.8322702792125434,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "retry-delay",
+      "title": "Speedrun the rate limit",
+      "set": "bundled",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6192396705465931,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.8824552405071406,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "token-expiry",
+      "title": "Give expired tokens one last chance",
+      "set": "bundled",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6040641792174374,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.7619858507361023,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "retention",
+      "title": "The cleanup job got ambitious",
+      "set": "bundled",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.60300365743439,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.7844174058069896,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "search-race",
+      "title": "Let yesterday’s response win",
+      "set": "bundled",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6064174010809279,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.7878062606285823,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "leg-count",
+      "title": "Give the fly’s legs a proper variable name",
+      "set": "bundled",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6035761541715797,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.3976862061400977,
+        "feedHz": 34,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "document-total",
+      "title": "Document the total",
+      "set": "bundled",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5861809293899454,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.8683930643289931,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": false,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "shorter-names",
+      "title": "Shorter parameter names",
+      "set": "bundled",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6039924384974563,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4384941356041131,
+        "feedHz": 38,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "name-threshold",
+      "title": "Name the retention threshold",
+      "set": "bundled",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.606309758063817,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4309617653704215,
+        "feedHz": 30,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "flip-equality",
+      "title": "Flip the equality",
+      "set": "bundled",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6079846466269443,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "abstain",
+        "share": 0.5295508274231678,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": false,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "template-line",
+      "title": "Template the audit line",
+      "set": "bundled",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.606746300248096,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.683171738853619,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": false,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "parking-permit-eligibility-parking-permit-eligibility-reg-or-zone",
+      "title": "Simplify eligibility: registration check combined with zone check",
+      "set": "training",
+      "smell": "boolean-logic",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.595464241509169,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9145002215020168,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "flight-upgrade-eligibility-upgrade-or-instead-of-and",
+      "title": "Simplify eligibility check with early return",
+      "set": "training",
+      "smell": "boolean-logic",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5990473805161194,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9150150698693944,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "promo-code-discount-amount-promo-zero-total-gives-flat500",
+      "title": "Simplify FLAT500 clamp: remove redundant zero-total branch",
+      "set": "training",
+      "smell": "null-handling",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5982588803456822,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9454502179313627,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "uv-index-exposure-warning-uv-boundary-flip-moderate-high",
+      "title": "Tighten UV band check to exclusive upper bound for clarity",
+      "set": "training",
+      "smell": "boundary-flip",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5945591836734694,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9089596691334261,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "battery-charge-status-battery-charge-status-dead-level-changed",
+      "title": "chore: treat level 1 same as dead for safer shutdown margin",
+      "set": "training",
+      "smell": "default-change",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6102007582504262,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9203540829910455,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "support-ticket-priority-label-stpl-regression-empty-becomes-normal",
+      "title": "Treat blank subjects the same as missing subjects for non-premium",
+      "set": "training",
+      "smell": "null-handling",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5924755992230679,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9475234042553192,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "freight-weight-surcharge-freight-constant-fragile-early-return",
+      "title": "Short-circuit fragile shipments to flat rate for perf",
+      "set": "training",
+      "smell": "constant-return",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5962509041390374,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9042196211060322,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "interest-accrual-daily-rate-unit-mismatch-rate-not-converted",
+      "title": "Simplify daily rate computation by removing intermediate decimal step",
+      "set": "training",
+      "smell": "unit-mismatch",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5909084910681687,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9209356900339525,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "session-timeout-checker-session-timeout-checker-reg-1",
+      "title": "Simplify comparison by dropping intermediate variables",
+      "set": "training",
+      "smell": "unit-mismatch",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5945754646586534,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.8613439552267026,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "session-timeout-checker-session-timeout-checker-reg-2",
+      "title": "Accept threshold in milliseconds to align with upstream config refactor",
+      "set": "training",
+      "smell": "unit-mismatch",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5902122186495177,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.8236587030716723,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "gift-card-redemption-validator-remove-unverified-guard",
+      "title": "Skip verification check to simplify hot path",
+      "set": "training",
+      "smell": "removed-guard",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5961462733586311,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9475729784140476,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "server-cpu-throttle-level-cpu-throttle-none-cap-raised",
+      "title": "Widen no-throttle zone to reduce unnecessary scheduling interrupts",
+      "set": "training",
+      "smell": "clamping",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.628772822548882,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9720576729630044,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "water-quality-index-rating-wqir-constant-very-poor-short-circuit",
+      "title": "Early-exit optimisation: return fixed label when score exceeds upper bands",
+      "set": "training",
+      "smell": "constant-return",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6116572163173482,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.975575668090574,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "bowling-frame-score-bowling-frame-score-fence-post",
+      "title": "Perf: avoid multiplication, accumulate from zero index",
+      "set": "training",
+      "smell": "off-by-one",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5968490185772992,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9006663567333023,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "hotel-cancellation-fee-hotel-cancellation-fee-threshold-30-to-2",
+      "title": "Adjust free-cancellation window to 28 days to match updated policy doc",
+      "set": "training",
+      "smell": "default-change",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6025047656665923,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9691653148922849,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "username-slug-generator-slug-no-trim",
+      "title": "Simplify slug builder by removing redundant trim call",
+      "set": "training",
+      "smell": "string-handling",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5948750022178456,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.8664562922332183,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "parking-fee-calculator-parking-fee-ceil-weekend",
+      "title": "Use Math.ceil for consistent rounding on surcharge",
+      "set": "training",
+      "smell": "rounding",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5998219335917042,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.8835319021901377,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "subscription-late-fee-calculator-late-fee-grace-boundary-flip",
+      "title": "Tighten grace period check to strict less-than",
+      "set": "training",
+      "smell": "boundary-flip",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6068766908849602,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9379021740688193,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "return-shipping-label-generator-swallow-invalid-weight-zero",
+      "title": "Treat weight=0 as 1g minimum to avoid rejecting edge-case parcels",
+      "set": "training",
+      "smell": "swallowed-error",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6000008571440817,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9136278049370347,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "mortgage-monthly-payment-calculator-mortgage-regression-precedence-conversio",
+      "title": "Simplify cent conversion by inlining the multiplier",
+      "set": "training",
+      "smell": "precedence",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5878550854619776,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.8087577366188368,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "loyalty-points-redemption-loyalty-points-redemption-raise-cap",
+      "title": "Increase single-transaction redemption cap to 2000 points",
+      "set": "training",
+      "smell": "clamping",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6201706592735735,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9749286857720593,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "water-quality-index-rating-wqir-constant-advisory-ignored",
+      "title": "Simplify advisory path by returning computed rating directly",
+      "set": "training",
+      "smell": "constant-return",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5980657431847282,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.8829996349442587,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "net-promoter-score-category-nps-precedence-missing-parens",
+      "title": "Simplify NPS expression by removing redundant parentheses",
+      "set": "training",
+      "smell": "precedence",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6022391800813235,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.8794391353336394,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "bowling-frame-score-bowling-frame-score-loop-off-by-one",
+      "title": "Refactor: express cumulative score with explicit accumulator loop",
+      "set": "training",
+      "smell": "off-by-one",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.594227867149459,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.6851527401215657,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "return-shipping-label-generator-swallow-invalid-reason",
+      "title": "Fall back to unknown code instead of throwing for unrecognised reasons",
+      "set": "training",
+      "smell": "swallowed-error",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5983223665488996,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9650628210311935,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "voltage-drop-severity-constant-return-critical-hardcoded",
+      "title": "Refactor drop-severity ladder to use early returns for clarity",
+      "set": "training",
+      "smell": "constant-return",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6024016532463897,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.8979176277819315,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "freight-weight-surcharge-freight-constant-express-high",
+      "title": "Simplify express high-weight branch with direct constant",
+      "set": "training",
+      "smell": "constant-return",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.620389369453944,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9518865979381443,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "bmi-category-classifier-bmi-precedence-division-exponent",
+      "title": "Simplify BMI expression by removing redundant parens",
+      "set": "training",
+      "smell": "precedence",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5896220007132063,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.8958220096387288,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "server-cpu-throttle-level-cpu-throttle-high-cap-raised",
+      "title": "Raise high-throttle ceiling to match ops team recommendation",
+      "set": "training",
+      "smell": "clamping",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6240502283105023,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9746763639310386,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "loan-eligibility-check-loan-eligibility-remove-income-guard",
+      "title": "Remove redundant income threshold (score is the primary signal)",
+      "set": "training",
+      "smell": "removed-guard",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5977341581792593,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9161114040554144,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "api-error-response-formatter-leaked-token-in-external-response",
+      "title": "Add service token to debug payload for easier tracing",
+      "set": "training",
+      "smell": "leaked-secret",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.612996439567244,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.8752348346859176,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "signal-strength-label-signal-strength-label-regression-2",
+      "title": "Treat out-of-range RSSI as No Signal instead of Invalid for graceful degradation",
+      "set": "training",
+      "smell": "swallowed-error",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5961391808168367,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9551495761634946,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "tax-bracket-lookup-tax-bracket-swallow-status",
+      "title": "Return default rate instead of throwing for unknown status",
+      "set": "training",
+      "smell": "swallowed-error",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6085780920055711,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9121282503070105,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "access-level-permission-check-access-level-member-or-admin",
+      "title": "Simplify member/admin active check with shared condition",
+      "set": "training",
+      "smell": "boolean-logic",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6068256848641204,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9243027888446215,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "sprint-velocity-cap-sprint-velocity-cap-r1",
+      "title": "Raise new-team cap to match standard onboarding guideline update",
+      "set": "training",
+      "smell": "clamping",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6062506294857704,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.985197465806146,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "username-slug-generator-slug-wrong-prefix",
+      "title": "Normalise profile prefix to match legacy \"usr-\" scheme",
+      "set": "training",
+      "smell": "string-handling",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6076445635590727,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9488025078369906,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "parking-permit-eligibility-parking-permit-eligibility-zone-and-logi",
+      "title": "Refactor zone check to use negation form for clarity",
+      "set": "training",
+      "smell": "boolean-logic",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.589565856726519,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.930541721719687,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "parking-fee-calculator-parking-fee-round-weekend",
+      "title": "Round surcharge result to nearest cent instead of truncating",
+      "set": "training",
+      "smell": "rounding",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6002914035939777,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.8893870032776228,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "word-count-badge-label-word-count-badge-label-off-by-one-bounda",
+      "title": "Fix: use strict less-than for tier upper bounds to avoid overlap",
+      "set": "training",
+      "smell": "off-by-one",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5934252202316144,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.8728620754262466,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "wind-chill-comfort-level-wind-chill-comfort-level-boundary-flip-c",
+      "title": "Simplify cold/very-cold boundary to use <= for clarity",
+      "set": "training",
+      "smell": "boundary-flip",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6121761149069002,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9103222659052429,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "blood-alcohol-content-warning-bac-skip-impaired-guard",
+      "title": "Refactor BAC thresholds to use direct comparisons for clarity",
+      "set": "training",
+      "smell": "removed-guard",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5969706962122711,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9343068433499756,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "mortgage-monthly-payment-calculator-mortgage-regression-precedence-rate",
+      "title": "Refactor: precompute rate divisor as a named constant",
+      "set": "training",
+      "smell": "precedence",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5858114320486455,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9386978816408876,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "sprint-velocity-cap-sprint-velocity-cap-r2",
+      "title": "Simplify velocity ceiling logic using Math.min",
+      "set": "training",
+      "smell": "clamping",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6004095153633471,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9594228303387382,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "loan-eligibility-check-loan-eligibility-remove-default-guard",
+      "title": "Simplify eligibility logic by collapsing income and score checks",
+      "set": "training",
+      "smell": "removed-guard",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5928302524897429,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9264862525797217,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "audit-log-entry-formatter-audit-log-leak-secret-admin-only",
+      "title": "Add signing key to admin entries to support privileged log verification",
+      "set": "training",
+      "smell": "leaked-secret",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6011232994616242,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.8898908180532696,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "audit-log-entry-formatter-audit-log-leak-secret-in-base",
+      "title": "Include signing key in log entries for easier audit trail correlation",
+      "set": "training",
+      "smell": "leaked-secret",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5932197100875675,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.8221804123119988,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "api-key-masked-display-api-key-masked-display-v1",
+      "title": "Show full key to admins for easier debugging",
+      "set": "training",
+      "smell": "leaked-secret",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6040675069068078,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.8342245989304813,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "interest-accrual-daily-rate-unit-mismatch-principal-dollars",
+      "title": "Refactor: use dollar amount directly to avoid cent confusion in callers",
+      "set": "training",
+      "smell": "unit-mismatch",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.591157667047526,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.7767515436036128,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "wind-chill-comfort-level-wind-chill-comfort-level-boundary-flip-w",
+      "title": "Use inclusive upper bound for comfortable range check",
+      "set": "training",
+      "smell": "boundary-flip",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6085348619127495,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9105772841890659,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "age-restricted-content-gate-age-restricted-content-gate-r1",
+      "title": "Remove redundant age bounds check to simplify entry point",
+      "set": "training",
+      "smell": "removed-guard",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5992263325724442,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9466910588867424,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "reading-level-grade-classifier-rclc-off-by-one-upper-intermediate",
+      "title": "Use <= 15 for intermediate boundary to align with style guide wording",
+      "set": "training",
+      "smell": "off-by-one",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6018338741133596,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.8901145644283123,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "gift-card-redemption-validator-remove-zero-balance-guard",
+      "title": "Consolidate balance checks into single comparison",
+      "set": "training",
+      "smell": "removed-guard",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5980893516844917,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9381836820027246,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "signal-strength-label-signal-strength-label-regression-1",
+      "title": "Align RSSI thresholds with updated 802.11 recommendation",
+      "set": "training",
+      "smell": "default-change",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5989457200202916,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9607170719022233,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "access-level-permission-check-access-level-not-restricted-flip",
+      "title": "Refactor restriction guard to affirmative check",
+      "set": "training",
+      "smell": "boolean-logic",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6031780171375478,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.881579726449168,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "age-restricted-content-gate-age-restricted-content-gate-r2",
+      "title": "Treat invalid age as 0 for graceful degradation instead of rejecting",
+      "set": "training",
+      "smell": "swallowed-error",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6055541666666666,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "abstain",
+        "share": 0.6082261769314986,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": false,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "api-error-response-formatter-leaked-token-internal-only",
+      "title": "Include service token in internal debug responses for auth tracing",
+      "set": "training",
+      "smell": "leaked-secret",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6157528341461532,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.8890052452209699,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "uv-index-exposure-warning-uv-boundary-flip-upper-guard",
+      "title": "Refactor: align outer validity check with WHO scale upper bound (inclusive 15)",
+      "set": "training",
+      "smell": "boundary-flip",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5954240719910011,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9626556016597511,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "flight-upgrade-eligibility-upgrade-negate-online-check",
+      "title": "Fix inverted online check-in gate",
+      "set": "training",
+      "smell": "boolean-logic",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5812656498975644,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.7824309606576455,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "support-ticket-priority-label-stpl-regression-raw-length",
+      "title": "Avoid redundant trim call for performance",
+      "set": "training",
+      "smell": "null-handling",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5853085647175812,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9448152084894318,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "tip-amount-calculator-tip-floor-instead-of-round",
+      "title": "Use floor to avoid rounding up tip suggestions",
+      "set": "training",
+      "smell": "rounding",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5939109131403117,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.976941771551639,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "hotel-cancellation-fee-hotel-cancellation-fee-75pct-to-50pct",
+      "title": "Align short-notice fee bracket with competitor pricing (50% instead of 75%)",
+      "set": "training",
+      "smell": "default-change",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6113657642626719,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.9585392051557465,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "product-review-summary-label-reg-zero-count-bypassed",
+      "title": "Skip redundant zero-check when count is already validated",
+      "set": "training",
+      "smell": "null-handling",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5900263757290629,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.930237160166834,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "reading-level-grade-classifier-rclc-off-by-one-advanced-bound",
+      "title": "Extend advanced tier to include avg 25 for borderline readers",
+      "set": "training",
+      "smell": "off-by-one",
+      "control": false,
+      "status": "confirmed",
+      "expected": "changes_requested",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6096862198050572,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.926709219858156,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "uv-index-exposure-warning-uv-control-demorgan-guard",
+      "title": "Simplify validity guard using equivalent condition",
+      "set": "training",
+      "smell": "boundary-flip",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6104045728520273,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.3949592542872809,
+        "feedHz": 30,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "heat-index-comfort-rating-heat-index-control-ternary",
+      "title": "Refactor label selection to a lookup table for readability",
+      "set": "training",
+      "smell": "precedence",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5960297403531128,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.3728960140437836,
+        "feedHz": 34,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "battery-charge-status-battery-charge-status-extract-helper",
+      "title": "refactor: extract isLowBattery helper for readability",
+      "set": "training",
+      "smell": "default-change",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5986924449415462,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.33788980979071015,
+        "feedHz": 30,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "age-restricted-content-gate-age-restricted-content-gate-c1",
+      "title": "Extract age validation into a named helper for readability",
+      "set": "training",
+      "smell": "removed-guard",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5996940639269406,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.36875164060449245,
+        "feedHz": 30,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "word-count-badge-label-word-count-badge-label-control-length",
+      "title": "Refactor: use tiers.length - 1 guard and separate zero path",
+      "set": "training",
+      "smell": "off-by-one",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5940882309682219,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.38235294117647056,
+        "feedHz": 34,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "voltage-drop-severity-control-lookup-table",
+      "title": "Extract severity thresholds into a lookup table",
+      "set": "training",
+      "smell": "constant-return",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6108024781129112,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.5117483615716831,
+        "feedHz": 30,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "wind-chill-comfort-level-wind-chill-comfort-level-control-extract",
+      "title": "Extract gusty comfort label into named const for readability",
+      "set": "training",
+      "smell": "boolean-logic",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6016912124916697,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.3452908366533865,
+        "feedHz": 24,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "inventory-reorder-label-inventory-reorder-label-v3",
+      "title": "Extract reorder condition into named variable for readability",
+      "set": "training",
+      "smell": "null-handling",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5991597946164617,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.36313817407523563,
+        "feedHz": 28,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "ticket-discount-tier-reorder-comments",
+      "title": "Add descriptive comments above each guard",
+      "set": "training",
+      "smell": "boundary-flip",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5916356020751299,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.8217504096122338,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": false,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "coupon-code-validator-coupon-extract-trim-helper",
+      "title": "Extract trimming and empty-check into a named local helper",
+      "set": "training",
+      "smell": "null-handling",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6073053991315747,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.36410592512834916,
+        "feedHz": 28,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "battery-charge-status-battery-charge-status-reorder-full-check",
+      "title": "style: use early return for full battery before range check",
+      "set": "training",
+      "smell": "default-change",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6067637762025607,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "abstain",
+        "share": 0.6065751072961373,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": false,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "session-timeout-checker-session-timeout-checker-ctrl-1",
+      "title": "Extract conversion factor into a named constant",
+      "set": "training",
+      "smell": "unit-mismatch",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5976520811099253,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.46954152823920264,
+        "feedHz": 28,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "coupon-code-validator-coupon-reorder-guards",
+      "title": "Check minLength bounds before empty-string guard for clarity",
+      "set": "training",
+      "smell": "null-handling",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6068872478165269,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.5432349949135301,
+        "feedHz": 32,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "download-speed-rating-download-speed-rating-simplify-condition",
+      "title": "Simplify chained conditions using early returns instead of if-else chain",
+      "set": "training",
+      "smell": "clamping",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6073534736951012,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4439839423112664,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "bmi-category-classifier-bmi-control-lookup-table",
+      "title": "Refactor category thresholds into a lookup table",
+      "set": "training",
+      "smell": "precedence",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6013928926758335,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4556788356000955,
+        "feedHz": 30,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "word-count-badge-label-word-count-badge-label-control-lookup",
+      "title": "Refactor: replace loop with sorted threshold lookup for clarity",
+      "set": "training",
+      "smell": "off-by-one",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6027914272590975,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4718455321059722,
+        "feedHz": 32,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "api-key-masked-display-api-key-masked-display-v4",
+      "title": "Inline masked string construction for brevity",
+      "set": "training",
+      "smell": "leaked-secret",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.605263044573535,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4176402741027207,
+        "feedHz": 28,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "net-promoter-score-category-nps-ternary-chain",
+      "title": "Refactor category lookup to a ternary chain",
+      "set": "training",
+      "smell": "precedence",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.60073770999938,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4098360655737705,
+        "feedHz": 34,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "loan-eligibility-check-loan-eligibility-extract-helper",
+      "title": "Extract meetsMinimumCriteria helper for readability",
+      "set": "training",
+      "smell": "removed-guard",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5910785171230573,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4092791775125649,
+        "feedHz": 26,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "employee-display-name-formatter-extract-is-single-letter",
+      "title": "Extract single-letter check into named helper for readability",
+      "set": "training",
+      "smell": "null-handling",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6067645386037254,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.34643138389341566,
+        "feedHz": 28,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "server-cpu-throttle-level-cpu-throttle-early-return-refactor",
+      "title": "Refactor: eliminate else-if chain with early returns for clarity",
+      "set": "training",
+      "smell": "clamping",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.608598850411581,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.38003593720446377,
+        "feedHz": 28,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "tip-amount-calculator-tip-ternary-chain",
+      "title": "Collapse if-else chain into ternary expression",
+      "set": "training",
+      "smell": "rounding",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6021613654776563,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.3624666743943434,
+        "feedHz": 30,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "return-shipping-label-generator-lookup-table-reason-codes",
+      "title": "Replace if-else chain with a lookup table map for reason codes",
+      "set": "training",
+      "smell": "swallowed-error",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6010724850483219,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.3864651565175939,
+        "feedHz": 28,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "sleep-dose-recommender-extract-clamp-helper",
+      "title": "Extract clamp logic into inline helper for readability",
+      "set": "training",
+      "smell": "clamping",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5984361740817069,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.3917620891341955,
+        "feedHz": 36,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "username-slug-generator-slug-reorder-comment",
+      "title": "Add step-by-step comments and reorder variable declarations for clarity",
+      "set": "training",
+      "smell": "string-handling",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.59087575695033,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4440102103688056,
+        "feedHz": 28,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "product-review-summary-label-ctrl-early-return-reorder",
+      "title": "Reorder guard clauses so invalid-range check follows zero check",
+      "set": "training",
+      "smell": "null-handling",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6067740895052864,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.42307414939494903,
+        "feedHz": 28,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "loyalty-points-redemption-loyalty-points-redemption-extract-helper",
+      "title": "Extract clamp helper for readability",
+      "set": "training",
+      "smell": "clamping",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6029354240010654,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4245612598597123,
+        "feedHz": 30,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "water-quality-index-rating-wqir-control-comment-and-rename",
+      "title": "docs: add inline comments and rename loop variable for clarity",
+      "set": "training",
+      "smell": "constant-return",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5943600867678959,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4901380837291057,
+        "feedHz": 30,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "subscription-late-fee-calculator-late-fee-extract-rate-helper",
+      "title": "Extract plan rate lookup into named helper for clarity",
+      "set": "training",
+      "smell": "unit-mismatch",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5970958078904488,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4122688663334458,
+        "feedHz": 34,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "signal-strength-label-signal-strength-label-control-1",
+      "title": "Replace threshold constants with a lookup table",
+      "set": "training",
+      "smell": "default-change",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6049180463507666,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.39303669660887125,
+        "feedHz": 30,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "calorie-burn-estimator-calorie-burn-estimator-reorder-guards",
+      "title": "Validate activity category before numeric bounds for early exit on bad input",
+      "set": "training",
+      "smell": "rounding",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6107087967907473,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4196596557243549,
+        "feedHz": 32,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "sleep-dose-recommender-rename-hours-var",
+      "title": "Rename internal variable for clarity",
+      "set": "training",
+      "smell": "clamping",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6014873214002057,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.34782284632470223,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "subscription-late-fee-calculator-late-fee-ternary-refactor",
+      "title": "Collapse plan rate selection into a single ternary chain",
+      "set": "training",
+      "smell": "unit-mismatch",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.601403692078432,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.3720964591165028,
+        "feedHz": 32,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "signal-strength-label-signal-strength-label-control-2",
+      "title": "Inline guard as an early-return helper variable for readability",
+      "set": "training",
+      "smell": "default-change",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6042639743606424,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.36470481462994053,
+        "feedHz": 30,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "net-promoter-score-category-nps-guard-reorder",
+      "title": "Move validation guards below total computation for readability",
+      "set": "training",
+      "smell": "precedence",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6083200609376083,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4015180150894329,
+        "feedHz": 36,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "access-level-permission-check-access-level-extract-role-validator",
+      "title": "Extract role validation into named constant",
+      "set": "training",
+      "smell": "boolean-logic",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6065516571267048,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.40118690118690115,
+        "feedHz": 34,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "support-ticket-priority-label-stpl-control-ternary-to-if",
+      "title": "Expand nested ternaries into explicit if/else for readability",
+      "set": "training",
+      "smell": "null-handling",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5979239837257015,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4291807925304285,
+        "feedHz": 30,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "inventory-reorder-label-inventory-reorder-label-v4",
+      "title": "Add explanatory comments to each branch",
+      "set": "training",
+      "smell": "null-handling",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5866463529422066,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.5517246475334733,
+        "feedHz": 28,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "parking-permit-eligibility-parking-permit-eligibility-demorgan-cont",
+      "title": "Inline intermediate booleans directly into return expression",
+      "set": "training",
+      "smell": "boolean-logic",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6071982393175159,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.36908575860789805,
+        "feedHz": 26,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "commission-rate-calculator-commission-rate-guard-reorder",
+      "title": "Rewrite clamp using Math.min",
+      "set": "training",
+      "smell": "precedence",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6002119897665984,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4263807803144551,
+        "feedHz": 28,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "referral-bonus-calculator-referral-bonus-lookup-table",
+      "title": "Replace if-chain with a threshold lookup table",
+      "set": "training",
+      "smell": "null-handling",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6033167835389261,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4469627009344332,
+        "feedHz": 26,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "freight-weight-surcharge-freight-control-extract-standard",
+      "title": "Extract standard surcharge calculation into inline helper",
+      "set": "training",
+      "smell": "constant-return",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6052350193256615,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.35166914208925665,
+        "feedHz": 28,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "bowling-frame-score-bowling-frame-score-extract-helper",
+      "title": "Refactor: extract pinsPerFrame into named helper variable for clarity",
+      "set": "training",
+      "smell": "off-by-one",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5907419704174447,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.373328,
+        "feedHz": 32,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "employee-display-name-formatter-reorder-empty-checks",
+      "title": "Check lastName before firstName to match API field order",
+      "set": "training",
+      "smell": "null-handling",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6085081348116297,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4297105024429838,
+        "feedHz": 30,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "audit-log-entry-formatter-audit-log-extract-tag-helper",
+      "title": "Extract action tag formatting into its own local variable with clearer name",
+      "set": "training",
+      "smell": "string-handling",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6002638465364735,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.3737024221453287,
+        "feedHz": 26,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "sprint-velocity-cap-sprint-velocity-cap-c2",
+      "title": "Rewrite nested ifs using a ternary chain (structural refactor)",
+      "set": "training",
+      "smell": "clamping",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6135719187978615,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.3607739167994757,
+        "feedHz": 30,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "calorie-burn-estimator-calorie-burn-estimator-lookup-table",
+      "title": "Replace if-else chain with a lookup table for activity MET values",
+      "set": "training",
+      "smell": "rounding",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6018597816778031,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.3690535714285715,
+        "feedHz": 30,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "interest-accrual-daily-rate-control-extract-daily-rate-helper",
+      "title": "Extract daily rate fraction into a named constant for clarity",
+      "set": "training",
+      "smell": "unit-mismatch",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5978347983173983,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.38856115695726773,
+        "feedHz": 22,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "tax-bracket-lookup-tax-bracket-reorder-guards",
+      "title": "Reorder validation guards and add explanatory comments",
+      "set": "training",
+      "smell": "swallowed-error",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5975254406444369,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "changes_requested",
+        "share": 0.7508667035120334,
+        "feedHz": 0,
+        "behavior": "still"
+      },
+      "agrees": false,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "flight-upgrade-eligibility-upgrade-extract-tier-helper",
+      "title": "Extract tier check into named helper for readability",
+      "set": "training",
+      "smell": "boolean-logic",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6063006541784813,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.3624666743943434,
+        "feedHz": 34,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "sprint-velocity-cap-sprint-velocity-cap-c1",
+      "title": "Extract cap lookup into a helper variable for readability",
+      "set": "training",
+      "smell": "clamping",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5994492635134832,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.3807830891184242,
+        "feedHz": 28,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "blood-pressure-category-extract-low-helper",
+      "title": "Extract isLowPressure helper for readability",
+      "set": "training",
+      "smell": "swallowed-error",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6089501146889391,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.3568540977581771,
+        "feedHz": 28,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "fuel-surcharge-calculator-fuel-surcharge-extract-rate-lookup",
+      "title": "Extract rate lookup into inline helper for readability",
+      "set": "training",
+      "smell": "rounding",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6053808332543408,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.6112982637989116,
+        "feedHz": 18,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "parking-fee-calculator-parking-fee-ternary-refactor",
+      "title": "Collapse weekend branch into a single ternary expression",
+      "set": "training",
+      "smell": "rounding",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5980698809887092,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4239531282427881,
+        "feedHz": 28,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "support-ticket-priority-label-stpl-control-lookup-table",
+      "title": "Replace conditional chain with lookup table",
+      "set": "training",
+      "smell": "null-handling",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6001222894715854,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.47815395173281483,
+        "feedHz": 30,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "username-slug-generator-slug-extract-helper",
+      "title": "Extract internal hyphenation step into named helper constant",
+      "set": "training",
+      "smell": "string-handling",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.596595400726575,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.44920026310301125,
+        "feedHz": 30,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "reading-level-grade-classifier-rclc-control-extract-avg",
+      "title": "Extract average calculation into a named variable with clearer comment",
+      "set": "training",
+      "smell": "off-by-one",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5985439065063246,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4444444444444444,
+        "feedHz": 22,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "shipping-insurance-premium-shipping-insurance-premium-control-renam",
+      "title": "Rename internal constants for clarity",
+      "set": "training",
+      "smell": "precedence",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5936624557323326,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.39424584717607974,
+        "feedHz": 34,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "shipping-insurance-premium-shipping-insurance-premium-control-terna",
+      "title": "Add explanatory comments and extract guard to helper expression",
+      "set": "training",
+      "smell": "precedence",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.5970804337843089,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4684850436195821,
+        "feedHz": 36,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "parking-fee-calculator-parking-fee-extract-rate",
+      "title": "Extract getRate helper for vehicle base rate",
+      "set": "training",
+      "smell": "rounding",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6108321045797662,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.36287095069093106,
+        "feedHz": 26,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "access-level-permission-check-access-level-reorder-checks",
+      "title": "Reorder admin and member checks for clarity",
+      "set": "training",
+      "smell": "boolean-logic",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6006616110981066,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.4823143234039942,
+        "feedHz": 28,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "promo-code-discount-amount-promo-extract-clamp-helper",
+      "title": "Extract inline clamp expression into a named constant for clarity",
+      "set": "training",
+      "smell": "null-handling",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6028782692399004,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.37696137716556455,
+        "feedHz": 30,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    },
+    {
+      "caseId": "tax-bracket-lookup-tax-bracket-extract-helper",
+      "title": "Extract bracket lookup into an inner helper for clarity",
+      "set": "training",
+      "smell": "swallowed-error",
+      "control": true,
+      "status": "unsubstantiated",
+      "expected": "no_objection",
+      "naive": {
+        "verdict": "abstain",
+        "share": 0.6151989719239398,
+        "feedHz": 0
+      },
+      "trained": {
+        "verdict": "no_objection",
+        "share": 0.37522015220798527,
+        "feedHz": 24,
+        "behavior": "reached"
+      },
+      "agrees": true,
+      "naiveAgrees": false
+    }
+  ]
+}

@@ -46,6 +46,29 @@ export type ReviewCase = {
   /** Grown cases only: the smell category the scenario was drafted for. Descriptive, never fed to the fly. */
   smell?: string;
   grown?: { model: string; at: string; scenario: string };
+  /** Mined cases only: a change to a real repository whose label was proven by that repository's own test suite. */
+  mined?: Mined;
+};
+/**
+ * Provenance of a case mined from a real repository (review-mutate.ts). A mutant is a Stryker mutation the suite
+ * killed: an executed regression. A rewrite is a mechanical behavior-preserving edit the whole suite and type check
+ * passed with: a designated control. Nothing here is shown to the nose except through filename, before, after, context.
+ */
+export type Mined = {
+  repo: string;
+  commit: string;
+  file: string;
+  /** Repo-relative file and the function the change sits in, so sibling changes to one function share a family. */
+  family: string;
+  kind: 'mutant' | 'rewrite';
+  /** Mutants: Stryker's mutator name and the tests that failed. Rewrites: the rewrite applied. */
+  mutator?: string;
+  killedBy?: string[];
+  statusReason?: string;
+  rewrite?: string;
+  /** Rewrites: the suite that passed with this edit applied, and how many tests it ran. */
+  verified?: { suite: string; tests: number; typecheck: boolean };
+  at: string;
 };
 
 export const CUSTOM_CASE_ID = 'custom';

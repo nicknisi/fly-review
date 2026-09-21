@@ -6,6 +6,7 @@ import type { Descriptors, Lesson, ReviewBrain } from './review-brain.ts';
 import { REVIEW_CASES, changedText } from './review-cases.ts';
 import type { ReviewCase } from './review-cases.ts';
 import { loadGrownCases } from './review-grown.ts';
+import { familyOf, loadMinedCases, minedStatus } from './review-mined.ts';
 import { encodeWithJev } from './review-jev.ts';
 import { installMemory, lessonFor, summarizeTeaching } from './review-memory.ts';
 import type { LessonEntry } from './review-memory.ts';
@@ -13,13 +14,17 @@ import { odorize } from './review-odor.ts';
 import { labelByExecution } from './review-verify.ts';
 
 /**
- * Train a fresh fly on the grown corpus and test it on changes it never smelled.
+ * Train a fresh fly on the executed corpora and test it on changes it never smelled.
  *
  * Every grown case is labeled by executing it (review-verify.ts): a reproduced regression punishes, a control the sweep
- * cannot fault rewards, anything else teaches nothing. Descriptions come from Jev once per case and are cached. A seeded
- * fifth of the corpus is held out, and the fifteen bundled examples are never taught, so both are honest tests.
+ * cannot fault rewards, anything else teaches nothing. Every mined case (review-mutate.ts) carries the label a real
+ * repository's own suite proved: a killed mutant punishes, a verified rewrite rewards. Descriptions come from Jev once
+ * per case and are cached. A seeded fifth of the corpus is held out by family (a grown scenario, or one function of one
+ * repository), so sibling variants of one change never straddle the split, and the fifteen bundled examples are never
+ * taught, so both are honest tests.
  *
  *   npm run train                 teach, test, write .runs/trained-memory.json and .runs/training.json
+ *   CORPUS=grown,mined            which corpora to teach from (default both; the other is still tested)
  *   INSTALL=1 npm run train       also install the trained memory as the live fly (replaces .runs/memory.json)
  *   RATE=0.3 PASSES=1 HOLDOUT=0.2 SEED=7   (0.6 saturates a hundred lessons; 0.15 under-trains; see .runs/training.rate*.json)
  *   SHUFFLE=dan-mbon:1 npm run train        the same lessons on a connectome with one edge class rewired (degree-preserving):
@@ -48,9 +53,15 @@ try {
 } catch {
   /* first run */
 }
-const grown = await loadGrownCases();
-if (grown.length === 0) throw new Error('No grown cases. Run npm run grow-cases first.');
-const everything = [...grown, ...REVIEW_CASES];
+const corpora = (process.env.CORPUS ?? 'grown,mined').split(',').map(c => c.trim());
+const grownAll = await loadGrownCases();
+const minedAll = await loadMinedCases();
+if (grownAll.length + minedAll.length === 0)
+  throw new Error('No corpus. Run npm run grow-cases or npm run mutate:repo first.');
+/** The teachable pool; corpora left out of CORPUS are still described and tested, as a third held-out set. */
+const grown = [...(corpora.includes('grown') ? grownAll : []), ...(corpora.includes('mined') ? minedAll : [])];
+const excluded = [...(corpora.includes('grown') ? [] : grownAll), ...(corpora.includes('mined') ? [] : minedAll)];
+const everything = [...grownAll, ...minedAll, ...REVIEW_CASES];
 
 // Describe with Jev, a few at a time, once.
 const missing = everything.filter(c => !cached[c.id]);
@@ -68,14 +79,14 @@ for (let i = 0; i < missing.length; i += 4) {
 }
 const odorOf = (review: ReviewCase) => odorize(cached[review.id].features, changedText(review));
 
-// Ground truth by execution, not by us.
+// Ground truth by execution, not by us: our harness for grown and bundled cases, the repository's suite for mined ones.
 const labels = new Map<string, { status: string; lesson: Lesson; reason: string }>();
 for (const review of everything) {
-  const { status } = await labelByExecution(review);
+  const status = review.mined ? minedStatus(review) : (await labelByExecution(review)).status;
   labels.set(review.id, { status, ...lessonFor(status, Boolean(review.control)) });
 }
 
-// Seeded split: the held-out grown cases and all bundled examples are never taught.
+// Seeded split by family: the held-out cases and all bundled examples are never taught.
 let x = seed >>> 0 || 1;
 const random = () => {
   x ^= x << 13;
@@ -83,10 +94,21 @@ const random = () => {
   x ^= x << 5;
   return (x >>> 0) / 4294967296;
 };
-const shuffled = [...grown].sort(() => random() - 0.5);
-const holdoutCount = Math.round(grown.length * holdoutShare);
-const holdout = shuffled.slice(0, holdoutCount);
-const teachable = shuffled.slice(holdoutCount).filter(c => labels.get(c.id)!.lesson !== 'none');
+const familyNames = [...new Set(grown.map(familyOf))].sort();
+const shuffledFamilies = familyNames.map(f => [f, random()] as const).sort((a, b) => a[1] - b[1]);
+const heldFamilies = new Set<string>();
+let held = 0;
+for (const [family] of shuffledFamilies) {
+  if (held >= Math.round(grown.length * holdoutShare)) break;
+  heldFamilies.add(family);
+  held += grown.filter(c => familyOf(c) === family).length;
+}
+const shuffled = grown
+  .map(c => [c, random()] as const)
+  .sort((a, b) => a[1] - b[1])
+  .map(([c]) => c);
+const holdout = shuffled.filter(c => heldFamilies.has(familyOf(c)));
+const teachable = shuffled.filter(c => !heldFamilies.has(familyOf(c)) && labels.get(c.id)!.lesson !== 'none');
 // Equal numbers of punishments and rewards, so the fly's baseline is not pushed toward one valence by the corpus mix.
 // Whatever the majority valence has left over is tested, not taught.
 const balance = Math.min(
@@ -105,7 +127,7 @@ for (let i = 0; i < Math.max(punish.length, reward.length); i++) {
   if (reward[i]) order.push(reward[i]);
 }
 console.log(
-  `${grown.length} grown cases: teaching ${training.length} (${punish.length} punish, ${reward.length} reward), holding out ${holdout.length}; ${REVIEW_CASES.length} bundled examples never taught. rate ${rate}, passes ${passes}, seed ${seed}`,
+  `${grown.length} cases from ${corpora.join('+')} (${grownAll.length} grown, ${minedAll.length} mined): teaching ${training.length} (${punish.length} punish, ${reward.length} reward) from ${new Set(training.map(familyOf)).size} families, holding out ${holdout.length} in ${heldFamilies.size} families${excluded.length ? `, ${excluded.length} cases of the other corpus tested only` : ''}; ${REVIEW_CASES.length} bundled examples never taught. rate ${rate}, passes ${passes}, seed ${seed}`,
 );
 
 const share = (b: ReviewBrain) => b.avoidHz / Math.max(1e-9, b.avoidHz + b.approachHz);
@@ -161,7 +183,8 @@ if (!process.env.EVAL_ONLY) {
 type Result = {
   caseId: string;
   title: string;
-  set: 'holdout' | 'bundled' | 'training';
+  set: 'holdout' | 'bundled' | 'training' | 'excluded';
+  corpus: 'grown' | 'mined' | 'bundled';
   smell?: string;
   control: boolean;
   status: string;
@@ -185,7 +208,8 @@ const evaluate = async (review: ReviewCase, set: Result['set']) => {
     caseId: review.id,
     title: review.title,
     set,
-    smell: review.smell,
+    corpus: review.mined ? 'mined' : review.grown ? 'grown' : 'bundled',
+    smell: review.smell ?? review.mined?.mutator ?? review.mined?.rewrite,
     control: Boolean(review.control),
     status: truth.status,
     expected,
@@ -197,10 +221,11 @@ const evaluate = async (review: ReviewCase, set: Result['set']) => {
 };
 for (const review of holdout) await evaluate(review, 'holdout');
 for (const review of REVIEW_CASES) await evaluate(review, 'bundled');
+for (const review of excluded) await evaluate(review, 'excluded');
 for (const review of training) await evaluate(review, 'training');
 
-const summarize = (set: Result['set']) => {
-  const judged = results.filter(r => r.set === set && r.agrees !== null);
+const summarize = (set: Result['set'], corpus?: Result['corpus']) => {
+  const judged = results.filter(r => r.set === set && r.agrees !== null && (!corpus || r.corpus === corpus));
   const regressions = judged.filter(r => !r.control),
     controls = judged.filter(r => r.control);
   return {
@@ -217,7 +242,14 @@ const summarize = (set: Result['set']) => {
     reachedRegressions: `${regressions.filter(r => r.trained.behavior === 'reached').length}/${regressions.length}`,
   };
 };
-const summary = { holdout: summarize('holdout'), bundled: summarize('bundled'), training: summarize('training') };
+const summary = {
+  holdout: summarize('holdout'),
+  holdoutGrown: summarize('holdout', 'grown'),
+  holdoutMined: summarize('holdout', 'mined'),
+  bundled: summarize('bundled'),
+  excluded: summarize('excluded'),
+  training: summarize('training'),
+};
 
 // What the nose reports differently for the two classes in the taught corpus. A receptor with a large gap that has nothing
 // to do with behavior (comments, names) is a confound the fly will learn as readily as a real cue, so it is measured here.
@@ -241,16 +273,20 @@ for (const g of receptorGaps.slice(0, 8))
   console.log(
     `  ${g.receptor.padEnd(22)} controls ${g.controls.toFixed(2)}  regressions ${g.regressions.toFixed(2)}  ${g.gap >= 0 ? '+' : ''}${g.gap.toFixed(2)}`,
   );
-for (const set of ['holdout', 'bundled', 'training'] as const) {
+const line = (s: ReturnType<typeof summarize>) =>
+  `${s.agreeing}/${s.judged} agree with execution (naive ${s.naiveAgreeing}/${s.judged}); regressions caught ${s.regressionsCaught}, controls approved ${s.controlsApproved}, false alarms ${s.falseAlarms}, regressions approved ${s.missedAsApproved}, abstained ${s.abstained}; reached for controls ${s.reachedControls}, for regressions ${s.reachedRegressions}`;
+for (const set of ['holdout', 'bundled', 'excluded', 'training'] as const) {
+  if (!results.some(r => r.set === set)) continue;
   console.log(`\n${set}:`);
   for (const r of results.filter(r => r.set === set))
     console.log(
-      `  ${r.caseId.padEnd(52)} ${(r.control ? 'control' : r.status).padEnd(15)} naive ${r.naive.share.toFixed(2)} ${r.naive.verdict.padEnd(17)} trained ${r.trained.share.toFixed(2)} MN9 ${r.trained.feedHz.toFixed(0).padStart(3)} ${r.trained.verdict.padEnd(17)} ${r.agrees === null ? '' : r.agrees ? 'agrees' : 'DISAGREES'}`,
+      `  ${r.caseId.slice(0, 60).padEnd(60)} ${(r.control ? 'control' : r.status).padEnd(15)} naive ${r.naive.share.toFixed(2)} ${r.naive.verdict.padEnd(17)} trained ${r.trained.share.toFixed(2)} MN9 ${r.trained.feedHz.toFixed(0).padStart(3)} ${r.trained.verdict.padEnd(17)} ${r.agrees === null ? '' : r.agrees ? 'agrees' : 'DISAGREES'}`,
     );
-  const s = summary[set];
-  console.log(
-    `  => ${s.agreeing}/${s.judged} agree with execution (naive ${s.naiveAgreeing}/${s.judged}); regressions caught ${s.regressionsCaught}, controls approved ${s.controlsApproved}, false alarms ${s.falseAlarms}, regressions approved ${s.missedAsApproved}, abstained ${s.abstained}; reached for controls ${s.reachedControls}, for regressions ${s.reachedRegressions}`,
-  );
+  console.log(`  => ${line(summary[set])}`);
+  if (set === 'holdout' && minedAll.length && grownAll.length) {
+    console.log(`     grown: ${line(summary.holdoutGrown)}`);
+    console.log(`     mined: ${line(summary.holdoutMined)}`);
+  }
 }
 
 const trainedEdges = JSON.parse(await readFile(memoryPath, 'utf8')) as { edges: [number, number][] };
@@ -262,8 +298,15 @@ await atomicJSON(join(ROOT, `.runs/training${tag}.json`), {
   passes,
   seed,
   holdoutShare,
-  taught: { total: training.length, punish: punish.length, reward: reward.length },
+  corpora,
+  taught: {
+    total: training.length,
+    punish: punish.length,
+    reward: reward.length,
+    families: new Set(training.map(familyOf)).size,
+  },
   heldOut: holdout.length,
+  heldOutFamilies: heldFamilies.size,
   rememberedSynapses: trainedEdges.edges.length,
   summary,
   receptorGaps,
