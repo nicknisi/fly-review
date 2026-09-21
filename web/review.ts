@@ -630,7 +630,7 @@ function renderAttention(s: ReviewState) {
   box.hidden = false;
   text(
     'attention-lead',
-    `${a.units.length} ${a.granularity}s read in order, then read again with the familiarity synapses frozen${a.skipped ? ` (${a.skipped} smaller files not smelled)` : ''}. Novelty is what each ${a.granularity} still evoked on the second reading, against what it evoked on first exposure. ${stood.stands ? `The vote above is for the ${a.granularity} it looked at` : `The vote above is for the loudest ${a.granularity}, which did not stand out`}: ${looked.filename}${looked.hunk === null ? '' : `, hunk ${looked.hunk + 1}`}.`,
+    `${a.units.length} ${a.granularity}s read in order, then read again with the familiarity synapses frozen${a.skipped ? ` (${a.skipped} smaller files not smelled)` : ''}. Novelty is what each ${a.granularity} still evoked on the second reading, against what it evoked on first exposure. ${stood.stands ? `The vote above is for the ${a.granularity} it looked at: ${looked.filename}${looked.hunk === null ? '' : `, hunk ${looked.hunk + 1}`}.` : `No ${a.granularity} stood out, so the vote above counts every ${a.granularity}'s own vote; each one's is listed here.`}`,
   );
   el('attention-list').replaceChildren(
     ...[...a.units]
@@ -638,14 +638,17 @@ function renderAttention(s: ReviewState) {
       .map(unit => {
         const li = document.createElement('li');
         if (unit.index === a.looked) li.classList.add('looked');
-        const reached = (unit.reading.feedHz ?? 0) >= VERDICT_RULE.reachHz;
-        li.dataset.vote = reached
-          ? 'approach'
-          : unit.share >= VERDICT_RULE.objection
-            ? 'avoid'
-            : unit.share <= VERDICT_RULE.approval
-              ? 'approach'
-              : 'abstain';
+        const reached = unit.reached ?? (unit.reading.feedHz ?? 0) >= VERDICT_RULE.reachHz;
+        const vote =
+          unit.vote ??
+          (reached
+            ? 'no_objection'
+            : unit.share >= VERDICT_RULE.objection
+              ? 'changes_requested'
+              : unit.share <= VERDICT_RULE.approval
+                ? 'no_objection'
+                : 'abstain');
+        li.dataset.vote = vote === 'changes_requested' ? 'avoid' : vote === 'no_objection' ? 'approach' : 'abstain';
         const bar = document.createElement('span');
         bar.className = 'novelty-bar';
         bar.style.setProperty('--novelty', (unit.reading.noveltyHz / max).toFixed(3));
@@ -654,7 +657,7 @@ function renderAttention(s: ReviewState) {
         name.textContent = `${unit.filename}${unit.hunk === null ? '' : ` · hunk ${unit.hunk + 1}`}`;
         const nums = document.createElement('span');
         nums.className = 'unit-numbers';
-        nums.textContent = `novelty ${unit.reading.noveltyHz.toFixed(0)} of ${unit.reading.naiveNoveltyHz.toFixed(0)} Hz · share ${unit.share.toFixed(2)}${reached ? ` · reached, MN9 ${unit.reading.feedHz!.toFixed(0)} Hz` : ''}`;
+        nums.textContent = `novelty ${unit.reading.noveltyHz.toFixed(0)} of ${unit.reading.naiveNoveltyHz.toFixed(0)} Hz · share ${unit.share.toFixed(2)} · ${vote === 'changes_requested' ? 'changes requested' : vote === 'no_objection' ? (reached ? `reached, MN9 ${unit.reading.feedHz!.toFixed(0)} Hz` : 'no objection') : 'abstain'}`;
         li.append(bar, name, nums);
         li.addEventListener('click', () => {
           document
@@ -936,7 +939,7 @@ function updateStory() {
     text(
       'verdict-tag',
       s.attention
-        ? `${flyName(s.brain!.seed)} · where it looked · ${changedRange(s.review)}`
+        ? `${flyName(s.brain!.seed)} · ${s.attention.stands ? 'where it looked' : `every ${s.attention.granularity} counted`} · ${changedRange(s.review)}`
         : `${flyName(s.brain!.seed)} · ${changedRange(s.review)}`,
     );
     const reached = s.verdict.behavior === 'reached';
@@ -965,12 +968,22 @@ function updateStory() {
               ? 'it reached for it, the smell of a change that came with sugar'
               : 'no objection, its approach neurons lean toward it though it did not reach'
             : 'abstain, its memory leans neither way on this smell';
-      text('verdict-title', stood.stands ? `Looked at ${where}.` : 'Nothing stood out.');
+      // One hunk stood out: the vote is that hunk's. None did: the vote is the count over every hunk it read, so the
+      // stamp and this title say the same thing.
+      const t = s.attention.tally;
+      const unit = s.attention.granularity;
+      const tallyTitle =
+        v === 'changes_requested'
+          ? `Nothing stood out. Changes requested on ${t.changes_requested} of ${t.total} ${unit}s.`
+          : v === 'no_objection'
+            ? `Nothing stood out. No objection on ${t.no_objection} of ${t.total} ${unit}s.`
+            : `Nothing stood out. No majority across ${t.total} ${unit}s.`;
+      text('verdict-title', stood.stands ? `Looked at ${where}.` : tallyTitle);
       text(
         'reviewer-comment',
         stood.stands
-          ? `${s.attention.units.length} ${s.attention.granularity}s read twice; ${stood.quiet} went quiet, this one stayed loudest (${lookedAt.reading.noveltyHz.toFixed(0)} of ${lookedAt.reading.naiveNoveltyHz.toFixed(0)} Hz). Its vote on that ${s.attention.granularity}: ${vote}.`
-          : `${s.attention.units.length} ${s.attention.granularity}s read twice, and ${stood.why}. Novelty only finds the one thing unlike the rest when the rest are alike; this diff has no repeated bulk to fade. Loudest, barely: ${where}. Its vote on that ${s.attention.granularity}: ${vote}.`,
+          ? `${t.total} ${unit}s read twice; ${stood.quiet} went quiet, this one stayed loudest (${lookedAt.reading.noveltyHz.toFixed(0)} of ${lookedAt.reading.naiveNoveltyHz.toFixed(0)} Hz). Its vote on that ${unit}: ${vote}.`
+          : `${t.total} ${unit}s read twice, and ${stood.why}. Novelty only finds the one thing unlike the rest when the rest are alike; this diff has no repeated bulk to fade, so no single ${unit} is the one to vote on. Counting every ${unit}'s own vote instead: changes requested on ${t.changes_requested}, no objection on ${t.no_objection}, abstained on ${t.abstain}${t.reached ? `, reached for ${t.reached}` : ''}. Loudest, barely: ${where}.`,
       );
     } else {
       text('verdict-title', voteTitle);

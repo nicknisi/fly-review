@@ -11,7 +11,7 @@ import {
 } from './review-cases.ts';
 import type { ReviewCase } from './review-cases.ts';
 import { changedText } from './review-cases.ts';
-import type { Features, ReviewBrain } from './review-brain.ts';
+import type { Features, FlyVerdict, ReviewBrain } from './review-brain.ts';
 import {
   channelDiagnosis,
   MEMORY_PATH,
@@ -21,7 +21,7 @@ import {
   smellBrain,
   smellSequence,
 } from './review-brain.ts';
-import { reviewUnits, standsOut, unitState } from './review-hunks.ts';
+import { reviewUnits, standsOut, tallyVotes, unitState } from './review-hunks.ts';
 import type { ReviewUnit } from './review-hunks.ts';
 import {
   checkSnapshot,
@@ -704,6 +704,7 @@ export class ReviewShow {
     // (npm run memory:install may have replaced it), so the lessons shown match the factors the bridge is about to use.
     const plan = review.pullRequest && mode === 'jev' ? reviewUnits(review.pullRequest) : null;
     let unitFeatures: Features[] | null = null;
+    let tallyVerdict: FlyVerdict | null = null;
     if (plan) {
       if (reuse) {
         if (!input.unitFeatures || input.unitFeatures.length !== plan.units.length)
@@ -763,12 +764,20 @@ export class ReviewShow {
         memoryPath: this.state.memoryInput.path,
       });
       const sequence = this.state.brain.sequence!;
+      // Every hunk gets the same vote a single change would, from its own readout on the frozen pass.
+      const hunkVotes = sequence.hunks.map(h =>
+        reviewVerdict({ avoidHz: h.avoidHz, approachHz: h.approachHz, feedHz: h.feedHz ?? 0 }),
+      );
+      const { majority, ...tally } = tallyVotes(hunkVotes);
+      const stood = standsOut(sequence.hunks, sequence.looked);
       this.state.attention = {
         granularity: plan.granularity,
         skipped: plan.skipped,
         familiarity: sequence.familiarity,
         readings: sequence.readings,
         looked: sequence.looked,
+        stands: stood.stands,
+        tally,
         units: plan.units.map(({ patch: _p, changed: _c, ...unit }, i) => ({
           ...unit,
           reading: sequence.hunks[i],
@@ -776,9 +785,26 @@ export class ReviewShow {
             sequence.hunks[i].avoidHz + sequence.hunks[i].approachHz > 0
               ? sequence.hunks[i].avoidHz / (sequence.hunks[i].avoidHz + sequence.hunks[i].approachHz)
               : 0.5,
+          vote: hunkVotes[i].verdict,
+          reached: hunkVotes[i].behavior === 'reached',
           features: unitFeatures![i],
         })),
       };
+      // When one hunk stands out, the vote is that hunk's. When none does, voting on the loudest would be arbitrary,
+      // so the vote is the count across every hunk it read.
+      tallyVerdict = stood.stands
+        ? null
+        : {
+            verdict: majority,
+            score: tally.total
+              ? sequence.hunks.reduce(
+                  (sum, h) => sum + (h.avoidHz + h.approachHz > 0 ? h.avoidHz / (h.avoidHz + h.approachHz) : 0.5),
+                  0,
+                ) / tally.total
+              : 0.5,
+            behavior: tally.reached * 2 > tally.total ? 'reached' : 'still',
+            explanation: `No ${plan.granularity} stood out, so this is the count over all ${tally.total}: changes requested on ${tally.changes_requested}, no objection on ${tally.no_objection}, abstained on ${tally.abstain}${tally.reached ? `, reached for ${tally.reached}` : ''}. ${majority === 'changes_requested' ? 'A majority smelled like something it tasted bitter with.' : majority === 'no_objection' ? 'A majority smelled like something that came with sugar. That does not establish that the code is correct.' : 'No majority either way.'}`,
+          };
       // The vote, the signal rail, and the nearest lessons all describe the hunk the fly looked at.
       this.state.features = unitFeatures[sequence.looked];
       this.state.odor = odors[sequence.looked];
@@ -794,7 +820,7 @@ export class ReviewShow {
         memoryPath: this.state.memoryInput.path,
       });
     }
-    this.state.verdict = reviewVerdict(this.state.brain);
+    this.state.verdict = tallyVerdict ?? reviewVerdict(this.state.brain);
     this.state.nearest = this.nearestLessons(this.state.brain);
     this.state.history.push({
       runId: basename(runDir),
@@ -835,7 +861,7 @@ export class ReviewShow {
     this.state.explanation = looked
       ? stood!.stands
         ? `${stood!.why} (novelty ${looked.reading.noveltyHz.toFixed(0)} Hz against ${looked.reading.naiveNoveltyHz.toFixed(0)} Hz on first exposure). Its valence vote on that ${this.state.attention!.granularity}: ${this.state.verdict.explanation}`
-        : `Novelty finds the one thing unlike the rest only when the rest are alike, and here ${stood!.why}. The loudest was ${looked.filename}${looked.hunk === null ? '' : `, hunk ${looked.hunk + 1}`}, at ${looked.reading.noveltyHz.toFixed(0)} of ${looked.reading.naiveNoveltyHz.toFixed(0)} Hz. Its valence vote on that ${this.state.attention!.granularity}: ${this.state.verdict.explanation}`
+        : `Novelty finds the one thing unlike the rest only when the rest are alike, and here ${stood!.why}. The loudest was ${looked.filename}${looked.hunk === null ? '' : `, hunk ${looked.hunk + 1}`}, at ${looked.reading.noveltyHz.toFixed(0)} of ${looked.reading.naiveNoveltyHz.toFixed(0)} Hz. ${this.state.verdict.explanation}`
       : this.state.verdict.explanation;
     const { feedHz, groomHz, escapeHz } = this.state.brain;
     await this.record({

@@ -168,3 +168,34 @@ export function standsOut(
     return { stands: false, quiet, why: 'the loudest hunk is barely louder than the rest' };
   return { stands: true, quiet, why: `${quiet} of ${hunks.length} hunks went quiet and this one stayed loud` };
 }
+
+/**
+ * When no hunk stands out, the fly still voted on every hunk it read. Counting those votes is its opinion of the pull
+ * request: a majority of one verdict is the verdict, otherwise it abstains. Reached is counted alongside so the body's
+ * vote is visible too. No new threshold: majority means more than half.
+ */
+export function tallyVotes(
+  votes: { verdict: 'changes_requested' | 'no_objection' | 'abstain'; behavior: 'reached' | 'still' }[],
+): {
+  changes_requested: number;
+  no_objection: number;
+  abstain: number;
+  reached: number;
+  total: number;
+  majority: 'changes_requested' | 'no_objection' | 'abstain';
+} {
+  const tally = {
+    changes_requested: votes.filter(v => v.verdict === 'changes_requested').length,
+    no_objection: votes.filter(v => v.verdict === 'no_objection').length,
+    abstain: votes.filter(v => v.verdict === 'abstain').length,
+    reached: votes.filter(v => v.behavior === 'reached').length,
+    total: votes.length,
+  };
+  const majority =
+    tally.changes_requested * 2 > tally.total
+      ? 'changes_requested'
+      : tally.no_objection * 2 > tally.total
+        ? 'no_objection'
+        : 'abstain';
+  return { ...tally, majority };
+}

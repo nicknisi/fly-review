@@ -209,7 +209,11 @@ export function reviewComment(
 ): string {
   const v = review.verdict.verdict;
   const looked = review.attention?.units[review.attention.looked];
-  const where = looked ? `${looked.filename}${looked.hunk === null ? '' : `, hunk ${looked.hunk + 1}`}` : null;
+  // Where it looked is the headline only when that hunk stood out from the rest; otherwise the vote is a tally.
+  const stands = review.attention?.stands ?? true;
+  const tally = review.attention?.tally;
+  const where =
+    looked && stands ? `${looked.filename}${looked.hunk === null ? '' : `, hunk ${looked.hunk + 1}`}` : null;
   const reached = review.verdict.behavior === 'reached';
   const title =
     v === 'changes_requested'
@@ -232,17 +236,19 @@ export function reviewComment(
     .join(' · ');
   const properties = noticed || 'nothing above 50% on any of the thirty receptors';
   return [
-    `### 🪰 fly/review: **${where ? `Looked at \`${where}\`. ${title}` : title}**`,
+    `### 🪰 fly/review: **${where ? `Looked at \`${where}\`. ${title}` : tally ? `Nothing stood out. ${title}` : title}**`,
     `> ${quip}`,
     '',
     ...(looked && review.attention
       ? [
-          `The fly read ${review.attention.units.length} ${review.attention.granularity}s in order, then read them again with its familiarity synapses frozen. \`${where}\` still evoked ${looked.reading.noveltyHz.toFixed(0)} Hz of its first-exposure ${looked.reading.naiveNoveltyHz.toFixed(0)} Hz on the α'3 novelty MBONs, the most of any, so that is the ${review.attention.granularity} it looked at and voted on. Novelty means unlike the rest of this diff, not wrong.`,
+          where
+            ? `The fly read ${review.attention.units.length} ${review.attention.granularity}s in order, then read them again with its familiarity synapses frozen. \`${where}\` still evoked ${looked.reading.noveltyHz.toFixed(0)} Hz of its first-exposure ${looked.reading.naiveNoveltyHz.toFixed(0)} Hz on the α'3 novelty MBONs, the most of any, so that is the ${review.attention.granularity} it looked at and voted on. Novelty means unlike the rest of this diff, not wrong.`
+            : `The fly read ${review.attention.units.length} ${review.attention.granularity}s in order, then read them again with its familiarity synapses frozen, and no ${review.attention.granularity} stayed loud while the rest went quiet: each is new in its own way. So the vote counts every ${review.attention.granularity}'s own vote: changes requested on ${tally!.changes_requested}, no objection on ${tally!.no_objection}, abstained on ${tally!.abstain}${tally!.reached ? `, reached for ${tally!.reached}` : ''}.`,
         ]
       : []),
     `Reviewer: ${flyName(review.brain.seed)}, 176,422 simulated neurons from the male *Drosophila* CNS connectome, taught only by executed tests (${review.brain.rememberedSynapses.toLocaleString()} synapses carry memory).`,
     review.source === 'jev'
-      ? `${review.encoderModel ?? 'Jev'} described ${where ? 'that hunk' : 'this pull request'} (${properties}); the description and the changed tokens became an odor of ${Object.keys(review.brain.stimuli ?? {}).length} glomeruli.`
+      ? `${review.encoderModel ?? 'Jev'} described ${where ? 'that hunk' : tally ? `each ${review.attention!.granularity}; the loudest` : 'this pull request'} (${properties}); the description and the changed tokens became an odor of ${Object.keys(review.brain.stimuli ?? {}).length} glomeruli.`
       : `Operator-set descriptors: ${properties}. No model read this code.`,
     `Mushroom body over 250 ms: ${review.brain.activeKenyon} Kenyon cells active; avoidance MBONs ${review.brain.avoidHz.toFixed(0)} Hz against approach ${review.brain.approachHz.toFixed(0)} Hz, share ${review.verdict.score.toFixed(2)} (objection at 0.68, approval at 0.45). Proboscis motor neurons ${review.brain.feedHz.toFixed(0)} Hz: the body ${reached ? 'reached for the smell' : 'stayed still'}.`,
     '',

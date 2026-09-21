@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import type { PullRequest } from '../src/review-github.ts';
-import { HUNK_LIMITS, fileUnits, reviewUnits, splitHunks, unitState } from '../src/review-hunks.ts';
+import { HUNK_LIMITS, fileUnits, reviewUnits, splitHunks, unitState, tallyVotes } from '../src/review-hunks.ts';
 import { disclosurePayload } from '../src/review-show.ts';
 import { pullRequestCase } from '../src/review-github.ts';
 
@@ -62,4 +62,23 @@ test('past the hunk limit whole files are the units, largest first, and the disc
     requests: unknown[];
   };
   assert.equal(single.requests.length, 1);
+});
+
+test('when nothing stands out, the vote is a majority count over every hunk', () => {
+  const v = (verdict: 'changes_requested' | 'no_objection' | 'abstain', reached = false) => ({
+    verdict,
+    behavior: reached ? ('reached' as const) : ('still' as const),
+  });
+  const objected = tallyVotes([v('changes_requested'), v('changes_requested'), v('abstain'), v('no_objection', true)]);
+  assert.equal(objected.majority, 'abstain', 'two of four is not a majority');
+  assert.deepEqual(
+    { ...objected, majority: undefined },
+    { changes_requested: 2, no_objection: 1, abstain: 1, reached: 1, total: 4, majority: undefined },
+  );
+  assert.equal(
+    tallyVotes([v('changes_requested'), v('changes_requested'), v('changes_requested'), v('abstain')]).majority,
+    'changes_requested',
+  );
+  assert.equal(tallyVotes([v('no_objection', true), v('no_objection'), v('abstain')]).majority, 'no_objection');
+  assert.equal(tallyVotes([]).majority, 'abstain');
 });

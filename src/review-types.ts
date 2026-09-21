@@ -6,7 +6,18 @@ export type AttendedUnit = Omit<ReviewUnit, 'patch' | 'changed'> & {
   reading: HunkReading;
   /** Avoidance share of this hunk's valence readout. */
   share: number;
+  /** This hunk's own vote, from the same rule a single change gets. */
+  vote: FlyVerdict['verdict'];
+  reached: boolean;
   features: Features;
+};
+/** Every hunk's vote counted. When no hunk stands out, this is the fly's vote on the pull request. */
+export type HunkTally = {
+  changes_requested: number;
+  no_objection: number;
+  abstain: number;
+  reached: number;
+  total: number;
 };
 export type Attention = {
   granularity: 'hunk' | 'file';
@@ -15,6 +26,9 @@ export type Attention = {
   familiarity: number;
   readings: number;
   looked: number;
+  /** Whether the looked-at hunk stood out from the rest (standsOut); when it did not, the vote is the tally. */
+  stands: boolean;
+  tally: HunkTally;
   units: AttendedUnit[];
 };
 
