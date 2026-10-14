@@ -1,7 +1,12 @@
 import { BrainView } from './brain-view.js';
-import { FlyModel } from './fly-model.js';
+import { FlyModel, SABER_BPM } from './fly-model.js';
+import { doom } from './doom.js';
 import { GLOMERULI } from '../src/review-odor.js';
+import { PULL_REQUEST_CASE_ID, parsePatch } from '../src/review-cases.js';
+import type { ReviewCase } from '../src/review-cases.js';
+import { reviewUnits } from '../src/review-hunks.js';
 import type { BrainAnatomy, ReviewFrame } from '../src/review-brain.js';
+import type { ReviewState } from '../src/review-types.js';
 
 /**
  * The talk deck at /presentation. Every number comes from /deck.json (npm run deck, generated from the measured record);
@@ -34,6 +39,9 @@ type Numbers = {
   neurons: number;
   connections: number;
   kenyonCells: number;
+  rate: number;
+  passes: number;
+  plasticSynapses: number;
   glomeruli: number;
   lessons: number;
   heldOut: number;
@@ -64,6 +72,8 @@ type Slide = {
   minutes: string;
   className?: string;
   steps?: number;
+  /** The premise, before the fly is plugged in: no brain, no fly. */
+  bare?: boolean;
   build: (host: HTMLElement) => void;
   enter?: (step: number) => void;
   notes: string[];
@@ -93,7 +103,20 @@ const rest = { feed: 0, groom: 0, escape: 0, input: 0, approach: 0, avoid: 0, ar
 /** The deck's resting camera. The canvas itself is shifted right in CSS so the brain sits beside the text, not behind it. */
 const home = () => view.aim([0, 0, 0], 2.9);
 let override: Partial<typeof rest> | null = null;
-const drive = (d: typeof rest) => fly?.drive(override ? { ...d, ...override } : d);
+let lastDrive = rest;
+const drive = (d: typeof rest) => {
+  lastDrive = d;
+  fly?.drive(override ? { ...d, ...override } : d);
+};
+/** A startle laid over whatever the recording is driving: wings up, body braced, for a moment. */
+function flinch() {
+  override = { ...override, escape: 0.5, arousal: 1 };
+  drive(lastDrive);
+  setTimeout(() => {
+    override = null;
+    drive(lastDrive);
+  }, 170);
+}
 
 type Playback = { recording: Recording; started: number; binMs: number; loop: boolean; peak: number };
 let playing: Playback | null = null;
@@ -273,16 +296,14 @@ function diffBox(shown: Shown) {
   }
   return box;
 }
-function verdictCard(who: string, call: 'approve' | 'object' | 'unsure' | null, why = '') {
+type Call = 'approve' | 'object' | 'unsure';
+const SAYS: Record<Call, string> = { approve: 'Approve', object: 'Changes requested', unsure: 'Abstains' };
+/** The fly votes with its nose. */
+const SNIFFS: Record<Call, string> = { approve: 'Smells good to me', object: 'Something stinks', unsure: 'Can’t tell' };
+function verdictCard(who: string, call: Call | null, why = '', says = SAYS) {
   const card = make('div', `verdict ${call ?? ''}`);
   card.append(make('div', 'who', who));
-  card.append(
-    make(
-      'div',
-      'what',
-      call === 'approve' ? 'Approve' : call === 'object' ? 'Changes requested' : call === 'unsure' ? 'Abstains' : '…',
-    ),
-  );
+  card.append(make('div', 'what', call ? says[call] : '…'));
   if (why) card.append(make('div', 'why', why));
   return card;
 }
@@ -307,7 +328,8 @@ function roundSlide(i: number): Slide {
         ? verdictCard(
             'The fly',
             flyCall(r.pick),
-            `recorded held-out vote · share ${r.pick.fly.share.toFixed(2)}${r.pick.fly.behavior === 'reached' ? ' · reached for it' : ''}`,
+            `its exam answer · ${Math.round(r.pick.fly.share * 100)}% avoid${r.pick.fly.behavior === 'reached' ? ' · tongue out' : ''}`,
+            SNIFFS,
           )
         : verdictCard('The fly', null, 'waiting');
     const test = make('div', `verdict ${r.revealed >= 2 ? truth(r.pick) : ''}`);
@@ -374,29 +396,612 @@ function roundSlide(i: number): Slide {
     },
     notes: [
       'Step 1: read the change aloud in one sentence. Hands up: who approves? Who requests changes? Press A or R for the majority.',
-      'Step 2 (→): the fly’s vote. It is the recorded vote from the held-out test run; the fly is deterministic, so this is what it says every time.',
+      'Step 2 (→): the fly’s vote. It is its answer from the exam; the fly gives the same answer every time, so recording it is fair. Its card speaks nose: “Smells good to me” is approve, “Something stinks” is changes requested, “Can’t tell” is abstain.',
+      'Say the percentage like this: “72% of its output neurons’ firing came from the avoid side.” Over 68% is changes requested; under 45%, or tongue out, is approve; in between, “I don’t know.”',
       'Step 3 (→): the tests. Green border = right.',
     ],
   };
 }
 
+// The intro's bits. Each starts when its slide does and registers how to stop; the deck runs those on every move.
+let cleanups: (() => void)[] = [];
+const onLeave = (f: () => void) => cleanups.push(f);
+const later = (ms: number, f: () => void) => {
+  const id = setTimeout(f, ms);
+  onLeave(() => clearTimeout(id));
+};
+
+// Digital rain over a dark brain: the fly before it is jacked in.
+const rainCanvas = el<HTMLCanvasElement>('rain');
+let rainFrame = 0;
+function startRain() {
+  rainCanvas.classList.remove('gone');
+  if (rainFrame || reduce.matches) return;
+  const ctx = rainCanvas.getContext('2d')!;
+  const w = (rainCanvas.width = innerWidth),
+    h = (rainCanvas.height = innerHeight);
+  const size = Math.round(h / 40);
+  const glyphs = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎ0123456789{}()<>=;';
+  const glyph = () => glyphs[Math.floor(Math.random() * glyphs.length)];
+  const drops = Array.from({ length: Math.ceil(w / size) }, () => Math.random() * -40);
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, w, h);
+  ctx.font = `${size}px ui-monospace, monospace`;
+  let last = 0;
+  const tick = (now: number) => {
+    rainFrame = requestAnimationFrame(tick);
+    if (now - last < 50) return;
+    last = now;
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.09)';
+    ctx.fillRect(0, 0, w, h);
+    drops.forEach((y, i) => {
+      ctx.fillStyle = '#2f5';
+      ctx.fillText(glyph(), i * size, (y - 1) * size);
+      ctx.fillStyle = '#dfd';
+      ctx.fillText(glyph(), i * size, y * size);
+      drops[i] = y * size > h && Math.random() > 0.97 ? 0 : y + 1;
+    });
+  };
+  rainFrame = requestAnimationFrame(tick);
+}
+function stopRain() {
+  cancelAnimationFrame(rainFrame);
+  rainFrame = 0;
+  rainCanvas.classList.add('gone');
+}
+
+// The jack: a cable drops from the top of the screen into the back of the fly's neck, the screen flashes, and the brain
+// behind it starts firing. The flinch is the fly's real looming-detector recording. `landed` runs with the flash.
+function plugIn(landed: () => void = () => {}) {
+  if (!fly || reduce.matches) {
+    landed();
+    play('naive');
+    return;
+  }
+  const neck = fly.screenPoint('neck');
+  const top = { x: neck.x + innerWidth * 0.05, y: -20 };
+  const d = `M ${top.x} ${top.y} C ${top.x} ${neck.y * 0.45}, ${neck.x + innerHeight * 0.05} ${neck.y - innerHeight * 0.2}, ${neck.x} ${neck.y}`;
+  const jack = el('jack');
+  for (const path of jack.querySelectorAll('path')) path.setAttribute('d', d);
+  const plug = jack.querySelector('circle')!;
+  plug.setAttribute('cx', String(neck.x));
+  plug.setAttribute('cy', String(neck.y));
+  jack.classList.remove('in');
+  void jack.getBoundingClientRect();
+  jack.classList.add('in');
+  onLeave(() => jack.classList.remove('in'));
+  later(900, () => {
+    const flash = el('flash');
+    flash.classList.remove('go');
+    void flash.offsetWidth;
+    flash.classList.add('go');
+    landed();
+    const eyes = deck.recordings['poke-eyes'];
+    if (eyes) {
+      resume = playback(deck.recordings.naive, 420, true);
+      playing = playback(eyes, 150, false);
+      shownFrame = -1;
+    } else play('naive');
+  });
+}
+/** Jacking it into the Matrix: the plug, and the digital rain clears with the flash. */
+function jackIn() {
+  startRain();
+  plugIn(() => (reduce.matches ? stopRain() : rainCanvas.classList.add('gone')));
+}
+
+// Beat Saber: red and blue blocks fly at the fly on the beat, and the leg holding that color cuts each one as it lands.
+// Expert+: each block is in the air for just over a beat, and the combo counter never breaks.
+const SABER_LEAD = 1.25;
+function sabers() {
+  const stage = el('saber-stage');
+  const combo = document.querySelector('.slide.on .combo b');
+  const beatMs = 60000 / SABER_BPM;
+  const flight = SABER_LEAD * beatMs;
+  // The first blocks start already in the air, so the song is under way the moment the slide is.
+  let next = Math.ceil(performance.now() / beatMs + 0.2);
+  let frame = 0,
+    cuts = 0;
+  const spawn = (k: number, now: number) => {
+    const left = k * beatMs - now;
+    // A beat already gone (after a hidden tab) gets no block.
+    if (!fly || left <= 0) return;
+    // The right front leg (blue) cuts on even beats, the left (red) on odd ones, on the fly model's clock.
+    const blue = k % 2 === 0;
+    const face = fly.screenPoint('face');
+    const to = { x: face.x + (blue ? 0.03 : -0.03) * innerHeight, y: face.y };
+    const from = { x: innerWidth * 0.32, y: innerHeight * 0.3 };
+    const block = make('div', `block ${blue ? 'blue' : 'red'}`);
+    stage.append(block);
+    const flying = block.animate(
+      [
+        { transform: `translate(${from.x}px, ${from.y}px) scale(0.1)`, opacity: 0 },
+        { opacity: 1, offset: 0.2 },
+        { transform: `translate(${to.x}px, ${to.y}px) scale(1)`, opacity: 1 },
+      ],
+      { duration: flight, easing: 'cubic-bezier(0.6, 0, 1, 0.5)', fill: 'forwards' },
+    );
+    flying.currentTime = flight - Math.min(flight, left);
+    flying.finished
+      .then(() => {
+        block.remove();
+        if (combo) combo.textContent = String(++cuts);
+        for (const [half, dx, dy, spin] of [
+          ['top', -1, -1, -24],
+          ['bottom', 1, 1, 18],
+        ] as const) {
+          const piece = make('div', `block ${blue ? 'blue' : 'red'} half ${half}`);
+          stage.append(piece);
+          piece
+            .animate(
+              [
+                { transform: `translate(${to.x}px, ${to.y}px)`, opacity: 1 },
+                {
+                  transform: `translate(${to.x + dx * innerHeight * 0.08}px, ${to.y + dy * innerHeight * 0.1}px) rotate(${spin}deg)`,
+                  opacity: 0,
+                },
+              ],
+              { duration: 520, easing: 'ease-out', fill: 'forwards' },
+            )
+            .finished.then(() => piece.remove());
+        }
+      })
+      .catch(() => {});
+  };
+  const tick = (now: number) => {
+    frame = requestAnimationFrame(tick);
+    while (now >= (next - SABER_LEAD) * beatMs) spawn(next++, now);
+  };
+  frame = requestAnimationFrame(tick);
+  onLeave(() => {
+    cancelAnimationFrame(frame);
+    stage.replaceChildren();
+  });
+}
+
+// The live review, right on the slide: fetch the pull request, show what Jev will be sent and send it only on a second
+// click (the server holds the review to that exact payload), then follow the run over the server's event stream and
+// play the fly's real recording on the stage when it lands.
+const postJSON = async (path: string, body: unknown) => {
+  const response = await fetch(path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  const result = await response.json();
+  if (!response.ok) throw new Error(result.error ?? `HTTP ${response.status}`);
+  return result;
+};
+/** The pull request this slide sent, and the run that was on the server before it, so an older review never shows. */
+let asked: { url: string; title: string; prevRun: string | null } | null = null;
+let lastState: ReviewState | null = null;
+let shownRun: string | null = null;
+let livePanel: HTMLElement;
+const count = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
+function liveMessage(text: string, kind = '') {
+  livePanel.replaceChildren(make('p', `live-status ${kind}`, text.replace(/^Error: /, '')));
+}
+async function prepareLive(reference: string) {
+  if (!reference) return;
+  if (lastState && !lastState.hasJev)
+    return liveMessage('Jev is not configured here (TYPESAFE_API_KEY). Use Plan B.', 'error');
+  liveMessage('Fetching from GitHub…');
+  try {
+    const response = await fetch(`/api/pull-request?ref=${encodeURIComponent(reference)}`);
+    const preview = (await response.json()) as ReviewCase & { error?: string };
+    if (!response.ok) throw new Error(preview.error ?? `HTTP ${response.status}`);
+    const pr = preview.pullRequest!;
+    const body = { action: 'review', caseId: PULL_REQUEST_CASE_ID, mode: 'jev', pullRequest: pr.url } as const;
+    const disclosure = (await postJSON('/api/review/disclosure', body)) as {
+      hash: string;
+      payload: { note?: string };
+    };
+    livePanel.replaceChildren();
+    const title = make('h3', 'live-title', pr.title);
+    const facts = make(
+      'p',
+      'caption',
+      `${pr.ref.owner}/${pr.ref.repo}#${pr.ref.number} by ${pr.author} · ${count(pr.changedFiles, 'file')}, +${pr.additions} −${pr.deletions}. ${disclosure.payload.note ?? ''}`,
+    );
+    const send = make('button', 'button primary', 'Send it to Jev and ask the fly →');
+    const details = make('details', 'payload');
+    details.append(
+      make('summary', '', 'Exactly what TypeSafe gets'),
+      make('pre', '', JSON.stringify(disclosure.payload, null, 2)),
+    );
+    send.addEventListener('click', () => {
+      asked = { url: pr.url, title: pr.title, prevRun: lastState?.runDir ?? null };
+      shownRun = null;
+      liveMessage('Sending…');
+      postJSON('/api/review/action', { ...body, disclosure: disclosure.hash }).catch(error =>
+        liveMessage(String(error instanceof Error ? error.message : error), 'error'),
+      );
+    });
+    livePanel.append(title, facts, make('div', 'row'));
+    livePanel.querySelector('.row')!.append(send, details);
+  } catch (error) {
+    liveMessage(String(error instanceof Error ? error.message : error), 'error');
+  }
+}
+function onLiveState(s: ReviewState) {
+  lastState = s;
+  if (!asked || s.review.pullRequest?.url !== asked.url || s.runDir === asked.prevRun) return;
+  if (s.phase === 'error') return liveMessage(s.explanation, 'error');
+  if (!(s.phase === 'ready' && s.brain && s.verdict)) {
+    // Jev describing, then the simulator reading: the fly sniffs while it waits.
+    livePanel.replaceChildren(make('h3', 'live-title', asked.title), make('p', 'live-status', s.headline));
+    if (s.log[0] && s.log[0].text !== s.headline) livePanel.append(make('p', 'caption', s.log[0].text));
+    drive({ ...rest, smell: 0.9, input: 0.5, arousal: s.phase === 'simulating' ? 0.7 : 0.3 });
+    return;
+  }
+  if (s.runDir !== shownRun) {
+    shownRun = s.runDir;
+    home();
+    resume = undefined;
+    playing = playback(s.brain as unknown as Recording, 420, true);
+    shownFrame = -1;
+  }
+  const v = s.verdict.verdict;
+  const call: Call = v === 'no_objection' ? 'approve' : v === 'changes_requested' ? 'object' : 'unsure';
+  const a = s.attention;
+  const unit = a ? reviewUnits(s.review.pullRequest!).units[a.looked] : null;
+  const where = unit ? `${unit.filename}${unit.hunk === null ? '' : `, hunk ${unit.hunk + 1}`}` : '';
+  const card = verdictCard(
+    'The fly',
+    call,
+    !a
+      ? ''
+      : a.units.length === 1
+        ? `it read ${where}`
+        : a.stands
+          ? `it looked at ${where}`
+          : `nothing stood out, so it counted all ${a.tally.total}`,
+    SNIFFS,
+  );
+  card.classList.add('stamp');
+  const row = make('div', 'row');
+  row.append(card);
+  if (a)
+    row.append(
+      make(
+        'p',
+        'caption',
+        `${count(a.units.length, a.granularity)}: ${a.tally.changes_requested} stink, ${a.tally.no_objection} smell good, ${a.tally.abstain} can’t tell${a.tally.reached ? `, tongue out on ${a.tally.reached}` : ''}.`,
+      ),
+    );
+  livePanel.replaceChildren(make('h3', 'live-title', asked.title), row);
+  if (unit)
+    livePanel.append(
+      diffBox({
+        id: '',
+        title: where,
+        filename: unit.filename,
+        diff: parsePatch(unit.patch)
+          .slice(0, 14)
+          .map(l => ({ kind: l.kind, text: l.text })),
+      }),
+    );
+}
+
+/** The premise's review clock: how long the pull request has waited on a human, a gag that runs at an hour a tick. */
+let waited = 0;
+const waitedText = (hours: number) => (hours < 24 ? `${hours}h` : `${Math.floor(hours / 24)}d ${hours % 24}h`);
+
 const slides: Slide[] = [
   {
     id: 'title',
-    minutes: '0:15',
-    className: '',
+    minutes: '0:00',
+    className: 'center',
+    bare: true,
     build: h =>
       html(
         h,
-        `<div class="kicker">AI Engineer · New York</div><h1>Are You Smarter Than A Fruit Fly?</h1><p class="byline">Nick Nisi · WorkOS</p>`,
+        `<div class="kicker">AI Engineer · New York</div><h1 class="cover">Are You Smarter Than A Fruit Fly?</h1><p class="byline">Nick Nisi · WorkOS</p>`,
       ),
-    enter: () => {
-      home();
-      play('naive');
+    enter: () => still(),
+    notes: [
+      'Wait-on slide: nothing moves, so it can sit here while the room fills. No fly yet; it arrives with the Matrix.',
+    ],
+  },
+  {
+    id: 'me',
+    minutes: '0:20',
+    className: 'wide',
+    bare: true,
+    build: h =>
+      html(
+        h,
+        `<div class="intro"><img class="headshot" src="/assets/nick-nisi.webp" alt="Nick Nisi" width="320" height="320" /><div><div class="kicker">Hi, I'm</div><h1>Nick Nisi</h1><p class="byline">Engineering Manager, Developer and Agent Experiences · WorkOS</p><p class="caption">nicknisi.com</p></div></div>`,
+      ),
+    enter: () => still(),
+    notes: [
+      '[NICK: who you are, in your words. On the slide: Engineering Manager, Developer and Agent Experiences at WorkOS. From your blog: seven years on JS Party.]',
+    ],
+  },
+  {
+    id: 'workos',
+    minutes: '0:15',
+    className: 'center',
+    bare: true,
+    build: h =>
+      html(
+        h,
+        `<img class="logo" src="/assets/workos-logo-white.svg" alt="WorkOS" width="880" height="168" /><p class="caption">workos.com</p>`,
+      ),
+    enter: () => still(),
+    notes: ['[NICK: one line about WorkOS, in your words.]'],
+  },
+  {
+    id: 'bottleneck',
+    minutes: '0:45',
+    bare: true,
+    steps: 3,
+    build: h => {
+      html(
+        h,
+        `<div class="kicker">Code review</div><h1>The bottleneck.</h1>
+        <div class="mergebox" aria-label="A pull request: every check has passed, and merging is blocked on one human review">
+          <div class="check"><b>CI / test</b><span>All tests passed</span></div>
+          <div class="check"><b>CI / lint</b><span>Successful</span></div>
+          <div class="check"><b>Greptile / CodeRabbit</b><span>Review completed</span></div>
+          <div class="check blocked"><b>Review required</b><span>At least 1 approving review is required</span></div>
+          <div class="merge-row"><button class="merge" type="button">Merge pull request</button><span class="waiting">Waiting on a human: <b>0h</b></span></div>
+        </div>
+        <img class="wanted step later" data-step="1" src="/assets/wanted-nick.webp" alt="A wanted poster: Nick Nisi, caught glancing back with a finger to his lips. Wanted for being a bottleneck. Merged or closed. Reward: 1 approving review." width="848" height="1264" />
+        <blockquote class="step later" data-step="2">Reviewing code is the bottleneck. Humans aren't involved in writing it anymore and the functionality is what matters.</blockquote>`,
+      );
+      // The merge button is real enough to press, and it refuses.
+      const box = h.querySelector<HTMLElement>('.mergebox')!;
+      h.querySelector('.merge')!.addEventListener('click', () => {
+        box.classList.remove('nope');
+        void box.offsetWidth;
+        box.classList.add('nope');
+      });
+    },
+    enter: step => {
+      still();
+      const clock = document.querySelector('.slide.on .waiting b')!;
+      if (step === 0) waited = 0;
+      if (reduce.matches) {
+        clock.textContent = waitedText(76);
+        return;
+      }
+      clock.textContent = waitedText(waited);
+      // Start once the checks have all gone green.
+      later(waited ? 0 : 2100, () => {
+        const id = setInterval(() => (clock.textContent = waitedText(++waited)), 150);
+        onLeave(() => clearInterval(id));
+      });
     },
     notes: [
-      '[NICK: intro line in your words.]',
-      'Behind you: a real simulated fruit-fly brain, every point a measured neuron position.',
+      'Cold open: no fly and no brain yet, just the problem. The checks go green one at a time: CI, then Greptile / CodeRabbit. Then the one that isn’t a bot.',
+      'Click “Merge pull request”: it shakes. Blocked. The clock is a gag: an hour every 150 ms.',
+      '→ the culprit: a wanted poster of you, caught sneaking off with a finger to your lips, “for being a bottleneck. Merged or closed. Reward: 1 approving review.” AI-generated (Nano Banana Pro, from your headshot).',
+      '→ your words: “Reviewing code is the bottleneck. Humans aren’t involved in writing it anymore and the functionality is what matters.”',
+    ],
+  },
+  {
+    id: 'solved',
+    minutes: '1:15',
+    className: 'wide',
+    bare: true,
+    steps: 4,
+    build: h => {
+      html(h, `<div class="kicker">Code review</div><h2>And it’s a bottleneck that’s going to be solved.</h2>`);
+      const points = make('div', 'points');
+      points.innerHTML = `<div class="point step" data-step="0"><h3>We’re not invested in the code like we once were.</h3><pre class="mini"><i>claude</i>export async function getUser(id) {
+<i>claude</i>  const res = await fetch(\`/users/\${id}\`);
+<i>codex</i>  if (!res.ok) throw new HttpError(res);
+<i class="you">you</i>  // TODO: figure out what this does
+<i>claude</i>  return res.json();</pre></div>
+<div class="point step later" data-step="1"><h3>Greptile, CodeRabbit, and CI already find the bugs.</h3><pre class="mini"><b class="ok">✓</b> CI                     all tests pass
+<b class="ok">✓</b> Greptile / CodeRabbit  caught the off-by-one</pre></div>
+<div class="point step later" data-step="2"><h3>What it does matters more than what it looks like.</h3><pre class="mini"><s>nit: rename data to userData</s>
+<s>nit: missing trailing comma</s>
+<s>nit: I’d have used reduce() here</s>
+<b class="ok">✓</b> does it work? yes</pre></div>
+<div class="point step later" data-step="3"><h3>If review sticks around, it’s to fill your head with what’s changing and why.</h3><pre class="mini"><i>what</i>session refresh moves into middleware
+<i>why</i>two tabs were refreshing one token
+<i>why not</i>a lock: middleware runs once anyway</pre></div>`;
+      h.append(points);
+      html(h, `<p class="caption step later" data-step="3">Not advice on the code itself.</p>`);
+    },
+    enter: () => still(),
+    notes: [
+      'Your four points, one per press. The blame, the nits, and the summary are illustrations, not real code.',
+      'Card 4 is the setup: the end of the talk comes back to it with what the agent should hand the human.',
+      'Your line, if you want it here: “It’s a big trust issue for humans. Feels like giving up a lot of control but I think that humans are just as capable of slop as agents are.”',
+    ],
+  },
+  {
+    id: 'bug',
+    minutes: '0:35',
+    className: 'center',
+    bare: true,
+    steps: 2,
+    build: h =>
+      html(
+        h,
+        `<div class="kicker">Harvard Mark II logbook · September 9, 1947</div>
+        <div class="logbook">
+          <svg class="moth" viewBox="0 0 140 80" role="img" aria-label="A moth taped to the page">
+            <g fill="#7d6b52" stroke="#3e3426" stroke-width="1.2">
+              <path d="M70 34 C52 6 14 4 8 26 C6 40 36 46 70 40 Z" />
+              <path d="M70 34 C88 6 126 4 132 26 C134 40 104 46 70 40 Z" />
+              <path d="M70 40 C56 48 34 66 42 70 C52 72 64 56 70 44 Z" />
+              <path d="M70 40 C84 48 106 66 98 70 C88 72 76 56 70 44 Z" />
+            </g>
+            <ellipse cx="70" cy="42" rx="4" ry="17" fill="#3a2f22" />
+            <path d="M68 26 C62 14 56 10 50 8 M72 26 C78 14 84 10 90 8" stroke="#3a2f22" stroke-width="1.2" fill="none" />
+            <rect x="0" y="30" width="44" height="12" fill="#fffbe0" opacity="0.6" transform="rotate(-18 22 36)" />
+            <rect x="96" y="30" width="44" height="12" fill="#fffbe0" opacity="0.6" transform="rotate(16 118 36)" />
+          </svg>
+          <p><span class="time">1545</span>Relay #70 Panel F (moth) in relay.</p>
+          <p>First actual case of bug being found.</p>
+        </div>
+        <h2 class="step later" data-step="1">2026: first actual case of a bug finding bugs.</h2>
+        <p class="caption step later" data-step="1">Pedant’s corner: true bugs are Hemiptera. Moths and fruit flies don’t qualify.</p>`,
+      ),
+    enter: () => still(),
+    notes: [
+      'The Harvard Mark II logbook, September 9, 1947, 15:45: a moth taped to the page next to “First actual case of bug being found.” Grace Hopper’s team; the page is at the Smithsonian.',
+      'Say: “The bots find the bugs. So I did the obvious thing and hired a bug.”',
+      '→ the punchline. The pedant’s corner is true: true bugs are Hemiptera; moths are Lepidoptera, fruit flies Diptera.',
+    ],
+  },
+  {
+    id: 'matrix',
+    minutes: '0:30',
+    className: '',
+    steps: 2,
+    build: h => html(h, `<p class="wake" data-step="0">Wake up, fly…</p>`),
+    enter: step => {
+      home();
+      document.querySelector('.slide.on .wake')?.classList.toggle('gone', step !== 0);
+      onLeave(() => {
+        if (slides[index].id !== 'matrix') stopRain();
+      });
+      // Unplugged, the readout strip has nothing to read.
+      document.body.classList.toggle('unplugged', step === 0);
+      onLeave(() => document.body.classList.remove('unplugged'));
+      if (step === 0) {
+        still();
+        startRain();
+      } else jackIn();
+    },
+    notes: [
+      'Dark, digital rain, and the fly on screen for the first time. Your words: “We’re effectively connecting the fly to the Matrix.”',
+      '→ jacks it in: the cable drops into its neck, the screen flashes, and the brain behind you starts firing. The flinch is a real recording: its looming detectors and escape neuron.',
+      'Behind you from here on: a real simulated fruit-fly brain, every point a measured neuron position.',
+    ],
+  },
+  {
+    id: 'games',
+    minutes: '0:45',
+    className: 'wide',
+    steps: 2,
+    build: h =>
+      html(
+        h,
+        `<div class="kicker">This fall, people plugged a fruit fly’s brain into games</div>
+        <h2>Doom. <span class="step later" data-step="1">Beat Saber.</span></h2>
+        <div class="combo step later" data-step="1" aria-hidden="true"><span>Expert+</span><b>0</b><span>combo · 100% · <em>SS</em></span></div>
+        <div class="doom-wrap"><canvas class="doom" aria-label="A Doom-style corridor the fly is playing"></canvas></div>
+        <p class="caption">Doom: nftechie/doomfly. Beat Saber: lyra bubbles. My fly runs on an engine that started as a Minecraft mod. These animations are mine, not their footage.</p>`,
+      ),
+    enter: step => {
+      home();
+      play('naive');
+      const host = el('fly');
+      host.classList.add('star');
+      if (fly) fly.tall = true;
+      const screen = document.querySelector<HTMLElement>('.slide.on .doom-wrap');
+      screen?.classList.toggle('gone', step !== 0);
+      onLeave(() => {
+        host.classList.remove('star');
+        if (fly) {
+          fly.act = null;
+          fly.tall = false;
+        }
+      });
+      onLeave(() => (override = null));
+      if (step === 0) {
+        // The fly plays it: it faces the screen and walks when the player walks, and every turn the player makes swings
+        // it the same way (a turn that eases back toward the screen over about a second).
+        const r = screen?.getBoundingClientRect();
+        if (r) fly?.face({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
+        let swing = 0;
+        const stop = doom(document.querySelector<HTMLCanvasElement>('.slide.on .doom')!, {
+          move: (turned, walking, dt) => {
+            if (!fly) return;
+            swing = (swing + turned) * Math.exp(-dt / 0.9);
+            fly.steer = Math.max(-1.3, Math.min(1.3, swing));
+            fly.walk = walking ? 1 : 0.6;
+          },
+          fire: flinch,
+        });
+        onLeave(stop);
+        onLeave(() => {
+          if (!fly) return;
+          fly.steer = 0;
+          fly.walk = 0;
+        });
+      } else {
+        if (fly) fly.act = 'saber';
+        fly?.face({ x: innerWidth * 0.32, y: innerHeight * 0.3 });
+        sabers();
+      }
+    },
+    notes: [
+      'The fly plays along: it walks when the player walks, turns when the player turns, and jumps at every shot. Scripted to the animation, not neurons. Real fly-VR rigs do put a fly on a floating ball and let it walk through a virtual world.',
+      'Doom: nftechie/doomfly, the MaleCNS wiring in a live Doom arena. Its own README: “live experimental training, not demonstrated learned survival.”',
+      'Beat Saber: lyra bubbles, September 2026. The creator said its motor system was trained to replay a recorded sequence; real-time playing was still in progress.',
+      'Minecraft: Fly Brain Minecraft (blendi-remade/fly-brain-minecraft), the engine and connectome file this fly runs on.',
+      '[NICK: you said “taught to play.” The projects themselves say plugged in, not yet learned. “Plugged into” is the safe word on stage.]',
+      '→ the sabers: blocks land on the beat (100 BPM, the tempo in the Beat Saber clip) and the leg holding that color cuts them. Expert+: each block is in the air for just over a beat, and the combo never breaks.',
+      'Optional line: “In my version, it’s mastered Beat Saber. Nobody has mastered JavaScript.”',
+    ],
+  },
+  {
+    id: 'punishment',
+    minutes: '0:25',
+    steps: 2,
+    build: h =>
+      html(
+        h,
+        `<div class="kicker">Then I gave it</div><h1>The ultimate form of punishment: reviewing JavaScript.</h1>
+        <pre class="wat step later" data-step="1">[10, 1, 2].sort()     // [1, 10, 2]
+"10" + 1              // "101"
+"10" - 1              // 9
+0.1 + 0.2 === 0.3     // false
+typeof null           // "object"</pre>
+        <p class="caption step later" data-step="1">Behind me: a real recording of its punishment neurons firing.</p>
+        <div class="aaah" aria-hidden="true">AAAAAAAH!</div>`,
+      ),
+    enter: step => {
+      home();
+      if (step === 0) {
+        still();
+        // The news lands, and the fly screams: rears up, throws its front legs over its head, and shakes.
+        const aaah = document.querySelector('.slide.on .aaah');
+        later(450, () => {
+          if (fly) fly.act = 'scream';
+          aaah?.classList.add('on');
+        });
+        onLeave(() => {
+          if (fly) fly.act = null;
+          aaah?.classList.remove('on');
+        });
+        return;
+      }
+      const code = document.querySelector('.slide.on .wat')?.getBoundingClientRect();
+      if (code) fly?.face({ x: code.left + code.width / 2, y: code.top + code.height / 2 });
+      // It looks, then turns its back on it.
+      later(1400, () => {
+        play('bitter');
+        fly?.face({ x: innerWidth * 3, y: innerHeight * 0.7 });
+      });
+    },
+    notes: [
+      'Your words: “the ultimate form of punishment, which is reviewing JavaScript.” The fly hears it and screams: reared up, front legs over its head, shaking. Scripted, not a recording.',
+      '→ the code. The fly looks, then turns its back. The brain is the real bitter-lesson recording: its punishment dopamine neurons firing. That’s how it learns later, so this is a setup.',
+    ],
+  },
+  {
+    id: 'kungfu',
+    minutes: '0:10',
+    build: h =>
+      html(h, `<h1 class="upload">I know code review.</h1><p class="caption upload">It doesn’t. Not yet.</p>`),
+    enter: () => {
+      home();
+      still();
+      // The upload: the plug comes down into its neck, and the line lands with the flash.
+      const lines = document.querySelectorAll('.slide.on .upload');
+      lines.forEach(line => line.classList.add('step', 'later'));
+      plugIn(() => lines.forEach(line => line.classList.remove('later')));
+    },
+    notes: [
+      'The upload: the plug comes down into its neck again, the screen flashes, and the fly delivers its Neo line, after its JavaScript “training”: “I know kung fu.” It doesn’t know code review yet; teaching it is the rest of the talk.',
     ],
   },
   {
@@ -411,10 +1016,8 @@ const slides: Slide[] = [
       const input = make('input', 'pr-input');
       input.placeholder = 'owner/repo#123';
       input.setAttribute('aria-label', 'Pull request to review live');
-      const go = make('button', 'button primary', 'Ask the fly, live →');
-      go.addEventListener('click', () => {
-        if (input.value.trim()) location.href = `/#pr=${encodeURIComponent(input.value.trim())}`;
-      });
+      const go = make('button', 'button primary', 'Fetch it');
+      go.addEventListener('click', () => void prepareLive(input.value.trim()));
       input.addEventListener('keydown', e => {
         if (e.key === 'Enter') go.click();
       });
@@ -424,63 +1027,80 @@ const slides: Slide[] = [
         play('objects');
       });
       row.append(input, go, recorded);
-      h.append(row);
-      html(h, `<p class="caption">A pull request is never executed. The fly votes; nothing checks the vote.</p>`);
+      livePanel = make('div', 'live-panel');
+      livePanel.setAttribute('aria-live', 'polite');
+      h.append(row, livePanel);
+      html(
+        h,
+        `<p class="caption">Each hunk goes to Jev only after the second click. A pull request is never executed. The fly votes; nothing checks the vote.</p>`,
+      );
     },
     enter: () => {
       home();
       still();
+      // Follow the server's review; coming back to the slide replays the last result.
+      shownRun = null;
+      const events = new EventSource('/review-events');
+      events.onmessage = e => onLiveState(JSON.parse(e.data) as ReviewState);
+      onLeave(() => events.close());
     },
     notes: [
       'Ask someone in the room for an open-source PR, or have one ready. Small PRs are faster: each hunk is one Jev call, and a 32-hunk PR takes the simulation one to two minutes to read.',
-      'Type it, Enter. The main page opens with the PR fetched; click Ask the fly. Come back with the browser’s back button.',
+      'Type it, Enter: it fetches the PR and shows its title and what Jev will be sent. Click “Send it to Jev and ask the fly”. The status follows Jev, then the simulator; when it lands, the brain behind you plays the real recording, the fly reacts, and its vote is stamped with the hunk it looked at.',
       'Wifi dies → “Plan B: a recorded run” plays a real recording of the fly catching a bug.',
       'If asked: the wiring map is a connectome, male-cns v1.0 from HHMI Janelia, Cambridge, and Google.',
       'Line to use, yours: “I like the idea of having your code reviewed by a fruit fly and the analogy that I’m so smooth-brained that it’s better at code review than me at this point.”',
     ],
   },
   {
-    id: 'me',
-    minutes: '0:20',
-    className: 'wide',
-    build: h =>
+    id: 'connectome',
+    minutes: '0:45',
+    build: h => {
       html(
         h,
-        `<div class="intro"><img class="headshot" src="/assets/nick-nisi.webp" alt="Nick Nisi" width="320" height="320" /><div><div class="kicker">Hi, I'm</div><h1>Nick Nisi</h1><p class="byline">Developer Experience Engineer at WorkOS</p><p class="caption">nicknisi.com</p></div></div>`,
-      ),
-    enter: () => applaud('.headshot'),
+        `<div class="kicker">First: what’s a connectome?</div><h2>A complete wiring diagram of a brain.</h2><p>Every neuron, and every connection between them. Scientists imaged a male fruit fly’s brain and nerve cord under an electron microscope, 8 nanometers at a time, and traced it neuron by neuron.</p>`,
+      );
+      const stats = make('div', 'duel three');
+      stats.innerHTML = `<div><div class="num">${N.neurons.toLocaleString()}</div><p>neurons</p></div><div><div class="num">${(N.connections / 1e6).toFixed(1)}M</div><p>connections</p></div><div><div class="num">125M</div><p>synapses counted</p></div>`;
+      h.append(stats);
+      html(
+        h,
+        `<p class="caption">In your terms: a directed graph. Every dot behind me is one node, at its real position. Data: male-cns v1.0, HHMI Janelia, Cambridge, Google Research, CC BY 4.0.</p>`,
+      );
+    },
+    enter: () => {
+      home();
+      play('naive');
+    },
     notes: [
-      '[NICK: who you are, in your words. Sourced candidates from your blog: Developer Experience Engineer at WorkOS (on the slide); seven years on JS Party.]',
-      'The fly is applauding: the brain is a real recording of its grooming neuron firing after its antennae were touched, and flies rub their front legs together when they groom.',
+      'Say: “A connectome is a wiring diagram. Someone took a real fly, imaged its whole nervous system under an electron microscope, and traced every neuron and every connection. Behind me is that map: every dot is a neuron where it really sits.”',
+      'Say: “For us it’s a graph: about 176 thousand nodes, 6.3 million edges. The strength of each edge is how many synapses the scientists counted. Nobody trained the map. Evolution built it.”',
+      'Detail if asked: connections with 5 or more synapses are kept (24% of connections, 72% of synapses). Whether a connection excites or inhibits comes from the sending neuron’s neurotransmitter.',
     ],
   },
   {
-    id: 'workos',
-    minutes: '0:15',
-    className: 'center',
+    id: 'project',
+    minutes: '0:45',
+    steps: 3,
     build: h =>
       html(
         h,
-        `<img class="logo" src="/assets/workos-logo-white.svg" alt="WorkOS" width="880" height="168" /><p class="caption">workos.com</p>`,
+        `<div class="kicker">What I built</div><h2>I made the map run. Then I taught it code review.</h2>
+        <ol class="build-list">
+          <li class="step" data-step="0"><strong>Run it.</strong> Each neuron is a few lines of math: add up incoming spikes, leak a little, fire when it crosses a threshold. All ${N.neurons.toLocaleString()} of them, for 450 ms of fly time: about two seconds on this laptop.</li>
+          <li class="step later" data-step="1"><strong>Don’t touch it.</strong> All ${(N.connections / 1e6).toFixed(1)} million connections come from the map, and I never train them.</li>
+          <li class="step later" data-step="2"><strong>Let one part learn.</strong> ${N.plasticSynapses.toLocaleString()} connections in its memory center can change, and only test results change them.</li>
+        </ol>
+        <p class="caption step later" data-step="2">In your terms: a frozen network, wired by evolution, with one small layer that test results train.</p>`,
       ),
-    enter: () => applaud('.logo'),
-    notes: ['[NICK: one line about WorkOS, in your words.]', 'Same real grooming recording; the fly keeps clapping.'],
-  },
-  {
-    id: 'lgtm',
-    minutes: '0:50',
-    build: h =>
-      html(
-        h,
-        `<div class="kicker">The problem</div>
-        <blockquote>Reviewing code is the bottleneck. Humans aren't involved in writing it anymore and the functionality is what matters.</blockquote>
-        <blockquote class="step later" data-step="1">It's a big trust issue for humans. Feels like giving up a lot of control but I think that humans are just as capable of slop as agents are.<cite>— me, this week</cite></blockquote>`,
-      ),
-    steps: 2,
-    enter: () => still(),
+    enter: () => {
+      home();
+      play('naive');
+    },
     notes: [
-      'Both quotes are yours, verbatim from the interview. Say them your way.',
-      'Optional: one industry number about unreviewed or skimmed PRs. Source it before it goes on a slide.',
+      'Say: “I didn’t design a neural network. I downloaded one, made it run, and asked it about code.”',
+      'If asked how it runs: a leaky integrate-and-fire model, the method of Shiu et al., Nature 2024. Java, on this laptop.',
+      '→ → one line per press.',
     ],
   },
   {
@@ -501,7 +1121,7 @@ const slides: Slide[] = [
         ],
         [
           '2 · The memory',
-          `The smell lights up about 5% of its ${N.kenyonCells.toLocaleString()} memory cells. Similar code, similar cells.`,
+          `The smell lights up about 5% of its ${N.kenyonCells.toLocaleString()} memory cells. Similar descriptions, similar cells.`,
           'Hashing',
         ],
         [
@@ -545,7 +1165,10 @@ const slides: Slide[] = [
     steps: 2,
     build: h => {
       const rec = deck.recordings.objects;
-      html(h, `<div class="kicker">1 · The nose</div><h2>Step 1: turn the diff into a smell.</h2>`);
+      html(
+        h,
+        `<div class="kicker">1 · The nose</div><h2>Step 1: turn the diff into a smell.</h2><p class="aside">We’ve called them code smells for decades. I took it literally.</p>`,
+      );
       html(
         h,
         `<p>Jev, an AI model, answers thirty yes-or-no questions about <strong>what changed</strong>. None asks whether the change is good. The two that ask whether it changes the result are switched off: that’s the tests’ job.</p>`,
@@ -588,7 +1211,7 @@ const slides: Slide[] = [
     build: h =>
       html(
         h,
-        `<div class="kicker">2 · The memory</div><h2>Step 2: the smell lights up a few of ${N.kenyonCells.toLocaleString()} memory cells.</h2><p>Each violet dot is a memory cell, where it sits in a real fly’s brain. Every one is wired to two groups of output neurons, <strong class="red">avoid</strong> and <strong class="green">approach</strong>. Those wires are the memory.</p><p class="caption">Similar code lights up similar cells: two unrelated smells share about 1% of them, two that share a channel about 40%.</p>`,
+        `<div class="kicker">2 · The memory</div><h2>Step 2: the smell lights up a few of ${N.kenyonCells.toLocaleString()} memory cells.</h2><p>Each violet dot is a memory cell, where it sits in a real fly’s brain. Every one is wired to two groups of output neurons, <strong class="red">avoid</strong> and <strong class="green">approach</strong>. Those wires are the memory.</p><p class="caption">Similar descriptions light up similar cells: two unrelated smells share about 1% of them, two that share a channel about 40%.</p>`,
       ),
     enter: () => {
       view.focusMushroomBody(true);
@@ -608,9 +1231,9 @@ const slides: Slide[] = [
         h,
         `<div class="kicker">3 · The teacher</div><h2>Step 3: a test result is a taste.</h2>
         <p data-step="0" class="step">A test reproduces the bug: <strong>bitter</strong>. Punishment dopamine fires (${Math.round(deck.recordings.bitter.ppl1Hz)} Hz) and weakens the lit cells’ wires to <strong class="green">approach</strong>.</p>
-        <p data-step="1" class="step later">A test proves the change harmless: <strong>sugar</strong>. Reward dopamine fires (${Math.round(deck.recordings.sugar.pamHz)} Hz), weakens their wires to <strong class="red">avoid</strong>, and the tongue comes out.</p>
+        <p data-step="1" class="step later">Every test still passes: <strong>sugar</strong>. Reward dopamine fires (${Math.round(deck.recordings.sugar.pamHz)} Hz), weakens their wires to <strong class="red">avoid</strong>, and the tongue comes out.</p>
         <blockquote class="step later" data-step="1">I tried to train the fly on the codebase by using mutation testing to identify good and bad parts of the code and then train the fly to have memories based on that.</blockquote>
-        <p class="caption">${N.lessons} lessons. Every label proven by running code: mutants that real test suites killed in authkit-nextjs, authkit-js, and ufo. “No bug found” teaches nothing.</p>`,
+        <p class="caption">What that means now: the bugs are mutants a real test caught. The harmless ones are refactors that pass every test. An opinion teaches nothing.</p>`,
       ),
     enter: step => {
       view.focusMushroomBody(true);
@@ -629,9 +1252,10 @@ const slides: Slide[] = [
     build: h =>
       html(
         h,
-        `<div class="kicker">4 · The vote</div><h2>Step 4: tongue out means approve.</h2>
+        `<div class="kicker">4 · The vote</div><h2>Step 4: tongue out means SGTM.</h2><p class="aside">Smells good to me.</p>
         <p class="step" data-step="0">A harmless change. The smell alone brings its tongue out: <strong>the fly reached for it</strong>. Approve. (${deck.recordings.reaches.review!.title})</p>
-        <p class="step later" data-step="1">A real bug. <strong class="red">Avoid</strong> drowns out <strong class="green">approach</strong> and the tongue stays in: <strong>changes requested</strong>. Too close to call, it abstains. (${deck.recordings.objects.review!.title})</p>`,
+        <p class="step later" data-step="1">A real bug. <strong class="red">Avoid</strong> outweighs <strong class="green">approach</strong> more than two to one: <strong>changes requested</strong>. Too close to call, it abstains. (${deck.recordings.objects.review!.title})</p>
+        <p class="caption step later" data-step="1">It can’t leave a single nit. All it can do is stick its tongue out.</p>`,
       ),
     enter: step => {
       home();
@@ -644,6 +1268,38 @@ const slides: Slide[] = [
     ],
   },
   {
+    id: 'exam',
+    minutes: '0:45',
+    className: 'wide',
+    build: h => {
+      html(
+        h,
+        `<div class="kicker">How it studied, and how I tested it</div><h2>${N.lessons} flashcards. Then an exam it had never seen.</h2>`,
+      );
+      const cols = make('div', 'duel');
+      cols.innerHTML = `<div><div class="kicker">Study</div><div class="num">${N.lessons}<small> lessons</small></div><ul>
+          <li><strong>Bugs:</strong> mutation testing on three real TypeScript repos. Kept only if a real test failed.</li>
+          <li><strong>Harmless:</strong> rewrites like flipping an if/else or renaming a variable. Kept only if every test still passed.</li>
+          <li>Plus small examples Claude wrote, checked by running them.</li>
+          <li>Half bugs, half harmless. It went through the pile ${N.passes} times.</li></ul></div>
+        <div><div class="kicker">Exam</div><div class="num">${N.heldOut}<small> changes</small></div><ul>
+          <li>Never studied. Whole functions were held back, so no exam question has a sibling in the flashcards.</li>
+          <li><strong>${N.caught[1]}</strong> bugs, <strong>${N.approved[1]}</strong> harmless. Every answer checked by running a test.</li></ul></div>`;
+      h.append(cols);
+      html(
+        h,
+        `<p class="caption">In your terms: a train/test split. ${N.passes} epochs, learning rate ${N.rate}, picked on a practice slice of the training set, never on the exam.</p>`,
+      );
+    },
+    enter: () => still(),
+    notes: [
+      `Say: “It studied ${N.lessons} flashcards. Every flashcard is a real code change, and a test decided the answer: a test failed, so bitter, or every test passed, so sugar. It went through the stack ${N.passes} times. Then I gave it ${N.heldOut} changes it had never seen. That’s the exam, and every number from here on is from it.”`,
+      'The three repos: authkit-nextjs, authkit-js, ufo. “Mutation testing” = a tool (StrykerJS) makes small bugs on purpose; a mutant that makes a real test fail is a proven bug.',
+      'If asked “why so few harmless ones on the exam?”: harmless rewrites are harder to make than bugs. That’s why the score on the next slides averages the two halves.',
+      'Honest footnotes if asked: (1) every harmless example is a refactor. Measured: on 24 tickets that change what a function should do, it approved 0 of 24 correct changes and caught 22 of 24 wrong ones, the same verdict for both 22 times (data/intent.json). It learned “did behavior change,” not “is it right.” (2) Switching off the two answer-key questions was decided after seeing them sort this exam; the learning rate and epochs were picked without it. (3) Exam functions are held out, but the repos are the same three.',
+    ],
+  },
+  {
     id: 'proof',
     minutes: '0:50',
     className: 'wide',
@@ -651,7 +1307,7 @@ const slides: Slide[] = [
     build: h => {
       html(
         h,
-        `<div class="kicker">The ablation</div><h2>Is it the fly, or is the AI nose doing the work?</h2><p>Keep the nose and the lessons. Shuffle only which output neurons the teacher’s dopamine reaches.</p>`,
+        `<div class="kicker">The ablation</div><h2>Break where the teacher’s signal lands, and it stops catching bugs.</h2><p>Same nose, same lessons. Shuffle only which output neurons the dopamine reaches.</p>`,
       );
       const duel = make('div', 'duel');
       duel.innerHTML = `<div class="good" data-side="real"><div class="kicker">Real wiring</div><div class="num">${N.caught[0]}<small> / ${N.caught[1]}</small></div><p>bugs caught</p></div>
@@ -659,7 +1315,7 @@ const slides: Slide[] = [
       h.append(duel);
       html(
         h,
-        `<p class="caption">An untrained fly gets ${N.naiveAgree} of ${N.heldOut} right. Nothing upstream of the fly knows whether a change broke anything. Press S to switch.</p>`,
+        `<p class="caption">Out of the ${N.caught[1]} bugs on the exam. The nose carries the information (a spreadsheet reading it does better); the fly has to learn what it means. Untrained, it says “I don’t know” to all ${N.heldOut}. Press S to switch.</p>`,
       );
     },
     enter: step => {
@@ -669,7 +1325,9 @@ const slides: Slide[] = [
       document.querySelector('[data-side="scrambled"]')?.classList.toggle('dim', step === 0);
     },
     notes: [
-      '→ scrambles. Same bug, same smell: with scrambled wiring the fly reaches for it. Degrees preserved; only who-talks-to-whom changed.',
+      `Say: “Same nose, same lessons. Real wiring: it catches ${N.caught[0]} of the ${N.caught[1]} exam bugs. Scramble where its teacher’s signal lands and it catches ${N.shuffled.caught[0]}, and approves ${N.shuffled.bugsApproved}. The fly has to learn, and it learns through that wiring.”`,
+      'Don’t claim more: this shows the learning depends on the dopamine wiring lining up with the output neurons. It does not show fly wiring beats any other learner; the spreadsheet on a later slide beats it.',
+      '→ scrambles. Same bug, same smell: with scrambled wiring the fly reaches for it. Every neuron keeps the same number of connections; only who-talks-to-whom changed.',
     ],
   },
   {
@@ -679,7 +1337,7 @@ const slides: Slide[] = [
     build: h => {
       html(
         h,
-        `<div class="kicker">Audience round</div><h1>Are you smarter than a fruit fly?</h1><p>Three real changes. Hands up: approve or request changes. Then the fly. Then the tests.</p>`,
+        `<div class="kicker">Audience round: you vs. a bug</div><h1>Are you smarter than a fruit fly?</h1><p>Three real changes. Hands up: approve or request changes. Then the fly. Then the tests.</p>`,
       );
       const draw = make('button', 'button primary', 'Draw three changes');
       draw.addEventListener('click', () => {
@@ -726,7 +1384,7 @@ const slides: Slide[] = [
       h.append(bars);
       html(
         h,
-        `<p>When it votes, it’s right <strong>${N.agree} of ${N.votes}</strong>. ${N.abstained} times it says it doesn’t know. ${N.bugsApproved} bugs it waved through. Balanced accuracy: the average of bugs caught and harmless changes approved.</p>`,
+        `<p>Of the <strong>${N.caught[1]}</strong> bugs, it caught <strong>${N.caught[0]}</strong>. Of the <strong>${N.approved[1]}</strong> harmless changes, it approved <strong>${N.approved[0]}</strong>. ${N.abstained} times it said “I don’t know.”</p><p class="caption">Why not just percent right? Three in four exam changes are bugs, so a fly that rejected everything would be ${Math.round((N.caught[1] / N.heldOut) * 100)}% right. These scores average the two halves instead, so rejecting everything scores 50%: a coin flip.</p>`,
       );
     },
     enter: () => {
@@ -744,7 +1402,9 @@ const slides: Slide[] = [
       });
     },
     notes: [
-      '“A spreadsheet” is a logistic regression reading the exact same smell. “Best single clue” is the one smell channel that does best alone. Both fit on the same training lessons.',
+      `Say: “On the exam, it caught ${N.caught[0]} of ${N.caught[1]} bugs and approved ${N.approved[0]} of ${N.approved[1]} harmless changes. Average those and you get ${pct(N.balanced)}. A coin flip gets 50.”`,
+      `Say: “And a spreadsheet beats it. A logistic regression reading the exact same 53 numbers gets ${pct(neutral.logistic)}. The fly isn’t the best classifier here. It’s a fly.”`,
+      '“Best single clue” is the one smell channel that does best alone. Both comparisons were fit on the same flashcards.',
       'The room bar is three questions, not ' + N.heldOut + '. Say so.',
     ],
   },
@@ -754,7 +1414,10 @@ const slides: Slide[] = [
     className: 'wide',
     build: h => {
       const rec = deck.recordings.missed;
-      html(h, `<div class="kicker">What it gets wrong</div><h2>It reaches for real bugs.</h2>`);
+      html(
+        h,
+        `<div class="kicker">What it gets wrong</div><h2>It reaches for real bugs.</h2><p class="aside">In its defense, fruit flies evolved to love things that are going bad.</p>`,
+      );
       if (rec) {
         h.append(diffBox(rec.review!));
         html(h, `<p>“${rec.review!.title}”: a test reproduces this bug. The fly reaches for it anyway.</p>`);
@@ -822,7 +1485,7 @@ const slides: Slide[] = [
       h.append(pipe);
       html(
         h,
-        `<blockquote class="step later" data-step="1">…having them maintain a skill, for lack of a better term, that is how that team would do code reviews.</blockquote>`,
+        `<blockquote class="step later" data-step="1">…having them maintain a skill, for lack of a better term, that is how that team would do code reviews.</blockquote><p class="caption step later" data-step="3">Every pipeline needs a fly on the wall.</p>`,
       );
     },
     enter: step => {
@@ -897,13 +1560,19 @@ const slides: Slide[] = [
     id: 'close',
     minutes: '0:30',
     className: 'center',
-    build: h => html(h, `<div class="url">fruitfly.review</div><p>Run it on your own pull request.</p>`),
+    build: h =>
+      html(
+        h,
+        `<img class="qr" src="/assets/fruitfly-qr.svg" alt="QR code for fruitfly.review" width="290" height="290" /><div class="url">fruitfly.review</div><p>Run it on your own pull request.</p><p class="aside">Smell you later.</p>`,
+      ),
     enter: () => {
-      home();
       el('fly').classList.remove('station-seat');
-      play('reaches');
+      applaud('.qr');
     },
-    notes: ['[NICK: closing line, in your words.]'],
+    notes: [
+      'The QR code goes to https://fruitfly.review. The fly turns to it and claps: the brain is its real grooming recording, front legs rubbing together, as flies do when they groom.',
+      '[NICK: closing line, in your words.] “Smell you later” is on the slide; cut it if it groans too hard.',
+    ],
   },
 ];
 
@@ -948,11 +1617,15 @@ function go(i: number, s = 0) {
   for (const node of built[index].querySelectorAll<HTMLElement>('[data-step]'))
     node.classList.toggle('later', Number(node.dataset.step) > step);
   if (slides[index].id !== 'proposal') el('fly').classList.remove('station-seat');
-  if (fly && !['me', 'workos'].includes(slides[index].id)) {
+  document.body.classList.toggle('bare', !!slides[index].bare);
+  if (fly && slides[index].id !== 'close') {
     fly.groomStyle = 'sweep';
     fly.face(null);
   }
   if (slides[index].id !== 'question') flown = false;
+  const done = cleanups;
+  cleanups = [];
+  done.forEach(f => f());
   if (slides[index].id !== 'memory' && slides[index].id !== 'teacher') view.focusMushroomBody(false);
   slides[index].enter?.(step);
   history.replaceState(null, '', `#${index + 1}${step ? `.${step}` : ''}`);

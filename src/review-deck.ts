@@ -92,6 +92,8 @@ const numbers = {
   neurons: 176_422,
   connections: 6_287_749,
   kenyonCells: 4_064,
+  // Kenyon cell → output neuron synapses the lessons can change (README, The memory is in the compartments).
+  plasticSynapses: 31_493,
   glomeruli: 53,
   lessons: 522,
   heldOut: held.judged,

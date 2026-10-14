@@ -229,6 +229,14 @@ export class ReviewShow {
           ? customReviewCase(request.custom)
           : REVIEW_CASES.find(c => c.id === request.caseId);
     if (!review) throw new Error('Unknown review example');
+    // Generated, binary, and over-budget files are never shown to Jev; a pull request made only of them leaves the fly
+    // nothing to smell, so say so here, before disclosure or a model call, rather than fail inside the simulator.
+    if (request.mode === 'jev' && review.pullRequest && !reviewUnits(review.pullRequest).units.length)
+      throw new Error(
+        `Nothing for the fly to smell: every changed file was left out (${review.pullRequest.files
+          .map(f => `${f.filename}: ${f.omitted ?? 'no patch'}`)
+          .join(', ')}). Pick a pull request that changes code.`,
+      );
     return review;
   }
 

@@ -418,3 +418,23 @@ test('a pull request is read hunk by hunk, saved as one bundle, refused verifica
     else process.env.TYPESAFE_API_KEY = previous;
   }
 });
+
+test('a pull request with nothing to smell is refused before disclosure or any model call', async () => {
+  const show = new ReviewShow(() => {}, {
+    fetchPullRequest: async () => ({
+      ...(await fetchPullRequest({ owner: 'o', repo: 'r', number: 12 }, githubMock(), null)),
+      files: [
+        {
+          filename: 'package-lock.json',
+          status: 'modified',
+          additions: 4,
+          deletions: 4,
+          patch: null,
+          omitted: 'generated file',
+        },
+      ],
+    }),
+  });
+  const request = { action: 'review', caseId: 'pull-request', mode: 'jev', pullRequest: 'o/r#12' };
+  await assert.rejects(show.disclosure(request), /Nothing for the fly to smell.*package-lock\.json: generated file/);
+});

@@ -1,4 +1,5 @@
 import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { availableParallelism } from 'node:os';
 import { join } from 'node:path';
 import { atomicJSON, ROOT } from './io.ts';
 import { MEMORY_PATH, reviewVerdict, smellBrain } from './review-brain.ts';
@@ -232,8 +233,7 @@ type Result = {
   agrees: boolean | null;
   naiveAgrees: boolean | null;
 };
-const results: Result[] = [];
-const evaluate = async (review: ReviewCase, set: Result['set']) => {
+const evaluate = async (review: ReviewCase, set: Result['set']): Promise<Result> => {
   const odor = odorOf(review);
   const naive = await smell(odor, { seed, memoryPath: null, shuffle });
   const trained = await smell(odor, { seed, memoryPath, shuffle });
@@ -242,7 +242,7 @@ const evaluate = async (review: ReviewCase, set: Result['set']) => {
   const n = reviewVerdict(naive).verdict,
     tv = reviewVerdict(trained),
     t = tv.verdict;
-  results.push({
+  return {
     caseId: review.id,
     title: review.title,
     set,
@@ -255,15 +255,33 @@ const evaluate = async (review: ReviewCase, set: Result['set']) => {
     trained: { verdict: t, share: share(trained), feedHz: trained.feedHz, behavior: tv.behavior },
     agrees: expected === null ? null : t === expected,
     naiveAgrees: expected === null ? null : n === expected,
-  });
+  };
 };
-if (validate) for (const review of validation) await evaluate(review, 'validation');
-else {
-  for (const review of holdout) await evaluate(review, 'holdout');
-  for (const review of REVIEW_CASES) await evaluate(review, 'bundled');
-  for (const review of excluded) await evaluate(review, 'excluded');
-  for (const review of training) await evaluate(review, 'training');
-}
+// The memory is frozen now, so scoring runs are independent and results keep their order. Each run already uses up to 8
+// threads, so only a few share the machine: 4 at once measured 2.6x the throughput of 1 on this 12-core Mac.
+const queue: [ReviewCase, Result['set']][] = validate
+  ? validation.map(r => [r, 'validation'])
+  : [
+      ...holdout.map(r => [r, 'holdout'] as [ReviewCase, Result['set']]),
+      ...REVIEW_CASES.map(r => [r, 'bundled'] as [ReviewCase, Result['set']]),
+      ...excluded.map(r => [r, 'excluded'] as [ReviewCase, Result['set']]),
+      ...training.map(r => [r, 'training'] as [ReviewCase, Result['set']]),
+    ];
+const results: Result[] = new Array(queue.length);
+let nextCase = 0;
+const scoringStarted = Date.now();
+await Promise.all(
+  Array.from({ length: Math.max(1, Math.min(4, availableParallelism() - 2)) }, async () => {
+    while (nextCase < queue.length) {
+      const i = nextCase++;
+      results[i] = await evaluate(...queue[i]);
+      const done = results.filter(Boolean).length;
+      if (done % 50 === 0)
+        console.log(`scored ${done}/${queue.length} (${((Date.now() - scoringStarted) / 1000).toFixed(0)} s)`);
+    }
+  }),
+);
+console.log(`scored ${queue.length} cases in ${((Date.now() - scoringStarted) / 1000).toFixed(0)} s`);
 
 const summarize = (set: Result['set'], corpus?: Result['corpus']) => {
   const judged = results.filter(r => r.set === set && r.agrees !== null && (!corpus || r.corpus === corpus));

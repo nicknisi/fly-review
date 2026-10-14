@@ -6,16 +6,24 @@
     <title>Are You Smarter Than A Fruit Fly?</title>
     <link rel="stylesheet" href="/presentation.css" />
   </head>
-  <body>
+  <body class="bare">
     <canvas
       id="brain"
       class="brain"
       aria-label="The fly's brain: 176,422 simulated neurons at their real positions"
     ></canvas>
     <div class="vignette" aria-hidden="true"></div>
+    <canvas id="rain" class="rain gone" aria-hidden="true"></canvas>
     <main id="deck" class="deck" aria-live="polite"></main>
     <div id="fly" class="fly" aria-label="The fly. Click a body part to touch it; move fast at it to startle it."></div>
     <p id="touch" class="touch" role="status"></p>
+    <div id="saber-stage" class="saber-stage" aria-hidden="true"></div>
+    <svg id="jack" class="jack" aria-hidden="true">
+      <path class="cable" />
+      <path class="cable-shine" />
+      <circle class="plug" r="9" />
+    </svg>
+    <div id="flash" class="flash" aria-hidden="true"></div>
     <div id="readout" class="readout" aria-hidden="true">
       <span class="dot kenyon"></span><b id="readout-kenyon">—</b> memory cells lit <span class="dot avoid"></span
       ><b id="readout-avoid">—</b> avoid <span class="dot approach"></span><b id="readout-approach">—</b> approach

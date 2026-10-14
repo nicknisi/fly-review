@@ -240,7 +240,22 @@ type Part = {
   shininess?: number;
   pattern?: number;
   pick?: PokePreset;
+  /** Light the part gives off on its own (a saber blade). */
+  glow?: [number, number, number];
 };
+/** The tempo the fly swings its sabers to; the deck times the blocks to the same clock. */
+export const SABER_BPM = 100;
+/**
+ * One front leg's saber, 1 raised .. 0 slashed down. Each leg slashes every other beat, alternating (the right leg on even
+ * beats, the left on odd), fast through the beat itself, then raises again for the next one.
+ */
+export function saberRaise(seconds: number, side: 1 | -1) {
+  const beats = (seconds * SABER_BPM) / 60 + (side === 1 ? 0 : 1);
+  const v = (((beats / 2 + 0.05) % 1) + 1) % 1;
+  if (v < 0.1) return 1 - v / 0.1;
+  const u = Math.min(1, (v - 0.1) / 0.55);
+  return u * u * (3 - 2 * u);
+}
 const PICK_IDS: PokePreset[] = ['sugar', 'feet', 'antennae', 'eyes', 'brush', 'abdomen'];
 const deg = (d: number) => (d * Math.PI) / 180;
 const REST: Required<Drive> = {
@@ -283,6 +298,32 @@ export class FlyModel {
    * the face, which flies also do when they groom and which reads as a clap.
    */
   groomStyle: 'sweep' | 'rub' = 'sweep';
+  /**
+   * Scripted bits for the deck's intro: holding a red and a blue saber and slashing to the beat, or screaming at
+   * JavaScript (reared up, front legs thrown over its head, shaking).
+   */
+  act: 'saber' | 'scream' | null = null;
+  /** The scream, eased in fast so the legs are thrown up rather than snapped. */
+  private screaming = 0;
+  /** How fast to walk in place, 0..1: a tripod gait, as a fly does on the floating ball of a fly-VR rig. */
+  walk = 0;
+  /** Radians to turn past the point it faces, positive to its right: the deck's Doom player steering it. */
+  steer = 0;
+  private walking = 0;
+  private gait = 0;
+  /**
+   * Set when the host is the deck's tall center-stage box (82vh instead of 52vh): the camera backs off and looks higher in
+   * step with it, so the fly keeps its size and place and the extra height above it is room for raised sabers.
+   */
+  tall = false;
+  private framing = 0;
+  /** The last frame's camera, and the top of the thorax in world space, so the page can find the fly's neck. */
+  private viewMat: Mat4 = identity();
+  private projMat: Mat4 = identity();
+  private neckWorld: Mat4 = identity();
+  private faceWorld: Mat4 = identity();
+  /** Where the tip of the last leg drawn ended, so a saber can sit in it. */
+  private tip: Mat4 = identity();
   readonly canvas: HTMLCanvasElement;
   private gl: WebGLRenderingContext;
   private program: WebGLProgram;
@@ -446,8 +487,24 @@ export class FlyModel {
     m.vein = this.upload(tube(0.011, 0.006, 1, 5));
     m.shadow = this.upload(ellipsoid(0.75, 0.01, 1.35, 24, 4));
     m.bristle = this.upload(tube(0.008, 0.002, 0.16, 4));
+    m.hilt = this.upload(tube(0.045, 0.045, 0.2, 10));
+    m.saber = this.upload(tube(0.03, 0.026, 1.7, 10));
   }
 
+  /**
+   * Where a point on the fly is on the page, in client pixels: the top of the thorax just behind the head, or the air a
+   * little in front of its face.
+   */
+  screenPoint(which: 'neck' | 'face'): { x: number; y: number } {
+    const at = (m: Mat4, v: number[]) =>
+      [0, 1, 2, 3].map(i => m[i] * v[0] + m[4 + i] * v[1] + m[8 + i] * v[2] + m[12 + i] * v[3]);
+    const clip = at(
+      this.projMat,
+      at(this.viewMat, at(which === 'neck' ? this.neckWorld : this.faceWorld, [0, 0, 0, 1])),
+    );
+    const r = this.canvas.getBoundingClientRect();
+    return { x: r.left + ((clip[0] / clip[3] + 1) / 2) * r.width, y: r.top + ((1 - clip[1] / clip[3]) / 2) * r.height };
+  }
   /** Turn to face a point on the page, in client pixels; null turns back toward the viewer. */
   face(point: { x: number; y: number } | null) {
     this.facing = point;
@@ -497,6 +554,7 @@ export class FlyModel {
     const tibia = chain(knee, scaling(1, 1, lengths[1]));
     const ankle = chain(knee, translation(0, 0, lengths[1]), rotationX(tarsusBend));
     const tarsus = chain(ankle, scaling(1, 1, lengths[2]));
+    this.tip = chain(ankle, translation(0, 0, lengths[2]));
     const leg: [number, number, number] = [0.34, 0.23, 0.12];
     return [
       { mesh: this.meshes.femur, model: femur, color: leg, shininess: 22, pick: 'feet' },
@@ -528,8 +586,10 @@ export class FlyModel {
         away = [-Math.sin(this.yaw), -Math.cos(this.yaw)],
         up = -dy / Math.max(0.3, Math.sin(this.pitch));
       const raw = Math.atan2(dx * across[0] + up * away[0], dx * across[1] + up * away[1]);
-      want = Math.max(-deg(115), Math.min(deg(115), raw));
-      gaze = { x: clamp1((raw - this.heading) / deg(26)), y: -0.4 };
+      // Steering goes on after the 115° limit, so it still turns the fly when it is already side-on to its target.
+      // Positive heading turns the fly to its left, so steering right subtracts.
+      want = Math.max(-deg(115), Math.min(deg(115), raw)) - this.steer;
+      gaze = { x: clamp1((raw - this.steer - this.heading) / deg(26)), y: -0.4 };
     }
     this.heading += (want - this.heading) * (1 - Math.exp(-dt / 0.45));
     this.headingLeft = want - this.heading;
@@ -569,12 +629,19 @@ export class FlyModel {
     const lift = escape * 0.22,
       breathe = 1 + 0.012 * Math.sin(t * 2 * Math.PI * 0.9);
     // Rubbing its front legs, the fly rears up a little on its middle and hind legs, which puts the clap in view.
-    const rear = this.groomStyle === 'rub' ? groom : 0;
+    const saber = this.act === 'saber' ? 1 : 0;
+    const scream = this.screaming;
+    const shake = this.reduceMotion.matches ? 0 : scream * Math.sin(t * 2 * Math.PI * 17);
+    const rear = Math.max(this.groomStyle === 'rub' ? groom : 0, saber * 0.8, scream * 1.25);
     const body = chain(
-      translation(0, lift + flick * 0.02 + rear * 0.1, lean * 0.12),
+      translation(
+        shake * 0.015,
+        lift + flick * 0.02 + rear * 0.1 + this.walking * 0.012 * Math.sin(this.gait * 2),
+        lean * 0.12,
+      ),
       rotationY(turn),
       rotationX(deg(lean * 9) - rear * deg(18)),
-      rotationZ(n(0.41, 2.9) * deg(2) + flick * deg(1.5)),
+      rotationZ(n(0.41, 2.9) * deg(2) + flick * deg(1.5) + shake * deg(2.5)),
     );
     const cuticle: [number, number, number] = [0.8, 0.6, 0.34];
     parts.push({
@@ -609,15 +676,22 @@ export class FlyModel {
       pattern: 2,
       pick: 'abdomen',
     });
+    this.neckWorld = chain(body, translation(0, 1.12, 0.45));
     const head = chain(
       body,
       translation(0, 0.7, 0.93),
       // Looking away completes the turn; the head swings a little further than the body, and follows the pointer.
       rotationY(deg(avoid * 12) + this.look.x * deg(26) + this.saccade.x),
       rotationX(
-        deg(-10) + approach * deg(14) + Math.sin(t * 7) * input * deg(2) + this.look.y * deg(16) + this.saccade.y,
+        deg(-10) +
+          approach * deg(14) +
+          Math.sin(t * 7) * input * deg(2) +
+          this.look.y * deg(16) +
+          this.saccade.y -
+          scream * deg(18),
       ),
     );
+    this.faceWorld = chain(head, translation(0, 0.2, 1.5));
     parts.push({ mesh: m.head, model: head, color: [0.79, 0.59, 0.33], shininess: 28, pick: 'brush' });
     for (const side of [1, -1] as const) {
       parts.push({
@@ -633,7 +707,8 @@ export class FlyModel {
         head,
         translation(side * 0.11, 0.1, 0.32),
         rotationX(
-          deg(112) +
+          deg(112) -
+            scream * deg(34) +
             Math.sin(t * 14 + side) * input * deg(9) +
             n(1.3, side * 2.2) * deg(7) +
             Math.sin(t * 2 * Math.PI * 9 + side) * smell * deg(6),
@@ -665,7 +740,7 @@ export class FlyModel {
         pick: 'brush',
       });
       // Wings: at rest folded back over the abdomen; escape raises and beats them.
-      const flare = Math.max(escape, flick * 0.35);
+      const flare = Math.max(escape, flick * 0.35, scream * 0.45);
       const beat = Math.sin(this.beat) * escape;
       const yaw = deg(78) - flare * deg(42) + beat * deg(16) + n(0.5, side * 1.3) * deg(2);
       const roll = flare * deg(58) + beat * deg(22) + deg(2);
@@ -712,26 +787,74 @@ export class FlyModel {
       // grooming rhythm (femur up-forward, tibia and tarsus pointing ahead; yaw swings from 10° apart to 14° crossed).
       const together = 0.5 + 0.5 * Math.sin(this.groomPhase * 1.6);
       const brace = Math.max(escape, avoid * 0.25);
-      const [front, middle, hind] = [0, 1, 2].map(i => this.stepLift(side === 1 ? i : i + 3, t));
+      // Walking: a tripod gait. Front and hind on one side swing forward in the air with the middle leg on the other,
+      // while the other three push back on the ground.
+      const stride = [0, 1, 2].map(i => {
+        const phase = this.gait + ((side === 1 ? i : i + 1) % 2) * Math.PI;
+        return { lift: this.walking * Math.max(0, Math.sin(phase)), reach: -this.walking * Math.cos(phase) };
+      });
+      const [front, middle, hind] = [0, 1, 2].map(i =>
+        Math.max(this.stepLift(side === 1 ? i : i + 3, t), stride[i].lift),
+      );
       // Front legs ride with the thorax (so they rise when it rears); the others turn with the body but stay planted.
       const planted = rotationY(turn);
+      // Sabers: front legs held up and forward, each slashing down on its beat.
+      const raised = saber ? saberRaise(t, side) : 0;
       parts.push(
         ...this.leg(
           body,
           side,
           [0.3, 0.42, 0.52],
-          deg(48) - sweep * deg(46) + front * deg(8) - rub * (deg(38) + together * deg(24)),
-          deg(-28) - sweep * deg(58) - brace * deg(10) - front * deg(26) - rub * deg(17),
-          deg(98) + sweep * deg(30) - brace * deg(18) + front * deg(20) - rub * deg(73),
-          deg(48) - sweep * deg(20) - rub * deg(28),
+          deg(48) -
+            sweep * deg(46) +
+            front * deg(8) -
+            stride[0].reach * deg(14) -
+            rub * (deg(38) + together * deg(24)) -
+            saber * deg(8) +
+            scream * deg(42) +
+            shake * side * deg(5),
+          deg(-28) -
+            sweep * deg(58) -
+            brace * deg(10) -
+            front * deg(26) -
+            rub * deg(17) -
+            saber * (raised * deg(80) - deg(6)) -
+            scream * deg(30) +
+            shake * deg(6),
+          deg(98) +
+            sweep * deg(30) -
+            brace * deg(18) +
+            front * deg(20) -
+            rub * deg(73) -
+            saber * deg(62) -
+            scream * deg(83),
+          deg(48) - sweep * deg(20) - rub * deg(28) - saber * deg(36) - scream * deg(28),
         ),
       );
+      if (saber) {
+        const blade: [number, number, number] = side === 1 ? [0.35, 0.6, 1] : [1, 0.25, 0.3];
+        parts.push(
+          {
+            mesh: m.hilt,
+            model: chain(this.tip, rotationX(-deg(40)), translation(0, 0, -0.05)),
+            color: [0.2, 0.2, 0.22],
+            shininess: 50,
+          },
+          {
+            mesh: m.saber,
+            model: chain(this.tip, rotationX(-deg(40)), translation(0, 0, 0.12)),
+            color: blade,
+            glow: [blade[0] * 0.8, blade[1] * 0.8, blade[2] * 0.8],
+            shininess: 80,
+          },
+        );
+      }
       parts.push(
         ...this.leg(
           planted,
           side,
           [0.44, 0.36, 0.14],
-          deg(96) + middle * deg(10),
+          deg(96) + middle * deg(10) - stride[1].reach * deg(16),
           deg(-22) - brace * deg(14) - middle * deg(24),
           deg(96) - brace * deg(22) + middle * deg(18),
           deg(46),
@@ -742,7 +865,7 @@ export class FlyModel {
           planted,
           side,
           [0.36, 0.38, -0.26],
-          deg(142) - hind * deg(10),
+          deg(142) - hind * deg(10) - stride[2].reach * deg(14),
           deg(-18) - brace * deg(12) - hind * deg(22),
           deg(92) - brace * deg(20) + hind * deg(16),
           deg(50),
@@ -776,8 +899,9 @@ export class FlyModel {
         });
     // Proboscis: rostrum, haustellum, labellum; extension follows the feeding rate, with a pump while eating.
     const pump = feed > 0.02 ? 0.06 * Math.sin(t * 2 * Math.PI * 1.6) * feed : 0;
-    const ext = 0.16 + (0.62 + pump) * feed;
-    const pro = chain(head, translation(0, -0.3, 0.06), rotationX(deg(92) - feed * deg(14)));
+    // Screaming, the proboscis drops open like a mouth.
+    const ext = 0.16 + (0.62 + pump) * feed + scream * 0.35;
+    const pro = chain(head, translation(0, -0.3, 0.06), rotationX(deg(92) - feed * deg(14) - scream * deg(20)));
     parts.push({
       mesh: m.rostrum,
       model: chain(pro, scaling(1, 1, ext * 0.42)),
@@ -819,15 +943,17 @@ export class FlyModel {
     gl.useProgram(this.program);
     const yaw = this.yaw + (this.pointer?.x ?? 0) * deg(50),
       pitch = this.pitch - (this.pointer?.y ?? 0) * deg(26);
-    const dist = 5.7,
-      target = [0, 0.55, -0.1];
+    const dist = 5.7 * (1 + (82 / 52 - 1) * this.framing),
+      target = [0, 0.55 + 1.28 * this.framing, -0.1];
     const eye = [
       target[0] + dist * Math.cos(pitch) * Math.sin(yaw),
       target[1] + dist * Math.sin(pitch),
       target[2] + dist * Math.cos(pitch) * Math.cos(yaw),
     ];
-    gl.uniformMatrix4fv(this.uniforms.view, false, lookAt(eye, target, [0, 1, 0]));
-    gl.uniformMatrix4fv(this.uniforms.projection, false, perspective(deg(30), width / height, 0.5, 30));
+    this.viewMat = lookAt(eye, target, [0, 1, 0]);
+    this.projMat = perspective(deg(30), width / height, 0.5, 30);
+    gl.uniformMatrix4fv(this.uniforms.view, false, this.viewMat);
+    gl.uniformMatrix4fv(this.uniforms.projection, false, this.projMat);
     gl.uniform3f(this.uniforms.eye, eye[0], eye[1], eye[2]);
     gl.uniform1i(this.uniforms.picking, picking ? 1 : 0);
     // Opaque first, translucent wings last so the body shows through them.
@@ -842,7 +968,8 @@ export class FlyModel {
       gl.uniform1f(this.uniforms.shininess, part.shininess ?? 20);
       gl.uniform1i(this.uniforms.pattern, part.pattern ?? 0);
       const glowing = this.glowPart && part.pick && POKE_PRESETS[part.pick].part === this.glowPart;
-      gl.uniform3f(this.uniforms.glow, glowing ? 0.35 : 0, glowing ? 0.28 : 0, glowing ? 0.05 : 0);
+      const glow = part.glow ?? (glowing ? [0.35, 0.28, 0.05] : [0, 0, 0]);
+      gl.uniform3f(this.uniforms.glow, glow[0], glow[1], glow[2]);
       const id = part.pick ? PICK_IDS.indexOf(part.pick) + 1 : 0;
       gl.uniform3f(this.uniforms.pickColor, id / 255, 0, 0);
       gl.depthMask((part.alpha ?? 1) >= 1);
@@ -919,6 +1046,11 @@ export class FlyModel {
     for (const key of Object.keys(REST) as (keyof Drive)[])
       this.current[key] += (this.target[key]! - this.current[key]) * k;
     if (!reduce) this.live(now / 1000, dt);
+    this.screaming += ((this.act === 'scream' ? 1 : 0) - this.screaming) * (reduce ? 1 : 1 - Math.exp(-dt / 0.07));
+    this.walking += (this.walk - this.walking) * (reduce ? 1 : 1 - Math.exp(-dt / 0.2));
+    // Eased about as fast as the box's own 0.8 s resize.
+    this.framing += ((this.tall ? 1 : 0) - this.framing) * (reduce ? 1 : 1 - Math.exp(-dt / 0.25));
+    if (!reduce) this.gait += dt * 2 * Math.PI * 3.2 * this.walking;
     if (!reduce) {
       this.beat += dt * 2 * Math.PI * (4 + 14 * this.current.escape);
       this.groomPhase += dt * 2 * Math.PI * (1.2 + 2.2 * this.current.groom);

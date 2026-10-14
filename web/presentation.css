@@ -42,7 +42,9 @@ body {
   display: block;
   cursor: grab;
   transform: translateX(18vw);
-  transition: transform 1s var(--ease);
+  transition:
+    transform 1s var(--ease),
+    opacity 0.9s var(--ease);
 }
 body[data-layout='wide'] .brain {
   transform: translateX(24vw);
@@ -67,6 +69,15 @@ body[data-layout='center'] .brain {
 body.brain-only .vignette,
 body.brain-only .deck,
 body.brain-only .readout {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* The premise comes before the fly is plugged in: no brain, no fly, no readout. */
+body.bare .brain,
+body.bare .fly,
+body.bare .readout,
+body.bare .touch {
   opacity: 0;
   pointer-events: none;
 }
@@ -120,6 +131,10 @@ h1 {
   letter-spacing: -0.035em;
   font-weight: 750;
   text-wrap: balance;
+}
+h1.cover {
+  font-size: 12vh;
+  max-width: 14ch;
 }
 h2 {
   margin: 0;
@@ -200,6 +215,12 @@ blockquote cite {
 .caption {
   font: 500 1.8vh var(--mono);
   color: var(--faint);
+}
+/* The jokes. */
+.aside {
+  font-size: 2.4vh;
+  font-style: italic;
+  color: var(--yellow);
 }
 
 /* Buttons and inputs */
@@ -337,6 +358,31 @@ input {
   transition:
     border-color 0.3s,
     opacity 0.3s;
+}
+.duel.three {
+  grid-template-columns: repeat(3, 1fr);
+}
+.duel.three .num {
+  font-size: 6.4vh;
+}
+.duel ul {
+  margin: 1.6vh 0 0;
+  padding-left: 2.2vh;
+  font-size: 1.9vh;
+  line-height: 1.45;
+  color: var(--muted);
+}
+.duel li + li {
+  margin-top: 0.8vh;
+}
+.build-list {
+  padding-left: 3vh;
+  font-size: 2.3vh;
+  line-height: 1.45;
+  max-width: 44vw;
+}
+.build-list li + li {
+  margin-top: 1.4vh;
 }
 .duel > div.dim {
   opacity: 0.4;
@@ -606,7 +652,8 @@ input {
     right 0.8s var(--ease),
     bottom 0.8s var(--ease),
     width 0.8s var(--ease),
-    height 0.8s var(--ease);
+    height 0.8s var(--ease),
+    opacity 0.9s var(--ease);
 }
 .fly canvas {
   width: 100%;
@@ -640,6 +687,531 @@ input {
   }
   100% {
     transform: translate(0, 0) rotate(0);
+  }
+}
+
+/* The intro: digital rain, the jack, the flash */
+.rain {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  transition: opacity 1.4s var(--ease);
+}
+body.unplugged .readout {
+  opacity: 0;
+}
+.rain.gone {
+  opacity: 0;
+}
+.wake {
+  font: 600 4.4vh var(--mono);
+  color: #5f8;
+  text-shadow: 0 0 1.4vh #2f5;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 0;
+  border-right: 0.5vh solid #5f8;
+  animation: type 1.4s steps(13) 0.8s forwards;
+}
+@keyframes type {
+  to {
+    width: 13.4ch;
+  }
+}
+.slide .gone {
+  display: none;
+}
+.jack {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 6;
+  overflow: visible;
+}
+.jack:not(.in) {
+  display: none;
+}
+.jack path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-dasharray: 4000;
+  stroke-dashoffset: 4000;
+  animation: draw 0.9s cubic-bezier(0.5, 0, 0.9, 0.6) forwards;
+}
+.cable {
+  stroke: #1c1c1f;
+  stroke-width: 1.4vh;
+}
+.cable-shine {
+  stroke: #5a5a66;
+  stroke-width: 0.3vh;
+  transform: translate(-0.3vh, -0.2vh);
+}
+.jack .plug {
+  fill: #9aa;
+  stroke: #333;
+  stroke-width: 2;
+  opacity: 0;
+  animation: plug 0.15s 0.85s forwards;
+}
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes plug {
+  to {
+    opacity: 1;
+  }
+}
+.flash {
+  position: fixed;
+  inset: 0;
+  background: #eaffef;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 8;
+}
+.flash.go {
+  animation: flash 0.6s ease-out;
+}
+@keyframes flash {
+  from {
+    opacity: 0.85;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* The fly's games: center stage, a Doom-style screen, Beat Saber blocks */
+.fly.star {
+  right: 8vw;
+  bottom: 10vh;
+  width: 74vh;
+  /* Tall enough for raised sabers; the fly model's camera keeps the fly itself at 52vh scale (FlyModel.tall). */
+  height: 82vh;
+}
+.doom-wrap {
+  width: min(42vw, 720px);
+  aspect-ratio: 320 / 200;
+  border: 0.8vh solid #1b1b1b;
+  border-radius: 1.2vh;
+  box-shadow:
+    0 0 0 1px var(--line),
+    0 2vh 6vh oklch(0 0 0 / 0.6);
+  overflow: hidden;
+}
+.doom {
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: pixelated;
+}
+.saber-stage {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 6;
+}
+.block {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 12vh;
+  height: 12vh;
+  margin: -6vh 0 0 -6vh;
+  border-radius: 1.2vh;
+}
+.block.red {
+  background: linear-gradient(160deg, #ff4d5a, #a3121f);
+  box-shadow: 0 0 3vh #ff334499;
+}
+.block.blue {
+  background: linear-gradient(160deg, #4da3ff, #123ea3);
+  box-shadow: 0 0 3vh #3388ff99;
+}
+.block::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  width: 3.4vh;
+  height: 3.4vh;
+  border-right: 0.9vh solid #fff;
+  border-bottom: 0.9vh solid #fff;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.block.half.top {
+  clip-path: inset(0 0 50% 0);
+}
+.block.half.bottom {
+  clip-path: inset(50% 0 0 0);
+}
+.wat {
+  margin: 0;
+  padding: 2vh 2.4vh;
+  border: 1px solid var(--line);
+  border-radius: 1.4vh;
+  background: var(--panel);
+  font: 500 2.4vh/1.6 var(--mono);
+  color: var(--ink);
+  width: fit-content;
+}
+
+/* Beat Saber's score, for a fly that has mastered it */
+.combo {
+  display: flex;
+  align-items: baseline;
+  gap: 1.4vh;
+  font: 700 1.9vh var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.combo b {
+  min-width: 2ch;
+  font-size: 7vh;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  text-shadow:
+    -0.4vh 0 2.4vh #4da3ff,
+    0.4vh 0 2.4vh #ff4d5a;
+  font-variant-numeric: tabular-nums;
+}
+.combo em {
+  font-style: normal;
+  color: var(--yellow);
+}
+
+/* The premise: a pull request that every bot has passed, blocked on one human */
+.mergebox {
+  width: min(52vw, 860px);
+  border: 1px solid var(--line);
+  border-radius: 1.4vh;
+  background: oklch(0.1 0.01 290 / 0.9);
+  overflow: hidden;
+}
+.check {
+  display: grid;
+  grid-template-columns: 3vh 22ch 1fr;
+  gap: 1.4vh;
+  align-items: center;
+  padding: 1.2vh 2vh;
+  border-bottom: 1px solid var(--line);
+  font-size: 2.1vh;
+  opacity: 0;
+}
+.check::before {
+  content: '\2713';
+  display: grid;
+  place-items: center;
+  width: 2.6vh;
+  height: 2.6vh;
+  border-radius: 50%;
+  background: oklch(0.6 0.16 150);
+  color: oklch(0.13 0.02 150);
+  font-weight: 800;
+  font-size: 1.6vh;
+}
+.check b {
+  color: var(--ink);
+  font-weight: 650;
+}
+.check span {
+  font: 500 1.7vh var(--mono);
+  color: var(--muted);
+}
+.check.blocked {
+  background: oklch(0.68 0.22 25 / 0.12);
+}
+.check.blocked::before {
+  content: '!';
+  background: var(--red);
+}
+.check.blocked span {
+  color: oklch(0.85 0.08 25);
+}
+.slide.on .check {
+  animation: check-in 0.35s var(--ease) forwards;
+}
+.slide.on .check:nth-child(2) {
+  animation-delay: 0.45s;
+}
+.slide.on .check:nth-child(3) {
+  animation-delay: 0.9s;
+}
+.slide.on .check.blocked {
+  animation-delay: 1.6s;
+}
+@keyframes check-in {
+  from {
+    opacity: 0;
+    transform: translateX(-1vh);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.merge-row {
+  display: flex;
+  align-items: center;
+  gap: 2vh;
+  padding: 1.6vh 2vh;
+}
+.merge {
+  appearance: none;
+  border: 1px solid var(--line);
+  border-radius: 0.8vh;
+  background: oklch(0.22 0.01 290);
+  color: var(--faint);
+  padding: 1vh 2vh;
+  font-size: 2vh;
+  font-weight: 650;
+  cursor: not-allowed;
+}
+.merge:focus-visible {
+  outline: 2px solid var(--yellow);
+  outline-offset: 2px;
+}
+.waiting {
+  font: 500 1.9vh var(--mono);
+  color: var(--yellow);
+}
+.waiting b {
+  font-variant-numeric: tabular-nums;
+}
+.mergebox.nope {
+  animation: nope 0.4s;
+}
+@keyframes nope {
+  20%,
+  60% {
+    transform: translateX(-1vh);
+  }
+  40%,
+  80% {
+    transform: translateX(1vh);
+  }
+}
+.points {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.4vh;
+  width: min(88vw, 1500px);
+}
+.point {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6vh;
+  padding: 2.2vh 2.4vh;
+  border: 1px solid var(--line);
+  border-radius: 1.6vh;
+  background: var(--panel);
+}
+.point h3 {
+  margin: 0;
+  font-size: 3vh;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.mini {
+  margin: 0;
+  padding: 1.2vh 1.6vh;
+  border-radius: 1vh;
+  background: oklch(0.1 0.01 290 / 0.85);
+  font: 500 1.75vh/1.55 var(--mono);
+  color: var(--muted);
+  white-space: pre;
+  overflow: hidden;
+}
+.mini i {
+  display: inline-block;
+  width: 9ch;
+  font-style: normal;
+  color: var(--violet);
+}
+.mini i.you {
+  color: var(--yellow);
+}
+.mini .ok {
+  color: var(--green);
+}
+.mini s {
+  color: var(--faint);
+  text-decoration-color: var(--red);
+}
+
+/* The culprit, nailed up beside the merge box */
+.wanted {
+  position: absolute;
+  left: 64vw;
+  top: 50%;
+  /* Keeps it on screen on a 4:3 projector. */
+  height: min(74vh, 44vw);
+  width: auto;
+  border-radius: 0.6vh;
+  box-shadow: 0 3vh 8vh oklch(0 0 0 / 0.7);
+  transform: translateY(-50%) rotate(3deg);
+}
+.slide.on .wanted:not(.later) {
+  animation: slap 0.55s cubic-bezier(0.2, 1.5, 0.4, 1) both;
+}
+@keyframes slap {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) scale(1.5) rotate(-10deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) rotate(3deg);
+  }
+}
+
+/* 1947: the first actual bug, taped into the logbook */
+.logbook {
+  width: min(44vw, 720px);
+  padding: 2.4vh 4vh 3vh;
+  border-radius: 0.6vh;
+  background:
+    repeating-linear-gradient(
+      transparent 0 4.6vh,
+      oklch(0.7 0.05 240 / 0.45) 4.6vh calc(4.6vh + 1px)
+    ),
+    #efe6cf;
+  box-shadow: 0 2vh 6vh oklch(0 0 0 / 0.6);
+  transform: rotate(-1.5deg);
+  text-align: left;
+}
+.logbook p {
+  max-width: none;
+  font:
+    3vh/4.6vh 'Noteworthy',
+    'Bradley Hand',
+    'Segoe Print',
+    cursive;
+  color: #2b2a6a;
+}
+.logbook .time {
+  margin-right: 2.4vh;
+  color: #7a2b2b;
+}
+.moth {
+  display: block;
+  width: 22vh;
+  margin: 0 auto 0.6vh;
+}
+
+/* The close: a QR code to the site */
+.qr {
+  width: 36vh;
+  height: 36vh;
+  padding: 1.4vh;
+  border-radius: 1.6vh;
+  background: #fff;
+  box-shadow: 0 0 6vh oklch(0.7 0.18 300 / 0.4);
+  image-rendering: pixelated;
+}
+.slide:has(.qr) .url {
+  font-size: 8vh;
+}
+
+/* The live review, inline */
+.live-panel {
+  display: grid;
+  gap: 1.4vh;
+  width: min(56vw, 940px);
+}
+.live-panel:empty {
+  display: none;
+}
+.live-title {
+  margin: 0;
+  font-size: 2.8vh;
+  letter-spacing: -0.01em;
+}
+.live-status {
+  font: 500 2.1vh var(--mono);
+  color: var(--yellow);
+}
+.live-panel .caption {
+  max-width: none;
+}
+.live-status.error {
+  color: var(--red);
+}
+.live-panel .diff {
+  width: 100%;
+  max-height: 24vh;
+  font-size: 1.8vh;
+}
+.live-panel .verdict {
+  min-width: 30vh;
+}
+.payload summary {
+  font: 500 1.7vh var(--mono);
+  color: var(--faint);
+  cursor: pointer;
+}
+.payload pre {
+  max-height: 22vh;
+  overflow: auto;
+  margin: 1vh 0 0;
+  padding: 1.2vh;
+  border-radius: 1vh;
+  background: oklch(0.1 0.01 290 / 0.9);
+  font: 500 1.4vh/1.4 var(--mono);
+  color: var(--muted);
+}
+.verdict.stamp {
+  animation: stamp 0.45s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+@keyframes stamp {
+  from {
+    opacity: 0;
+    transform: scale(1.8) rotate(-8deg);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(-2deg);
+  }
+}
+
+/* The fly's scream at JavaScript */
+.aaah {
+  position: fixed;
+  right: 5vw;
+  bottom: 29vh;
+  font:
+    900 7vh/1 ui-sans-serif,
+    system-ui,
+    sans-serif;
+  letter-spacing: -0.02em;
+  color: var(--yellow);
+  text-shadow:
+    0 0.4vh 0 oklch(0.4 0.15 60),
+    0 0 3vh oklch(0.89 0.15 93 / 0.5);
+  opacity: 0;
+  transform: rotate(-8deg) scale(0.4);
+  transition:
+    opacity 0.15s,
+    transform 0.25s cubic-bezier(0.2, 1.8, 0.4, 1);
+  pointer-events: none;
+}
+.aaah.on {
+  opacity: 1;
+  transform: rotate(-8deg);
+  animation: shiver 0.09s linear infinite 0.25s;
+}
+@keyframes shiver {
+  50% {
+    translate: 0.3vh -0.2vh;
   }
 }
 
@@ -771,5 +1343,15 @@ input {
   .bar .fill,
   .odor i {
     transition: none;
+  }
+  .slide.on .check {
+    animation: none;
+    opacity: 1;
+  }
+  .mergebox.nope,
+  .verdict.stamp,
+  .aaah.on,
+  .slide.on .wanted:not(.later) {
+    animation: none;
   }
 }

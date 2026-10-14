@@ -44,9 +44,12 @@ const files: Record<string, [string, string]> = {
   '/presentation': ['web/presentation.html', 'text/html; charset=utf-8'],
   '/presentation.css': ['web/presentation.css', 'text/css; charset=utf-8'],
   '/presentation.js': ['.runtime/web/web/presentation.js', 'text/javascript; charset=utf-8'],
+  '/doom.js': ['.runtime/web/web/doom.js', 'text/javascript; charset=utf-8'],
   '/deck.json': ['data/deck.json', 'application/json'],
   '/assets/workos-logo-white.svg': ['web/assets/workos-logo-white.svg', 'image/svg+xml'],
   '/assets/nick-nisi.webp': ['web/assets/nick-nisi.webp', 'image/webp'],
+  '/assets/fruitfly-qr.svg': ['web/assets/fruitfly-qr.svg', 'image/svg+xml'],
+  '/assets/wanted-nick.webp': ['web/assets/wanted-nick.webp', 'image/webp'],
 };
 const server = createServer(async (request, response) => {
   response.setHeader('X-Content-Type-Options', 'nosniff');
