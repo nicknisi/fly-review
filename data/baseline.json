@@ -1,196 +1,196 @@
 {
-  "at": "2026-09-21T16:00:24.757Z",
+  "at": "2026-10-14T06:19:09.706Z",
   "note": "Logistic regression over the thirty descriptors, fit on the same training split as the fly, judged with the fly’s vote bands. The fly column is copied from .runs/training.json.",
   "model": {
     "weights": {
-      "removesConditional": 1.36284620889387,
-      "addsConditional": -0.6101485416836853,
-      "changesComparison": -0.22654104906839823,
-      "changesBooleanLogic": -0.8914669392041674,
-      "constantReturn": 1.1199525155229286,
-      "changesArithmetic": 1.7376548835717163,
-      "changesLiteral": 1.0166408575181693,
-      "interpolatesParameter": 0.13802247345073523,
-      "touchesLogging": 0.3103846191011836,
-      "touchesCredentials": 0.43555018637015397,
-      "touchesTiming": -0.14939907106262662,
-      "touchesAsync": 0.21732607809882304,
-      "touchesPersistence": 0.30950502614546765,
-      "touchesPermissions": 0.21241918165642687,
-      "touchesNetwork": 0.23678710323799196,
-      "renameOnly": -0.6727239012348575,
-      "restructuresOnly": -7.319988125783014,
-      "touchesComments": -0.577907818823909,
-      "removesLogic": 1.4818356704120237,
-      "addsLogic": -0.4056739003818244,
-      "changesSignature": 0.008662195126674533,
-      "changesReturnShape": 1.279979497424056,
-      "touchesTests": -0.02814477093462402,
-      "touchesErrorHandling": 0.009325104381524249,
-      "touchesLoop": 0.04090271319571946,
-      "processesExternalInput": -0.25016813735714644,
-      "changesDefault": 2.1479408739229773,
-      "commentJustifies": -0.12725290885048995,
-      "spansFiles": 0.13326372963928582,
-      "touchesConfig": 0.07653025619388515
+      "removesConditional": 2.151529626578294,
+      "addsConditional": -1.2128538276087193,
+      "changesComparison": 0.6207204618305718,
+      "changesBooleanLogic": -0.5591710598256022,
+      "constantReturn": 2.5083698738013402,
+      "changesArithmetic": 2.494743935625709,
+      "changesLiteral": 2.5697292096170203,
+      "interpolatesParameter": -0.04710846179408637,
+      "touchesLogging": 0.4969307371026923,
+      "touchesCredentials": 0.22948880980853947,
+      "touchesTiming": -0.21732913272759635,
+      "touchesAsync": 0.23167363305407343,
+      "touchesPersistence": 0.6403304273508196,
+      "touchesPermissions": 0.4684948329329288,
+      "touchesNetwork": 0.5762107024779701,
+      "renameOnly": 0,
+      "restructuresOnly": 0,
+      "touchesComments": -0.5322439572995952,
+      "removesLogic": 2.5804479953200596,
+      "addsLogic": -1.465507928867579,
+      "changesSignature": -1.2689191113978435,
+      "changesReturnShape": 3.143227158228362,
+      "touchesTests": -0.2546675474392679,
+      "touchesErrorHandling": 1.4660441188467908,
+      "touchesLoop": -0.5745451797731862,
+      "processesExternalInput": -1.6466029237002084,
+      "changesDefault": 4.967185710481803,
+      "commentJustifies": 0.35606716147754525,
+      "spansFiles": 0.3025851744583895,
+      "touchesConfig": 0.10642918652953254
     },
-    "bias": 1.1564138049831374,
+    "bias": -3.225774227615289,
     "iterations": 3000,
     "l2": 0.001
   },
   "strongest": [
     [
-      "restructuresOnly",
-      -7.319988125783014
-    ],
-    [
       "changesDefault",
-      2.1479408739229773
-    ],
-    [
-      "changesArithmetic",
-      1.7376548835717163
-    ],
-    [
-      "removesLogic",
-      1.4818356704120237
-    ],
-    [
-      "removesConditional",
-      1.36284620889387
+      4.967185710481803
     ],
     [
       "changesReturnShape",
-      1.279979497424056
+      3.143227158228362
+    ],
+    [
+      "removesLogic",
+      2.5804479953200596
+    ],
+    [
+      "changesLiteral",
+      2.5697292096170203
+    ],
+    [
+      "constantReturn",
+      2.5083698738013402
+    ],
+    [
+      "changesArithmetic",
+      2.494743935625709
     ]
   ],
   "sets": {
     "holdout": {
       "judged": 301,
       "fly": {
-        "agree": 290,
-        "regressionsCaught": "231/234",
-        "controlsApproved": "59/67",
+        "agree": 256,
+        "regressionsCaught": "193/234",
+        "controlsApproved": "63/67",
         "falseAlarms": 1,
-        "abstained": 9
+        "abstained": 19
       },
       "logistic": {
-        "agree": 298,
-        "regressionsCaught": "231/234",
-        "controlsApproved": "67/67",
-        "falseAlarms": 0,
-        "abstained": 1
+        "agree": 268,
+        "regressionsCaught": "204/234",
+        "controlsApproved": "64/67",
+        "falseAlarms": 1,
+        "abstained": 23
       }
     },
     "holdout/grown": {
       "judged": 56,
       "fly": {
-        "agree": 51,
-        "regressionsCaught": "33/36",
+        "agree": 36,
+        "regressionsCaught": "18/36",
         "controlsApproved": "18/20",
         "falseAlarms": 0,
-        "abstained": 4
+        "abstained": 7
       },
       "logistic": {
-        "agree": 53,
-        "regressionsCaught": "33/36",
-        "controlsApproved": "20/20",
-        "falseAlarms": 0,
-        "abstained": 1
+        "agree": 45,
+        "regressionsCaught": "28/36",
+        "controlsApproved": "17/20",
+        "falseAlarms": 1,
+        "abstained": 8
       }
     },
     "holdout/mined": {
       "judged": 245,
       "fly": {
-        "agree": 239,
-        "regressionsCaught": "198/198",
-        "controlsApproved": "41/47",
+        "agree": 220,
+        "regressionsCaught": "175/198",
+        "controlsApproved": "45/47",
         "falseAlarms": 1,
-        "abstained": 5
+        "abstained": 12
       },
       "logistic": {
-        "agree": 245,
-        "regressionsCaught": "198/198",
+        "agree": 223,
+        "regressionsCaught": "176/198",
         "controlsApproved": "47/47",
         "falseAlarms": 0,
-        "abstained": 0
+        "abstained": 15
       }
     },
     "bundled": {
       "judged": 15,
       "fly": {
-        "agree": 12,
-        "regressionsCaught": "7/8",
-        "controlsApproved": "5/7",
-        "falseAlarms": 1,
+        "agree": 10,
+        "regressionsCaught": "4/8",
+        "controlsApproved": "6/7",
+        "falseAlarms": 0,
         "abstained": 2
       },
       "logistic": {
-        "agree": 14,
-        "regressionsCaught": "7/8",
+        "agree": 12,
+        "regressionsCaught": "5/8",
         "controlsApproved": "7/7",
         "falseAlarms": 0,
-        "abstained": 0
+        "abstained": 3
       }
     },
     "training": {
       "judged": 522,
       "fly": {
-        "agree": 491,
-        "regressionsCaught": "255/261",
-        "controlsApproved": "236/261",
-        "falseAlarms": 9,
-        "abstained": 21
+        "agree": 453,
+        "regressionsCaught": "213/261",
+        "controlsApproved": "240/261",
+        "falseAlarms": 5,
+        "abstained": 36
       },
       "logistic": {
-        "agree": 518,
-        "regressionsCaught": "260/261",
-        "controlsApproved": "258/261",
-        "falseAlarms": 2,
-        "abstained": 1
+        "agree": 475,
+        "regressionsCaught": "228/261",
+        "controlsApproved": "247/261",
+        "falseAlarms": 6,
+        "abstained": 32
       }
     }
   },
   "pulls": [
     {
       "pr": "workos/authkit-nextjs#486",
-      "p": 0.6590381643277363,
+      "p": 0.5690613330863283,
       "verdict": "abstain"
     },
     {
       "pr": "workos/authkit-nextjs#249",
-      "p": 0.5660906094027105,
-      "verdict": "abstain"
+      "p": 0.44604920536983295,
+      "verdict": "no_objection"
     },
     {
       "pr": "workos/authkit-nextjs#35",
-      "p": 0.9873682879881708,
+      "p": 0.9833002552899882,
       "verdict": "changes_requested"
     },
     {
       "pr": "workos/authkit-nextjs#483",
-      "p": 0.6207183143653024,
+      "p": 0.5023794163557883,
       "verdict": "abstain"
     },
     {
       "pr": "workos/authkit-nextjs#476",
-      "p": 0.8851152164457914,
-      "verdict": "changes_requested"
+      "p": 0.5135274573677506,
+      "verdict": "abstain"
     },
     {
       "pr": "workos/authkit-nextjs#467",
-      "p": 0.7296244435498813,
-      "verdict": "changes_requested"
+      "p": 0.18013256250671628,
+      "verdict": "no_objection"
     },
     {
       "pr": "workos/authkit-nextjs#454",
-      "p": 0.9700973079754662,
+      "p": 0.9258869325931344,
       "verdict": "changes_requested"
     },
     {
       "pr": "workos/authkit-nextjs#455",
-      "p": 0.9035013464523702,
-      "verdict": "changes_requested"
+      "p": 0.6467483166743665,
+      "verdict": "abstain"
     }
   ]
 }

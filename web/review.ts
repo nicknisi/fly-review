@@ -34,6 +34,7 @@ import {
   RECEPTOR_GLOMERULUS,
   RECEPTOR_KEYS,
   RECEPTOR_MAX_HZ,
+  hear,
   odorEntries,
 } from '../src/review-odor.js';
 import type { Odor } from '../src/review-odor.js';
@@ -44,6 +45,8 @@ const text = (id: string, value: string) => {
 };
 const keys = RECEPTOR_KEYS as FeatureKey[];
 const receptorOf = (key: FeatureKey) => RECEPTORS.find(r => r.key === key)!;
+/** Receptors the live nose never lets through: their question asks whether behavior changed, which is the test's job. */
+const silenced = (key: FeatureKey) => hear({ ...Object.fromEntries(keys.map(k => [k, 1])) } as Features)[key] === 0;
 const manualDefault = 0.05;
 const channelIds = ['a', 'b', 'c'] as const;
 const reduce = matchMedia('(prefers-reduced-motion: reduce)');
@@ -222,7 +225,7 @@ for (const key of keys) {
   row.append(label, value, input, rate);
   el('features').append(row);
   const question = document.createElement('li');
-  question.textContent = `${receptorOf(key).label}: ${receptorOf(key).question}`;
+  question.textContent = `${receptorOf(key).label}: ${receptorOf(key).question}${silenced(key) ? ' (Silenced: this asks whether behavior changed, which is the test’s job, so the fly never smells it.)' : ''}`;
   el('questions').append(question);
 }
 // The odor strip: one bar per glomerulus, receptors first, lexical glomeruli after.
@@ -404,14 +407,18 @@ function renderFeatures() {
       `rate-${key}`,
       value === undefined
         ? 'No description yet'
-        : value < RECEPTOR_FLOOR
-          ? `below the ${Math.round(RECEPTOR_FLOOR * 100)}% floor: ${glomerulus} stays quiet`
-          : `${(value * RECEPTOR_MAX_HZ).toFixed(0)} Hz → ${glomerulus}`,
+        : silenced(key)
+          ? `silenced: a verdict, not a smell; ${glomerulus} stays quiet`
+          : value < RECEPTOR_FLOOR
+            ? `below the ${Math.round(RECEPTOR_FLOOR * 100)}% floor: ${glomerulus} stays quiet`
+            : `${(value * RECEPTOR_MAX_HZ).toFixed(0)} Hz → ${glomerulus}`,
     );
   }
   // What Jev noticed: receptors above 50%, as cards. Descriptions, not verdicts.
   const noticed = s?.features
-    ? RECEPTORS.filter(r => s.features![r.key] >= 0.5).sort((a, b) => s.features![b.key] - s.features![a.key])
+    ? RECEPTORS.filter(r => !silenced(r.key) && s.features![r.key] >= 0.5).sort(
+        (a, b) => s.features![b.key] - s.features![a.key],
+      )
     : [];
   el('signal-cards').replaceChildren(
     ...noticed.slice(0, 9).map(r => {
@@ -1147,6 +1154,14 @@ function render(s: ReviewState) {
       el<HTMLInputElement>('jev-mode').checked = true;
     }
     renderDiff();
+    // Opened at #pr=owner/repo#123 (or a full URL): land on that pull request, fetched. The talk deck's live hand-off; it
+    // waits for the first state so the server's last review does not take the selection back.
+    if (location.hash.startsWith('#pr=')) {
+      el<HTMLSelectElement>('example').value = PULL_REQUEST_CASE_ID;
+      el('example').dispatchEvent(new Event('change'));
+      el<HTMLInputElement>('pr-url').value = decodeURIComponent(location.hash.slice(4));
+      void fetchPullRequestPreview();
+    }
   }
   if (awaitingRun && s.runDir !== previousRun && s.review.id === selected) {
     boundRun = s.runDir;
@@ -1379,7 +1394,19 @@ function showReviewer(
   const share = mbTotal >= 20 ? avoidHz / mbTotal : 0.5;
   const avoid = Math.max(0, (share - 0.5) / 0.5),
     approach = Math.max(0, (0.5 - share) / 0.5);
-  const drive = { feed, groom, escape, input: reading ? input * 0.5 : input, approach, avoid };
+  // The rest of the network keeps the animal alive between motor events: how busy it is, how hard it smells, dopamine.
+  const peak = recording ? Math.max(1, ...recording.frames.map(f => f.spikes)) : 1;
+  const drive = {
+    feed,
+    groom,
+    escape,
+    input: reading ? input * 0.5 : input,
+    approach,
+    avoid,
+    arousal: frame ? frame.spikes / peak : 0,
+    smell: (frame?.activeKenyon ?? 0) / 300,
+    dopamine: ((frame?.ppl1Hz ?? 0) + (frame?.pamHz ?? 0)) / 250,
+  };
   reviewer.drive(flyOverride ? { ...drive, ...flyOverride } : drive);
   const what = behavior(feed, groom, escape, Boolean(reading && (recording?.stimuli?.bitter ?? 0) > 0));
   text('legend-rate-mb', reading && mbTotal >= 20 ? `${avoidHz.toFixed(0)} / ${approachHz.toFixed(0)} Hz` : '—');

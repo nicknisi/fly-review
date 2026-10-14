@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Are You Smarter Than A Fruit Fly?</title>
+    <link rel="stylesheet" href="/presentation.css" />
+  </head>
+  <body>
+    <canvas
+      id="brain"
+      class="brain"
+      aria-label="The fly's brain: 176,422 simulated neurons at their real positions"
+    ></canvas>
+    <div class="vignette" aria-hidden="true"></div>
+    <main id="deck" class="deck" aria-live="polite"></main>
+    <div id="fly" class="fly" aria-label="The fly. Click a body part to touch it; move fast at it to startle it."></div>
+    <p id="touch" class="touch" role="status"></p>
+    <div id="readout" class="readout" aria-hidden="true">
+      <span class="dot kenyon"></span><b id="readout-kenyon">—</b> Kenyon cells <span class="dot avoid"></span
+      ><b id="readout-avoid">—</b> avoid <span class="dot approach"></span><b id="readout-approach">—</b> approach
+      <span class="dot dan"></span><b id="readout-dan">—</b> dopamine <span class="dot feed"></span
+      ><b id="readout-feed">—</b> proboscis
+    </div>
+    <div class="progress" aria-hidden="true"><i id="progress"></i></div>
+    <aside id="notes" class="notes" hidden>
+      <header><b id="notes-title"></b><span id="notes-clock"></span></header>
+      <div id="notes-body"></div>
+      <footer>← → move · N notes · F fullscreen · B brain only · Home restart</footer>
+    </aside>
+    <script type="module" src="/presentation.js"></script>
+  </body>
+</html>

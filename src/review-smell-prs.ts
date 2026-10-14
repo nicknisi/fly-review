@@ -8,7 +8,7 @@ import { changedText } from './review-cases.ts';
 import { fetchPullRequest, parsePullRequestRef, pullRequestCase, pullRequestKey } from './review-github.ts';
 import { encodeUnitWithJev, encodeWithJev } from './review-jev.ts';
 import type { LessonEntry } from './review-memory.ts';
-import { odorize } from './review-odor.ts';
+import { hear, odorize } from './review-odor.ts';
 
 /**
  * Smell real pull requests against a memory and say what the memory did. Nothing here teaches.
@@ -86,7 +86,7 @@ for (const ref of refs) {
     .sort((a, b) => b.overlap - a.overlap)
     .slice(0, 5);
   const verdict = reviewVerdict(remembered);
-  const strongest = Object.entries(entry.features)
+  const strongest = Object.entries(hear(entry.features))
     .sort((a, b) => b[1] - a[1])
     .slice(0, 5)
     .map(([k, v]) => `${k} ${v.toFixed(2)}`)

@@ -9,12 +9,11 @@ import { RECEPTOR_KEYS } from './review-odor.ts';
 export type Logistic = { weights: Record<string, number>; bias: number; iterations: number; l2: number };
 
 export function fitLogistic(
-  examples: { features: Descriptors; regression: boolean }[],
-  options: { iterations?: number; rate?: number; l2?: number } = {},
+  examples: { features: Descriptors | Record<string, number>; regression: boolean }[],
+  options: { iterations?: number; rate?: number; l2?: number; keys?: readonly string[] } = {},
 ): Logistic {
-  const { iterations = 3000, rate = 0.5, l2 = 1e-3 } = options;
-  const keys = RECEPTOR_KEYS;
-  const X = examples.map(e => keys.map(k => e.features[k]));
+  const { iterations = 3000, rate = 0.5, l2 = 1e-3, keys = RECEPTOR_KEYS } = options;
+  const X = examples.map(e => keys.map(k => (e.features as Record<string, number>)[k] ?? 0));
   const Y = examples.map(e => (e.regression ? 1 : 0));
   const w = new Array<number>(keys.length).fill(0);
   let b = 0;
@@ -36,8 +35,8 @@ export function fitLogistic(
 }
 
 /** Probability that the change is a regression, according to the fitted model. */
-export function predictLogistic(model: Logistic, features: Descriptors): number {
+export function predictLogistic(model: Logistic, features: Descriptors | Record<string, number>): number {
   let z = model.bias;
-  for (const k of RECEPTOR_KEYS) z += model.weights[k] * features[k];
+  for (const [k, w] of Object.entries(model.weights)) z += w * ((features as Record<string, number>)[k] ?? 0);
   return 1 / (1 + Math.exp(-z));
 }

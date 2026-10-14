@@ -67,6 +67,16 @@ public final class ReviewBrainBridge {
     }
 
     public static void main(String[] args) throws Exception {
+        run(args);
+        // PrintStream swallows write errors (a reader that went away, a full pipe torn down); exiting 0 would pass off a
+        // truncated result as a measurement, so a failed write is a failed run.
+        if (System.out.checkError()) {
+            System.err.println("stdout write failed; the result was not delivered");
+            System.exit(3);
+        }
+    }
+
+    private static void run(String[] args) throws Exception {
         Connectome c;
         try (InputStream in = new FileInputStream(args[0])) { c = Connectome.load(in); }
         String memoryPath = null, shuffleSpec = null;

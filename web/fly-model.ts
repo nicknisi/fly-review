@@ -7,9 +7,12 @@
  *   B  DNg62  grooming descending neuron → the front legs sweep over the head
  *   C  DNp01  giant fiber, escape        → wings raise and beat, body lifts, legs brace for takeoff
  *
- * Input stimulation brightens the eyes and twitches the antennae. Drives are smoothed with a short time constant so
- * the animal reacts within a frame or two of a new bin, then settles. Body parts are pickable; a click on one reports
- * the sensory population that lives there.
+ * Input stimulation brightens the eyes and twitches the antennae. Three more signals from the same recorded bin keep
+ * the animal alive between those events: how busy the whole network is sets how restless it is (antennae, head
+ * saccades, weight shifts, steps), how many Kenyon cells fired sets how hard it sniffs, and dopamine firing flicks the
+ * wings. Drives are smoothed with a short time constant so the animal reacts within a frame or two of a new bin, then
+ * settles. The head follows the pointer; a fast approach toward the fly is reported as a loom. Body parts are pickable;
+ * a click on one reports the sensory population that lives there.
  */
 import { POKE_PRESETS } from '../src/review-pokes.js';
 import type { PokePreset } from '../src/review-pokes.js';
@@ -222,7 +225,8 @@ void main(){
   float diff=max(dot(n,L),0.0)*0.78+max(dot(n,L2),0.0)*0.22;
   float amb=0.30+0.12*(n.y*0.5+0.5);
   vec3 h=normalize(L+v); spec=pow(max(dot(n,h),0.0),shininess)*(pattern==3?1.4:0.35);
-  vec3 c=base*shade*(amb+diff)+vec3(spec)+glow;
+  float rim=pow(1.0-max(dot(n,v),0.0),3.0)*(pattern==4?0.0:0.22);
+  vec3 c=base*shade*(amb+diff)+vec3(spec)+glow+rim*vec3(1.0,0.85,0.6);
   float a=alpha;
   if(pattern==4){ float fr=pow(1.0-abs(dot(n,v)),2.0); c=mix(base,vec3(1.0),fr*0.6)*(0.65+0.45*diff)+vec3(spec*0.5)+glow; a=alpha+fr*0.35; }
   gl_FragColor=vec4(c,a);
@@ -239,17 +243,68 @@ type Part = {
 };
 const PICK_IDS: PokePreset[] = ['sugar', 'feet', 'antennae', 'eyes', 'brush', 'abdomen'];
 const deg = (d: number) => (d * Math.PI) / 180;
+const REST: Required<Drive> = {
+  feed: 0,
+  groom: 0,
+  escape: 0,
+  input: 0,
+  approach: 0,
+  avoid: 0,
+  arousal: 0,
+  smell: 0,
+  dopamine: 0,
+};
+/** Smooth, never-repeating-looking motion in -1..1: three incommensurate sines. */
+const wobble = (t: number, f: number, phase: number) =>
+  Math.sin(t * f * 6.283 + phase) * 0.55 +
+  Math.sin(t * f * 2.71 * 6.283 + phase * 1.9) * 0.3 +
+  Math.sin(t * f * 5.13 * 6.283 + phase * 0.7) * 0.15;
+const clamp1 = (n: number) => Math.max(-1, Math.min(1, n));
+/** Thorax macrochaetae in thorax-local coordinates: x, y, z, and a tilt in degrees. */
+const BRISTLES: [number, number, number, number][] = [
+  [0.14, 0.48, 0.2, 0],
+  [-0.14, 0.48, 0.2, 0],
+  [0.16, 0.46, -0.12, 10],
+  [-0.16, 0.46, -0.12, 10],
+  [0.34, 0.38, 0.1, -8],
+  [-0.34, 0.38, 0.1, -8],
+  [0.3, 0.34, -0.3, 12],
+  [-0.3, 0.34, -0.3, 12],
+  [0.1, 0.36, -0.5, 24],
+  [-0.1, 0.36, -0.5, 24],
+];
 
 export class FlyModel {
   onPoke: (preset: PokePreset) => void = () => {};
+  /** A pointer coming at the fly fast, the way a looming shadow would. */
+  onLoom: () => void = () => {};
+  /**
+   * How the grooming drive (DNg62) moves the front legs: sweeping over the head, or rubbing the legs together in front of
+   * the face, which flies also do when they groom and which reads as a clap.
+   */
+  groomStyle: 'sweep' | 'rub' = 'sweep';
   readonly canvas: HTMLCanvasElement;
   private gl: WebGLRenderingContext;
   private program: WebGLProgram;
   private attrs: Record<string, number> = {};
   private uniforms: Record<string, WebGLUniformLocation | null> = {};
   private meshes: Record<string, Mesh> = {};
-  private target: Required<Drive> = { feed: 0, groom: 0, escape: 0, input: 0, approach: 0, avoid: 0 };
-  private current: Required<Drive> = { feed: 0, groom: 0, escape: 0, input: 0, approach: 0, avoid: 0 };
+  private target: Required<Drive> = { ...REST };
+  private current: Required<Drive> = { ...REST };
+  /** Where the pointer is relative to the fly, -1..1 across a few fly-widths; null when it is far or gone. */
+  private gaze: { x: number; y: number } | null = null;
+  private look = { x: 0, y: 0 };
+  /** Head saccades: a fly holds its gaze, then snaps to a new one. */
+  private saccade = { x: 0, y: 0, next: 0 };
+  /** One pending step per leg: when it started, or -1. */
+  private steps = Array.from({ length: 6 }, () => ({ start: -1, next: 0 }));
+  private lastLoom = 0;
+  /** A point on the page (client pixels) the fly turns its body to face, or null to face the viewer. */
+  private facing: { x: number; y: number } | null = null;
+  /** The body's turn toward `facing`, eased, and the part of the angle left for the head. */
+  private heading = 0;
+  private headingLeft = 0;
+  private lastPointer: { d: number; t: number } | null = null;
   private glowPart: string | null = null;
   private locked = false;
   private yaw = deg(-30);
@@ -316,6 +371,28 @@ export class FlyModel {
       this.pointer = null;
       this.wake();
     });
+    // The head follows the pointer anywhere on the page; coming at the fly fast is a looming shadow.
+    addEventListener('pointermove', e => {
+      const r = this.canvas.getBoundingClientRect();
+      const size = Math.max(40, Math.min(r.width, r.height));
+      const dx = e.clientX - (r.left + r.width / 2),
+        dy = e.clientY - (r.top + r.height / 2);
+      const d = Math.hypot(dx, dy);
+      this.gaze = d < size * 6 ? { x: clamp1(dx / (size * 2.5)), y: clamp1(dy / (size * 2.5)) } : null;
+      const now = performance.now();
+      if (this.lastPointer && now > this.lastPointer.t) {
+        const closing = ((this.lastPointer.d - d) / (now - this.lastPointer.t)) * 1000;
+        if (closing > size * 9 && d < size * 1.6 && now - this.lastLoom > 2500 && !this.locked) {
+          this.lastLoom = now;
+          this.onLoom();
+        }
+      }
+      this.lastPointer = { d, t: now };
+      this.wake();
+    });
+    addEventListener('pointerout', e => {
+      if (!e.relatedTarget) this.gaze = null;
+    });
     this.canvas.addEventListener('click', e => {
       if (this.locked) return;
       const r = this.canvas.getBoundingClientRect();
@@ -371,6 +448,11 @@ export class FlyModel {
     m.bristle = this.upload(tube(0.008, 0.002, 0.16, 4));
   }
 
+  /** Turn to face a point on the page, in client pixels; null turns back toward the viewer. */
+  face(point: { x: number; y: number } | null) {
+    this.facing = point;
+    this.wake();
+  }
   drive(d: Drive) {
     this.wake();
     this.target = {
@@ -380,6 +462,9 @@ export class FlyModel {
       input: clamp(d.input),
       approach: clamp(d.approach ?? 0),
       avoid: clamp(d.avoid ?? 0),
+      arousal: clamp(d.arousal ?? 0),
+      smell: clamp(d.smell ?? 0),
+      dopamine: clamp(d.dopamine ?? 0),
     };
   }
   poked(preset: PokePreset | null) {
@@ -390,7 +475,9 @@ export class FlyModel {
     this.locked = locked;
   }
 
+  /** One leg from its coxa, in the frame of `root` (the body for legs that ride with it, the ground turn for planted ones). */
   private leg(
+    root: Mat4,
     side: 1 | -1,
     coxa: number[],
     yaw: number,
@@ -399,7 +486,12 @@ export class FlyModel {
     tarsusBend: number,
     lengths = [0.5, 0.56, 0.58],
   ): Part[] {
-    const base = chain(translation(coxa[0] * side, coxa[1], coxa[2]), rotationY(side * yaw), rotationX(femurPitch));
+    const base = chain(
+      root,
+      translation(coxa[0] * side, coxa[1], coxa[2]),
+      rotationY(side * yaw),
+      rotationX(femurPitch),
+    );
     const femur = chain(base, scaling(1, 1, lengths[0]));
     const knee = chain(base, translation(0, 0, lengths[0]), rotationX(tibiaBend));
     const tibia = chain(knee, scaling(1, 1, lengths[1]));
@@ -413,22 +505,85 @@ export class FlyModel {
     ];
   }
 
+  /** 0..1 lift of one leg's current step: up quickly, down a little slower, then planted. */
+  private stepLift(leg: number, t: number) {
+    const s = this.steps[leg];
+    if (s.start < 0) return 0;
+    const u = (t - s.start) / 0.32;
+    return u < 0 || u > 1 ? 0 : Math.sin(Math.PI * Math.pow(u, 0.8));
+  }
+  /** The animal between data: eased gaze, head saccades, and steps whose rate follows the network's activity. */
+  private live(t: number, dt: number) {
+    const { arousal, approach, avoid, input } = this.current;
+    const kg = 1 - Math.exp(-dt / 0.18);
+    // Facing a point: map its screen direction onto the ground through the camera, turn the body up to 115°, and leave
+    // the rest of the angle to the head, which also tips up toward it.
+    let want = 0,
+      gaze = this.gaze;
+    if (this.facing) {
+      const r = this.canvas.getBoundingClientRect();
+      const dx = this.facing.x - (r.left + r.width / 2),
+        dy = this.facing.y - (r.top + r.height / 2);
+      const across = [Math.cos(this.yaw), -Math.sin(this.yaw)],
+        away = [-Math.sin(this.yaw), -Math.cos(this.yaw)],
+        up = -dy / Math.max(0.3, Math.sin(this.pitch));
+      const raw = Math.atan2(dx * across[0] + up * away[0], dx * across[1] + up * away[1]);
+      want = Math.max(-deg(115), Math.min(deg(115), raw));
+      gaze = { x: clamp1((raw - this.heading) / deg(26)), y: -0.4 };
+    }
+    this.heading += (want - this.heading) * (1 - Math.exp(-dt / 0.45));
+    this.headingLeft = want - this.heading;
+    this.look.x += ((gaze?.x ?? 0) - this.look.x) * kg;
+    this.look.y += ((gaze?.y ?? 0) - this.look.y) * kg;
+    if (t >= this.saccade.next) {
+      const reach = 0.4 + arousal;
+      this.saccade = {
+        x: deg((Math.random() - 0.5) * 16 * reach),
+        y: deg((Math.random() - 0.5) * 8 * reach),
+        next: t + 0.6 + Math.random() * (2.4 - 1.4 * arousal),
+      };
+    }
+    const turning = Math.min(1, Math.abs(this.headingLeft) / deg(20));
+    const rate = 0.12 + 0.9 * arousal + 0.8 * Math.max(approach, avoid) + 0.6 * input + 4 * turning;
+    for (const s of this.steps) {
+      if (s.start >= 0 && t - s.start > 0.32) s.start = -1;
+      if (s.start < 0 && t >= s.next) {
+        s.start = t;
+        s.next = t + 0.4 + (Math.random() * 2) / rate;
+      }
+    }
+  }
   /** Every part's placement for the current smoothed drives and time. */
   private scene(t: number): Part[] {
-    const { feed, groom, escape, input, approach, avoid } = this.current;
+    const { feed, groom, escape, input, approach, avoid, arousal, smell, dopamine } = this.current;
+    // Restlessness: a resting fly is never perfectly still, and a busy network makes it more so.
+    const life = this.reduceMotion.matches ? 0 : 0.35 + 0.65 * arousal + 0.4 * input;
+    const n = (f: number, phase: number) => wobble(t, f, phase) * life;
+    const flick = dopamine * Math.max(0, Math.sin(t * 2 * Math.PI * 5.5));
     // Mushroom body: approach leans the animal into the smell. Avoidance is a decision, not a flinch: the fly steps back and
     // turns its body away, wings staying down. Escape (DNp01) is the flinch, and only escape raises the wings.
-    const lean = approach * 0.55 - avoid * 0.5;
-    const turn = deg(avoid * 34);
+    const lean = approach * 0.55 - avoid * 0.5 + n(0.31, 1.7) * 0.08;
+    const turn = this.heading + deg(avoid * 34) + this.look.x * deg(10) + n(0.23, 4.1) * deg(3);
     const m = this.meshes,
       parts: Part[] = [];
     const lift = escape * 0.22,
       breathe = 1 + 0.012 * Math.sin(t * 2 * Math.PI * 0.9);
-    const body = chain(translation(0, lift, lean * 0.12), rotationY(turn), rotationX(deg(lean * 9)));
+    // Rubbing its front legs, the fly rears up a little on its middle and hind legs, which puts the clap in view.
+    const rear = this.groomStyle === 'rub' ? groom : 0;
+    const body = chain(
+      translation(0, lift + flick * 0.02 + rear * 0.1, lean * 0.12),
+      rotationY(turn),
+      rotationX(deg(lean * 9) - rear * deg(18)),
+      rotationZ(n(0.41, 2.9) * deg(2) + flick * deg(1.5)),
+    );
     const cuticle: [number, number, number] = [0.8, 0.6, 0.34];
     parts.push({
       mesh: m.shadow,
-      model: chain(translation(0, 0.005, -0.15), scaling(1 + escape * 0.35, 1, 1 + escape * 0.25)),
+      model: chain(
+        rotationY(this.heading),
+        translation(0, 0.005, -0.15),
+        scaling(1 + escape * 0.35, 1, 1 + escape * 0.25),
+      ),
       color: [0, 0, 0],
       alpha: 0.5 - escape * 0.32,
       shininess: 1,
@@ -446,8 +601,8 @@ export class FlyModel {
       model: chain(
         body,
         translation(0, 0.52 - 0.04 * escape, -0.9),
-        rotationX(deg(-6) - escape * deg(10)),
-        scaling(breathe, breathe, 1),
+        rotationX(deg(-6) - escape * deg(10) + n(0.27, 5.3) * deg(3)),
+        scaling(breathe, breathe, 1 + 0.02 * Math.sin(t * 2 * Math.PI * 0.6)),
       ),
       color: [0.74, 0.53, 0.28],
       shininess: 24,
@@ -457,9 +612,11 @@ export class FlyModel {
     const head = chain(
       body,
       translation(0, 0.7, 0.93),
-      // Looking away completes the turn; the head swings a little further than the body.
-      rotationY(deg(avoid * 12)),
-      rotationX(deg(-10) + approach * deg(14) + Math.sin(t * 7) * input * deg(2)),
+      // Looking away completes the turn; the head swings a little further than the body, and follows the pointer.
+      rotationY(deg(avoid * 12) + this.look.x * deg(26) + this.saccade.x),
+      rotationX(
+        deg(-10) + approach * deg(14) + Math.sin(t * 7) * input * deg(2) + this.look.y * deg(16) + this.saccade.y,
+      ),
     );
     parts.push({ mesh: m.head, model: head, color: [0.79, 0.59, 0.33], shininess: 28, pick: 'brush' });
     for (const side of [1, -1] as const) {
@@ -475,8 +632,13 @@ export class FlyModel {
       const ant = chain(
         head,
         translation(side * 0.11, 0.1, 0.32),
-        rotationX(deg(112) + Math.sin(t * 14 + side) * input * deg(9)),
-        rotationZ(side * deg(-12)),
+        rotationX(
+          deg(112) +
+            Math.sin(t * 14 + side) * input * deg(9) +
+            n(1.3, side * 2.2) * deg(7) +
+            Math.sin(t * 2 * Math.PI * 9 + side) * smell * deg(6),
+        ),
+        rotationZ(side * deg(-12) + n(0.9, side * 3.7) * deg(6)),
       );
       parts.push({ mesh: m.antenna, model: ant, color: [0.55, 0.38, 0.2], shininess: 18, pick: 'antennae' });
       parts.push({
@@ -503,9 +665,9 @@ export class FlyModel {
         pick: 'brush',
       });
       // Wings: at rest folded back over the abdomen; escape raises and beats them.
-      const flare = escape;
+      const flare = Math.max(escape, flick * 0.35);
       const beat = Math.sin(this.beat) * escape;
-      const yaw = deg(78) - flare * deg(42) + beat * deg(16);
+      const yaw = deg(78) - flare * deg(42) + beat * deg(16) + n(0.5, side * 1.3) * deg(2);
       const roll = flare * deg(58) + beat * deg(22) + deg(2);
       const hinge = chain(
         body,
@@ -544,32 +706,74 @@ export class FlyModel {
         });
       // Legs. Front legs groom when B fires: they lift and sweep over the head, alternating.
       const gp = this.groomPhase + (side === 1 ? 0 : Math.PI);
-      const sweep = groom * (0.5 + 0.5 * Math.sin(gp));
+      const rub = this.groomStyle === 'rub' ? groom : 0;
+      const sweep = (groom - rub) * (0.5 + 0.5 * Math.sin(gp));
+      // Rubbing: both front legs reach forward and up in front of the face and meet at the midline, in phase, at the
+      // grooming rhythm (femur up-forward, tibia and tarsus pointing ahead; yaw swings from 10° apart to 14° crossed).
+      const together = 0.5 + 0.5 * Math.sin(this.groomPhase * 1.6);
       const brace = Math.max(escape, avoid * 0.25);
+      const [front, middle, hind] = [0, 1, 2].map(i => this.stepLift(side === 1 ? i : i + 3, t));
+      // Front legs ride with the thorax (so they rise when it rears); the others turn with the body but stay planted.
+      const planted = rotationY(turn);
       parts.push(
         ...this.leg(
+          body,
           side,
           [0.3, 0.42, 0.52],
-          deg(48) - sweep * deg(46),
-          deg(-28) - sweep * deg(58) - brace * deg(10),
-          deg(98) + sweep * deg(30) - brace * deg(18),
-          deg(48) - sweep * deg(20),
+          deg(48) - sweep * deg(46) + front * deg(8) - rub * (deg(38) + together * deg(24)),
+          deg(-28) - sweep * deg(58) - brace * deg(10) - front * deg(26) - rub * deg(17),
+          deg(98) + sweep * deg(30) - brace * deg(18) + front * deg(20) - rub * deg(73),
+          deg(48) - sweep * deg(20) - rub * deg(28),
         ),
       );
       parts.push(
-        ...this.leg(side, [0.44, 0.36, 0.14], deg(96), deg(-22) - brace * deg(14), deg(96) - brace * deg(22), deg(46)),
+        ...this.leg(
+          planted,
+          side,
+          [0.44, 0.36, 0.14],
+          deg(96) + middle * deg(10),
+          deg(-22) - brace * deg(14) - middle * deg(24),
+          deg(96) - brace * deg(22) + middle * deg(18),
+          deg(46),
+        ),
       );
       parts.push(
         ...this.leg(
+          planted,
           side,
           [0.36, 0.38, -0.26],
-          deg(142),
-          deg(-18) - brace * deg(12),
-          deg(92) - brace * deg(20),
+          deg(142) - hind * deg(10),
+          deg(-18) - brace * deg(12) - hind * deg(22),
+          deg(92) - brace * deg(20) + hind * deg(16),
           deg(50),
         ),
       );
     }
+    // Bristles: the big macrochaetae of the thorax and head, dark and slightly swept back. They quiver with the animal.
+    const thorax = chain(body, translation(0, 0.64, 0.15), rotationX(deg(8)));
+    for (const [x, y, z, tilt] of BRISTLES)
+      parts.push({
+        mesh: m.bristle,
+        model: chain(
+          thorax,
+          translation(x, y, z),
+          rotationX(deg(-120 + tilt) + n(2.1, x * 9) * deg(2)),
+          rotationZ(x * 1.4),
+        ),
+        color: [0.12, 0.08, 0.05],
+        shininess: 40,
+      });
+    for (const side of [1, -1])
+      for (const [x, y, z] of [
+        [0.14, 0.3, 0.06],
+        [0.22, 0.26, -0.02],
+      ])
+        parts.push({
+          mesh: m.bristle,
+          model: chain(head, translation(side * x, y, z), rotationX(deg(-140)), rotationZ(side * 0.4)),
+          color: [0.12, 0.08, 0.05],
+          shininess: 40,
+        });
     // Proboscis: rostrum, haustellum, labellum; extension follows the feeding rate, with a pump while eating.
     const pump = feed > 0.02 ? 0.06 * Math.sin(t * 2 * Math.PI * 1.6) * feed : 0;
     const ext = 0.16 + (0.62 + pump) * feed;
@@ -712,8 +916,9 @@ export class FlyModel {
     const reduce = this.reduceMotion.matches;
     // Short time constant: the animal reacts within a couple of frames of a new bin, then settles.
     const k = reduce ? 1 : 1 - Math.exp(-dt / 0.09);
-    for (const key of ['feed', 'groom', 'escape', 'input', 'approach', 'avoid'] as const)
-      this.current[key] += (this.target[key] - this.current[key]) * k;
+    for (const key of Object.keys(REST) as (keyof Drive)[])
+      this.current[key] += (this.target[key]! - this.current[key]) * k;
+    if (!reduce) this.live(now / 1000, dt);
     if (!reduce) {
       this.beat += dt * 2 * Math.PI * (4 + 14 * this.current.escape);
       this.groomPhase += dt * 2 * Math.PI * (1.2 + 2.2 * this.current.groom);

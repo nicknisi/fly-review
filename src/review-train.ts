@@ -1,4 +1,4 @@
-import { mkdir, readFile, rm } from 'node:fs/promises';
+import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { atomicJSON, ROOT } from './io.ts';
 import { MEMORY_PATH, reviewVerdict, smellBrain } from './review-brain.ts';
@@ -10,7 +10,7 @@ import { familyOf, loadMinedCases, minedStatus } from './review-mined.ts';
 import { encodeWithJev } from './review-jev.ts';
 import { installMemory, lessonFor, summarizeTeaching } from './review-memory.ts';
 import type { LessonEntry } from './review-memory.ts';
-import { odorize } from './review-odor.ts';
+import { hear, LIVE_NOSE, odorize, parseNose } from './review-odor.ts';
 import { labelByExecution } from './review-verify.ts';
 
 /**
@@ -36,14 +36,27 @@ const passes = Number(process.env.PASSES ?? 1);
 const holdoutShare = Number(process.env.HOLDOUT ?? 0.2);
 const seed = Number(process.env.SEED ?? 7);
 const shuffle = process.env.SHUFFLE || null;
-/** Output suffix: the wiring ablation if any, plus TAG= for rate sweeps (e.g. TAG=rate0.6). */
-const tag = [shuffle ? shuffle.replace(/[^a-z0-9-]+/g, '_') : '', process.env.TAG ?? '']
+const nose = parseNose(process.env.NOSE);
+/** Tuning: hold back this share of the taught families and test only on them, so the held-out families stay unseen. */
+const validate = Number(process.env.VALIDATE ?? 0);
+/** Output suffix: the nose if not the live one, the wiring ablation if any, plus TAG= for rate sweeps (e.g. TAG=rate0.6). */
+const tag = [
+  nose === LIVE_NOSE ? '' : `nose-${nose}`,
+  shuffle ? shuffle.replace(/[^a-z0-9-]+/g, '_') : '',
+  validate ? `val${validate}` : '',
+  process.env.TAG ?? '',
+]
   .filter(Boolean)
   .map(t => `.${t}`)
   .join('');
 const odorsPath = join(ROOT, '.runs/odors.json');
 const memoryPath = join(ROOT, `.runs/trained-memory${tag}.json`);
 if (shuffle && process.env.INSTALL) throw new Error('A shuffled-wiring memory must never be installed as the live fly');
+if (validate && process.env.INSTALL) throw new Error('A tuning run teaches on part of the corpus; never install it');
+if (nose !== LIVE_NOSE && process.env.INSTALL)
+  throw new Error(
+    `A memory taught through the ${nose} nose only makes sense to a fly that smells through it (LIVE_NOSE)`,
+  );
 await mkdir(join(ROOT, '.runs'), { recursive: true });
 
 type Cached = Record<string, { model: string; at: string; features: Descriptors }>;
@@ -77,7 +90,7 @@ for (let i = 0; i < missing.length; i += 4) {
   await atomicJSON(odorsPath, cached);
   console.log(`described ${Math.min(i + 4, missing.length)} of ${missing.length}`);
 }
-const odorOf = (review: ReviewCase) => odorize(cached[review.id].features, changedText(review));
+const odorOf = (review: ReviewCase) => odorize(cached[review.id].features, changedText(review), nose);
 
 // Ground truth by execution, not by us: our harness for grown and bundled cases, the repository's suite for mined ones.
 const labels = new Map<string, { status: string; lesson: Lesson; reason: string }>();
@@ -108,7 +121,21 @@ const shuffled = grown
   .sort((a, b) => a[1] - b[1])
   .map(([c]) => c);
 const holdout = shuffled.filter(c => heldFamilies.has(familyOf(c)));
-const teachable = shuffled.filter(c => !heldFamilies.has(familyOf(c)) && labels.get(c.id)!.lesson !== 'none');
+const teachableAll = shuffled.filter(c => !heldFamilies.has(familyOf(c)) && labels.get(c.id)!.lesson !== 'none');
+const validationFamilies = new Set<string>();
+if (validate > 0) {
+  let count = 0;
+  for (const [family] of [...new Set(teachableAll.map(familyOf))]
+    .sort()
+    .map(f => [f, random()] as const)
+    .sort((a, b) => a[1] - b[1])) {
+    if (count >= Math.round(teachableAll.length * validate)) break;
+    validationFamilies.add(family);
+    count += teachableAll.filter(c => familyOf(c) === family).length;
+  }
+}
+const validation = teachableAll.filter(c => validationFamilies.has(familyOf(c)));
+const teachable = teachableAll.filter(c => !validationFamilies.has(familyOf(c)));
 // Equal numbers of punishments and rewards, so the fly's baseline is not pushed toward one valence by the corpus mix.
 // Whatever the majority valence has left over is tested, not taught.
 const balance = Math.min(
@@ -127,17 +154,28 @@ for (let i = 0; i < Math.max(punish.length, reward.length); i++) {
   if (reward[i]) order.push(reward[i]);
 }
 console.log(
-  `${grown.length} cases from ${corpora.join('+')} (${grownAll.length} grown, ${minedAll.length} mined): teaching ${training.length} (${punish.length} punish, ${reward.length} reward) from ${new Set(training.map(familyOf)).size} families, holding out ${holdout.length} in ${heldFamilies.size} families${excluded.length ? `, ${excluded.length} cases of the other corpus tested only` : ''}; ${REVIEW_CASES.length} bundled examples never taught. rate ${rate}, passes ${passes}, seed ${seed}`,
+  `nose ${nose}; ${grown.length} cases from ${corpora.join('+')} (${grownAll.length} grown, ${minedAll.length} mined): teaching ${training.length} (${punish.length} punish, ${reward.length} reward) from ${new Set(training.map(familyOf)).size} families, holding out ${holdout.length} in ${heldFamilies.size} families${validate ? `, validating on ${validation.length} in ${validationFamilies.size} taught families (held-out cases not tested)` : ''}${excluded.length ? `, ${excluded.length} cases of the other corpus tested only` : ''}; ${REVIEW_CASES.length} bundled examples never taught. rate ${rate}, passes ${passes}, seed ${seed}`,
 );
 
 const share = (b: ReviewBrain) => b.avoidHz / Math.max(1e-9, b.avoidHz + b.approachHz);
-/** One retry: a bridge run is deterministic, so a second failure is real. */
+/**
+ * A bridge run is deterministic, so retrying is safe; three failures in a row are real, not a busy machine timing out. A
+ * lesson writes the memory file before it reports, so a failed one is rolled back first or a retry would teach it twice.
+ */
 const smell = async (...args: Parameters<typeof smellBrain>) => {
-  try {
-    return await smellBrain(...args);
-  } catch (error) {
-    console.log(`bridge run failed once (${(error as Error).message.slice(0, 80)}); retrying`);
-    return smellBrain(...args);
+  const { lesson = 'none', memoryPath: path = null } = args[1] ?? {};
+  const before = lesson !== 'none' && path ? await readFile(path).catch(() => null) : null;
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await smellBrain(...args);
+    } catch (error) {
+      if (attempt === 3) throw error;
+      if (lesson !== 'none' && path) await (before ? writeFile(path, before) : rm(path, { force: true }));
+      console.log(
+        `bridge run failed (${(error as Error).message.slice(0, 80)}); retry ${attempt} in ${attempt * 30} s`,
+      );
+      await new Promise(resolve => setTimeout(resolve, attempt * 30_000));
+    }
   }
 };
 let lessons: LessonEntry[] = [];
@@ -183,7 +221,7 @@ if (!process.env.EVAL_ONLY) {
 type Result = {
   caseId: string;
   title: string;
-  set: 'holdout' | 'bundled' | 'training' | 'excluded';
+  set: 'holdout' | 'bundled' | 'training' | 'excluded' | 'validation';
   corpus: 'grown' | 'mined' | 'bundled';
   smell?: string;
   control: boolean;
@@ -219,10 +257,13 @@ const evaluate = async (review: ReviewCase, set: Result['set']) => {
     naiveAgrees: expected === null ? null : n === expected,
   });
 };
-for (const review of holdout) await evaluate(review, 'holdout');
-for (const review of REVIEW_CASES) await evaluate(review, 'bundled');
-for (const review of excluded) await evaluate(review, 'excluded');
-for (const review of training) await evaluate(review, 'training');
+if (validate) for (const review of validation) await evaluate(review, 'validation');
+else {
+  for (const review of holdout) await evaluate(review, 'holdout');
+  for (const review of REVIEW_CASES) await evaluate(review, 'bundled');
+  for (const review of excluded) await evaluate(review, 'excluded');
+  for (const review of training) await evaluate(review, 'training');
+}
 
 const summarize = (set: Result['set'], corpus?: Result['corpus']) => {
   const judged = results.filter(r => r.set === set && r.agrees !== null && (!corpus || r.corpus === corpus));
@@ -249,12 +290,14 @@ const summary = {
   bundled: summarize('bundled'),
   excluded: summarize('excluded'),
   training: summarize('training'),
+  validation: summarize('validation'),
 };
 
-// What the nose reports differently for the two classes in the taught corpus. A receptor with a large gap that has nothing
+// What the nose reports differently for the two classes in the taught corpus, as this nose hears it. A receptor with a large gap that has nothing
 // to do with behavior (comments, names) is a confound the fly will learn as readily as a real cue, so it is measured here.
 const mean = (ids: ReviewCase[], key: string) =>
-  ids.reduce((sum, c) => sum + (cached[c.id].features as Record<string, number>)[key], 0) / Math.max(1, ids.length);
+  ids.reduce((sum, c) => sum + (hear(cached[c.id].features, nose) as Record<string, number>)[key], 0) /
+  Math.max(1, ids.length);
 const receptorGaps = Object.keys(cached[training[0].id].features)
   .map(key => {
     const controls = mean(
@@ -275,7 +318,7 @@ for (const g of receptorGaps.slice(0, 8))
   );
 const line = (s: ReturnType<typeof summarize>) =>
   `${s.agreeing}/${s.judged} agree with execution (naive ${s.naiveAgreeing}/${s.judged}); regressions caught ${s.regressionsCaught}, controls approved ${s.controlsApproved}, false alarms ${s.falseAlarms}, regressions approved ${s.missedAsApproved}, abstained ${s.abstained}; reached for controls ${s.reachedControls}, for regressions ${s.reachedRegressions}`;
-for (const set of ['holdout', 'bundled', 'excluded', 'training'] as const) {
+for (const set of ['validation', 'holdout', 'bundled', 'excluded', 'training'] as const) {
   if (!results.some(r => r.set === set)) continue;
   console.log(`\n${set}:`);
   for (const r of results.filter(r => r.set === set))
@@ -293,11 +336,14 @@ const trainedEdges = JSON.parse(await readFile(memoryPath, 'utf8')) as { edges: 
 await atomicJSON(join(ROOT, `.runs/training${tag}.json`), {
   at: new Date().toISOString(),
   note: "A fresh fly taught from executed outcomes on the grown corpus, then tested on held-out grown cases and on the bundled examples, none of which it smelled during training. Descriptions from cached Jev calls; labels from execution; lessons delivered as bitter or sugar with the fly's dopamine neurons gating which synapses change; no thresholds were tuned on the test sets.",
+  nose,
   shuffle,
   rate,
   passes,
   seed,
   holdoutShare,
+  validate,
+  validation: validation.length,
   corpora,
   taught: {
     total: training.length,

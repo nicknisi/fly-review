@@ -40,6 +40,13 @@ const files: Record<string, [string, string]> = {
   '/src/review-odor.js': ['.runtime/web/src/review-odor.js', 'text/javascript; charset=utf-8'],
   '/src/review-verdict.js': ['.runtime/web/src/review-verdict.js', 'text/javascript; charset=utf-8'],
   '/src/review-hunks.js': ['.runtime/web/src/review-hunks.js', 'text/javascript; charset=utf-8'],
+  // The talk deck: the same brain and fly, with numbers and recordings from data/deck.json (npm run deck).
+  '/presentation': ['web/presentation.html', 'text/html; charset=utf-8'],
+  '/presentation.css': ['web/presentation.css', 'text/css; charset=utf-8'],
+  '/presentation.js': ['.runtime/web/web/presentation.js', 'text/javascript; charset=utf-8'],
+  '/deck.json': ['data/deck.json', 'application/json'],
+  '/assets/workos-logo-white.svg': ['web/assets/workos-logo-white.svg', 'image/svg+xml'],
+  '/assets/nick-nisi.webp': ['web/assets/nick-nisi.webp', 'image/webp'],
 };
 const server = createServer(async (request, response) => {
   response.setHeader('X-Content-Type-Options', 'nosniff');

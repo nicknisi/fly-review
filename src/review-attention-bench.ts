@@ -7,7 +7,7 @@ import { REVIEW_CASES, changedText } from './review-cases.ts';
 import type { ReviewCase } from './review-cases.ts';
 import { loadGrownCases } from './review-grown.ts';
 import { fitLogistic, predictLogistic } from './review-logistic.ts';
-import { odorize } from './review-odor.ts';
+import { hear, odorize } from './review-odor.ts';
 
 /**
  * Does the fly look at the right hunk? Synthetic diffs are assembled from executed cases: K hunks that share a smell
@@ -50,7 +50,7 @@ const all: ReviewCase[] = [...(await loadGrownCases()), ...REVIEW_CASES].filter(
 const model = fitLogistic(
   training.results
     .filter(r => r.set === 'training')
-    .map(r => ({ features: odors[r.caseId].features, regression: !r.control })),
+    .map(r => ({ features: hear(odors[r.caseId].features), regression: !r.control })),
 );
 const odorOf = (c: ReviewCase) => odorize(odors[c.id].features, changedText(c));
 
@@ -110,11 +110,15 @@ for (const direction of directions) {
     );
     const odd = pick(oddPool);
     const hunks = shuffle([...bulk, odd]);
-    const reading = await smellSequence(hunks.map(odorOf), { seed, memoryPath, familiarity });
+    // A reading never writes long-term memory, so a run that failed on a busy machine is safe to repeat.
+    const read = () => smellSequence(hunks.map(odorOf), { seed, memoryPath, familiarity });
+    const reading = await read()
+      .catch(() => read())
+      .catch(() => read());
     const seq = reading.sequence!;
     const novelty = seq.hunks.map(h => h.noveltyHz);
     const share = seq.hunks.map(h => (h.avoidHz + h.approachHz > 0 ? h.avoidHz / (h.avoidHz + h.approachHz) : 0.5));
-    const logistic = hunks.map(c => predictLogistic(model, odors[c.id].features));
+    const logistic = hunks.map(c => predictLogistic(model, hear(odors[c.id].features)));
     results.push({
       direction,
       hunks: hunks.map(c => c.id),

@@ -11,5 +11,5 @@
     "rewriteRelativeImportExtensions": true,
     "skipLibCheck": true
   },
-  "include": ["web/review.ts"]
+  "include": ["web/review.ts", "web/presentation.ts"]
 }

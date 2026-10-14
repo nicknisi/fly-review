@@ -11,10 +11,21 @@ export const hash = (value: string | Buffer): string => createHash('sha256').upd
 
 export function command(file: string, args: string[], input = '', timeout = 30_000): Promise<string> {
   return new Promise((resolve, reject) => {
-    const child = execFile(file, args, { timeout, maxBuffer: 2_000_000, encoding: 'utf8' }, (error, stdout, stderr) => {
-      if (error) reject(new Error(`${file} failed: ${stderr || error.message}`));
+    let timedOut = false;
+    const child = execFile(file, args, { maxBuffer: 2_000_000, encoding: 'utf8' }, (error, stdout, stderr) => {
+      clearTimeout(timer);
+      if (timedOut) reject(new Error(`${file} timed out after ${timeout / 1000} s`));
+      else if (error) reject(new Error(`${file} failed: ${stderr || error.message}`));
       else resolve(stdout);
     });
+    // Our own timer, not execFile's: on timeout execFile destroys stdout before signalling, so a child that still exits 0
+    // (a JVM swallows the broken pipe) came back as success with truncated output. A child that has already exited is only
+    // draining its output and is left to finish.
+    const timer = setTimeout(() => {
+      if (child.exitCode !== null || child.signalCode !== null) return;
+      timedOut = true;
+      child.kill();
+    }, timeout);
     child.stdin?.on('error', () => {}); // An early child exit is reported by execFile's callback.
     child.stdin?.end(input);
   });

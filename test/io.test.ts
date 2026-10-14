@@ -31,4 +31,9 @@ test('subprocess boundary carries input and fails on errors or deadline expiry',
     /simulation failed/,
   );
   await assert.rejects(command(process.execPath, ['-e', 'setInterval(() => {}, 1000)'], '', 100));
+  // The JVM's shape under load: it outlives the deadline, shrugs off SIGTERM, swallows the broken pipe, and exits 0.
+  // That must be a timeout, never a success carrying truncated output.
+  const stubborn = `process.on('SIGTERM', () => {}); process.stdout.on('error', () => {});
+    setTimeout(() => process.stdout.write('[' + '1,'.repeat(200000) + '1]'), 300);`;
+  await assert.rejects(command(process.execPath, ['-e', stubborn], '', 100), /timed out/);
 });

@@ -1,0 +1,72 @@
+{
+  "at": "2026-10-13T21:39:16.478Z",
+  "note": "Balanced accuracy on the held-out split of the fly’s training run. Single glomerulus and logistic regression read the same odor the fly smells, fit on the same training cases.",
+  "training": "/Users/nicknisi/Developer/fly-attention/.runs/training.json",
+  "report": {
+    "full": {
+      "single": {
+        "glomerulus": "ORN_DM1",
+        "threshold": 0.3,
+        "above": false,
+        "train": 0.989,
+        "holdout": {
+          "balanced": 0.984,
+          "caught": "230/234",
+          "approved": "66/67"
+        }
+      },
+      "logistic": {
+        "balanced": 0.991,
+        "caught": "230/234",
+        "approved": "67/67"
+      },
+      "fly": {
+        "balanced": 0.934,
+        "caught": "231/234",
+        "approved": "59/67"
+      }
+    },
+    "neutral": {
+      "single": {
+        "glomerulus": "ORN_VA1v",
+        "threshold": 0.25,
+        "above": true,
+        "train": 0.845,
+        "holdout": {
+          "balanced": 0.832,
+          "caught": "166/234",
+          "approved": "64/67"
+        }
+      },
+      "logistic": {
+        "balanced": 0.948,
+        "caught": "220/234",
+        "approved": "64/67"
+      },
+      "fly": {
+        "balanced": 0.845,
+        "caught": "200/234",
+        "approved": "56/67"
+      }
+    },
+    "lexical": {
+      "single": {
+        "glomerulus": "ORN_VC2",
+        "threshold": 0.3698,
+        "above": false,
+        "train": 0.672,
+        "holdout": {
+          "balanced": 0.631,
+          "caught": "194/234",
+          "approved": "29/67"
+        }
+      },
+      "logistic": {
+        "balanced": 0.774,
+        "caught": "198/234",
+        "approved": "47/67"
+      },
+      "fly": null
+    }
+  }
+}

@@ -58,6 +58,14 @@ test('server exposes only fly-review and rejects cross-origin actions', { timeou
     const html = await page.text();
     assert.match(html, /Ask the fly/);
     assert.doesNotMatch(html, /Previous arcade/);
+    const deckPage = await fetch(`${base}/presentation`);
+    assert.equal(deckPage.status, 200);
+    assert.match(await deckPage.text(), /Are You Smarter Than A Fruit Fly/);
+    const deckData = await fetch(`${base}/deck.json`);
+    assert.equal(deckData.status, 200);
+    const deck = (await deckData.json()) as { numbers: { heldOut: number }; recordings: Record<string, unknown> };
+    assert.equal(deck.numbers.heldOut, 301);
+    assert.ok(deck.recordings.objects && deck.recordings.scrambled, 'the deck carries real recordings');
     const current = await fetch(`${base}/api/review/state`);
     assert.equal(current.status, 200);
     const state = (await current.json()) as { hasJev: boolean; hasInvestigator: boolean; review: { id: string } };

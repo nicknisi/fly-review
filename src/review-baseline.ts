@@ -3,10 +3,12 @@ import { join } from 'node:path';
 import { atomicJSON, ROOT } from './io.ts';
 import type { Descriptors } from './review-brain.ts';
 import { fitLogistic, predictLogistic } from './review-logistic.ts';
+import { hear } from './review-odor.ts';
 import { VERDICT_RULE } from './review-verdict.ts';
 
 /**
- * Could you skip the fly and just look at the smells? This fits a logistic regression on the exact training split the
+ * Could you skip the fly and just look at the smells? This fits a logistic regression, over the thirty descriptors as the
+ * live nose hears them (verdict receptors silent), on the exact training split the
  * fly was taught (from .runs/training.json), applies the fly's own three-way vote bands to its probability, and reports
  * the two side by side on the held-out grown cases, the bundled examples, and any smelled pull requests.
  *
@@ -29,7 +31,7 @@ const training = JSON.parse(await readFile(trainingPath, 'utf8')) as {
 const model = fitLogistic(
   training.results
     .filter(r => r.set === 'training')
-    .map(r => ({ features: odors[r.caseId].features, regression: !r.control })),
+    .map(r => ({ features: hear(odors[r.caseId].features), regression: !r.control })),
 );
 const verdict = (p: number) =>
   p >= VERDICT_RULE.objection ? 'changes_requested' : p <= VERDICT_RULE.approval ? 'no_objection' : 'abstain';
@@ -47,7 +49,7 @@ for (const [set, pick] of views) {
   const rows = training.results.filter(pick);
   if (rows.length === 0) continue;
   const scored = rows.map(r => {
-    const p = predictLogistic(model, odors[r.caseId].features);
+    const p = predictLogistic(model, hear(odors[r.caseId].features));
     const expected = r.control ? 'no_objection' : 'changes_requested';
     return { ...r, logistic: { p, verdict: verdict(p), agrees: verdict(p) === expected } };
   });
@@ -77,7 +79,7 @@ try {
     { features: Descriptors }
   >;
   pulls = Object.entries(prs).map(([pr, e]) => {
-    const p = predictLogistic(model, e.features);
+    const p = predictLogistic(model, hear(e.features));
     console.log(`${pr.padEnd(28)} logistic p(regression) ${p.toFixed(2)} ${verdict(p)}`);
     return { pr, p, verdict: verdict(p) };
   });

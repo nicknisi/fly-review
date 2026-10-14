@@ -13,8 +13,22 @@
 import { POKE_PRESETS } from '../src/review-pokes.js';
 import type { PokePreset } from '../src/review-pokes.js';
 
-/** Motor drives from the three readouts, sensory drive from the input, and the mushroom body's approach/avoid balance (0..1 each). */
-export type Drive = { feed: number; groom: number; escape: number; input: number; approach?: number; avoid?: number };
+/**
+ * Motor drives from the three readouts, sensory drive from the input, and the mushroom body's approach/avoid balance
+ * (0..1 each). The optional three are read from the same recorded bin: how busy the whole network is (arousal), how many
+ * Kenyon cells the smell woke (smell), and how hard the dopamine neurons are firing (dopamine).
+ */
+export type Drive = {
+  feed: number;
+  groom: number;
+  escape: number;
+  input: number;
+  approach?: number;
+  avoid?: number;
+  arousal?: number;
+  smell?: number;
+  dopamine?: number;
+};
 
 const VIEW = 'viewBox="0 0 64 72" aria-hidden="true" focusable="false"';
 const LAYERS = {

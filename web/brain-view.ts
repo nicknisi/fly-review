@@ -213,7 +213,11 @@ export class BrainView {
   resetView() {
     this.yaw = -0.18;
     this.pitch = 0.06;
-    this.target = { center: [0, 0, 0], zoom: 3 };
+    this.aim([0, 0, 0], 3);
+  }
+  /** Ease the camera toward a point and zoom, in normalized scene units. */
+  aim(center: [number, number, number], zoom: number) {
+    this.target = { center, zoom };
   }
   /** Swoop the camera toward one readout population (0 A, 1 B, 2 C), centering on its busiest soma; null eases back out. */
   focusReadout(population: number | null) {

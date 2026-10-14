@@ -3,6 +3,7 @@ import type { ReviewCase } from './review-cases.ts';
 import type { Attention } from './review-types.ts';
 import type { FlyVerdict, Features, ReviewBrain } from './review-brain.ts';
 import { PULL_REQUEST_CASE_ID, RECEPTORS, flyName } from './review-cases.ts';
+import { hear } from './review-odor.ts';
 export { PULL_REQUEST_CASE_ID };
 
 /** Budget for what Jev is shown. Files past the budget are listed by name with their patch omitted. */
@@ -231,8 +232,9 @@ export function reviewComment(
           ? 'Its proboscis came out. Please don’t put “a fly licked it” in the incident report.'
           : 'Please don’t put “a fly approved it” in the incident report.'
         : 'Not enough downstream activity to issue a verdict.';
-  const noticed = RECEPTORS.filter(r => review.features[r.key] >= 0.5)
-    .map(r => `${r.label.toLowerCase()} ${Math.round(review.features[r.key] * 100)}%`)
+  const heard = hear(review.features);
+  const noticed = RECEPTORS.filter(r => heard[r.key] >= 0.5)
+    .map(r => `${r.label.toLowerCase()} ${Math.round(heard[r.key] * 100)}%`)
     .join(' · ');
   const properties = noticed || 'nothing above 50% on any of the thirty receptors';
   return [

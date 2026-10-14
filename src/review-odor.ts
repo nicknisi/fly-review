@@ -312,9 +312,29 @@ export function descriptorOdor(descriptors: Descriptors): Odor {
   }
   return odor;
 }
+/**
+ * Receptors whose question is a verdict in disguise: answering them means judging whether behavior changed, which is the
+ * label the tests produce. A nose may say what changed; it may not say whether that changed the result.
+ */
+export const VERDICT_RECEPTORS: readonly ReceptorKey[] = ['restructuresOnly', 'renameOnly'];
+/** full: all thirty receptors. neutral: without the verdict receptors. lexical: no Jev at all, tokens only. */
+export const NOSES = ['full', 'neutral', 'lexical'] as const;
+export type Nose = (typeof NOSES)[number];
+export const LIVE_NOSE: Nose = 'neutral';
+export function parseNose(value: string | undefined): Nose {
+  const nose = (value ?? LIVE_NOSE) as Nose;
+  if (!NOSES.includes(nose)) throw new Error(`NOSE must be one of ${NOSES.join(', ')}`);
+  return nose;
+}
+/** What of Jev's description reaches the antenna through a nose: verdict receptors are silent unless the nose is full. */
+export function hear(descriptors: Descriptors, nose: Nose = LIVE_NOSE): Descriptors {
+  if (nose === 'full') return descriptors;
+  const silent = nose === 'lexical' ? RECEPTOR_KEYS : VERDICT_RECEPTORS;
+  return { ...descriptors, ...Object.fromEntries(silent.map(k => [k, 0])) };
+}
 /** The whole smell of a change: what Jev noticed plus what the tokens are. */
-export function odorize(descriptors: Descriptors, changedText: string): Odor {
-  return { ...descriptorOdor(descriptors), ...lexicalOdor(tokenize(changedText)) };
+export function odorize(descriptors: Descriptors, changedText: string, nose: Nose = LIVE_NOSE): Odor {
+  return { ...descriptorOdor(hear(descriptors, nose)), ...lexicalOdor(tokenize(changedText)) };
 }
 /** Which glomerulus a receptor or token drives, for the display. */
 export function odorEntries(odor: Odor): { glomerulus: Glomerulus; hz: number; receptor: ReceptorKey | null }[] {

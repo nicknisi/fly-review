@@ -25,7 +25,9 @@
     "baseline": "node src/review-baseline.ts",
     "bench:attention": "node --env-file-if-exists=.env src/review-attention-bench.ts",
     "mutate:repo": "node --env-file-if-exists=.env src/review-mutate.ts",
-    "wobble": "node --env-file-if-exists=.env src/review-wobble.ts"
+    "wobble": "node --env-file-if-exists=.env src/review-wobble.ts",
+    "nose": "node src/review-nose.ts",
+    "deck": "node src/review-deck.ts"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",

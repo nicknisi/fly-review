@@ -6,7 +6,16 @@ import test, { after } from 'node:test';
 import { RECEPTOR_KEYS, channelDiagnosis, parseFeatures, reviewVerdict } from '../src/review-brain.ts';
 import type { Descriptors, ReviewBrain } from '../src/review-brain.ts';
 import type { LessonEntry } from '../src/review-memory.ts';
-import { lexicalOdor, odorEntries, odorize, tokenize } from '../src/review-odor.ts';
+import {
+  LIVE_NOSE,
+  RECEPTOR_GLOMERULUS,
+  VERDICT_RECEPTORS,
+  lexicalOdor,
+  odorEntries,
+  odorKey,
+  odorize,
+  tokenize,
+} from '../src/review-odor.ts';
 import { REVIEW_CASES, changedRange, changedText, customReviewCase, diffLines } from '../src/review-cases.ts';
 import { encodeWithJev } from '../src/review-jev.ts';
 import { emptyLedger, fold } from '../src/review-ledger.ts';
@@ -82,6 +91,18 @@ test('diff rendering preserves old and new lines and identifies the actual chang
   );
   assert.equal(changedRange(review), 'checkout.ts:6–8');
   assert.equal(diffLines('x', 'x').filter(l => l.kind !== 'same').length, 0);
+});
+
+test('the live nose never lets a verdict receptor reach the antenna; the lexical nose hears no Jev at all', () => {
+  const sure = { ...features, restructuresOnly: 0.99, renameOnly: 0.99 };
+  const text = 'const total = a + b;';
+  const glomerulus = (k: (typeof VERDICT_RECEPTORS)[number]) => odorKey(RECEPTOR_GLOMERULUS[k]);
+  assert.equal(LIVE_NOSE, 'neutral');
+  for (const k of VERDICT_RECEPTORS) {
+    assert.equal(odorize(sure, text)[glomerulus(k)], undefined, `${k} is silent through the live nose`);
+    assert.ok(odorize(sure, text, 'full')[glomerulus(k)] > 0, `${k} is heard through the full nose`);
+  }
+  assert.deepEqual(odorize(sure, text, 'lexical'), lexicalOdor(tokenize(text)));
 });
 
 test('descriptors are bounded, the odor is sparse and deterministic, and the vote is the MBON balance', () => {

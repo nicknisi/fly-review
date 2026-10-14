@@ -5,7 +5,7 @@
  * for what cannot be seen at page scale, and every number in them comes from the run on screen when there is one.
  */
 import type { ReviewState } from '../src/review-types.js';
-import { RECEPTORS, odorEntries } from '../src/review-odor.js';
+import { RECEPTORS, hear, odorEntries } from '../src/review-odor.js';
 import type { Drive } from './fly.js';
 
 export type TourContext = {
@@ -56,7 +56,7 @@ const hz = (n: number) => `${Math.round(n)} Hz`;
 
 function noticed(s: ReviewState | null): string[] {
   if (!s?.features) return DEMO_LABELS;
-  const f = s.features;
+  const f = hear(s.features);
   const top = RECEPTORS.filter(r => f[r.key] >= 0.5)
     .sort((a, b) => f[b.key] - f[a.key])
     .slice(0, 3)
@@ -683,7 +683,7 @@ export class Walkthrough {
         body: s =>
           `Jev reads the change and answers <b>thirty tiny yes-or-no questions</b> about what changed${
             s?.features ? `, like “${noticed(s)[0]}”` : ''
-          }. Not one of them asks whether the change is good. Jev is a nose, not a judge.`,
+          }. Not one of them asks whether the change is good. Two came too close (“does this change the result?”), so the fly never smells them: it can’t copy the answer. Jev is a nose, not a judge.`,
         scene: (s, host) => {
           host.append(sniffScene(noticed(s)));
         },
