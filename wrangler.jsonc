@@ -1,0 +1,21 @@
+// fruitfly.review on Cloudflare: a Worker in front of one Container running the server in public mode.
+// Deploy with `wrangler deploy` (Docker must be running). Secrets: `wrangler secret put TYPESAFE_API_KEY`,
+// and optionally GITHUB_TOKEN (a fine-grained token with public repository access only).
+{
+  "name": "fruitfly-review",
+  "main": "deploy/cloudflare/worker.js",
+  "compatibility_date": "2026-10-14",
+  "observability": { "enabled": true },
+  "routes": [{ "pattern": "fruitfly.review", "custom_domain": true }],
+  "containers": [
+    {
+      "class_name": "FlyReview",
+      "image": "./Dockerfile",
+      // 2 vCPU: the simulator steps its neurons in parallel.
+      "instance_type": "standard-3",
+      "max_instances": 1,
+    },
+  ],
+  "durable_objects": { "bindings": [{ "name": "FLY", "class_name": "FlyReview" }] },
+  "exports": { "FlyReview": { "type": "durable-object", "storage": "sqlite" } },
+}

@@ -1,8 +1,8 @@
 .memory-lab {
-  margin: 28px 0;
-  padding: 22px;
+  margin: 32px 0;
+  padding: 28px;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 20px;
   background: var(--surface);
   font-size: 0.85rem;
   line-height: 1.6;
@@ -32,7 +32,7 @@
 .lab-pair > div {
   padding: 14px;
   border: 1px solid var(--line);
-  border-radius: 5px;
+  border-radius: 12px;
   background: var(--bg);
   overflow-wrap: anywhere;
 }
@@ -84,10 +84,10 @@
   max-height: calc(100dvh - 32px);
   overflow: auto;
   border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 24px;
+  border-radius: 20px;
+  padding: 28px;
   color: var(--ink);
-  background: var(--bg);
+  background: var(--surface);
 }
 .code-disclosure p {
   margin: 16px 0;
@@ -101,8 +101,9 @@
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   font: 11px/1.6 var(--mono);
-  background: var(--surface);
+  background: var(--bg);
   padding: 15px;
+  border-radius: 10px;
 }
 .code-disclosure form {
   display: flex;

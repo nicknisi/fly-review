@@ -300,8 +300,9 @@ async function runBridge(
       ...(shuffle ? [`--shuffle=${shuffle}`] : []),
     ],
     line + '\n',
-    // A sequence runs three trials per hunk, the first with plasticity on; 32 hunks is one to two minutes.
-    line.includes('\tsequence\t') ? 240_000 : 60_000,
+    // A sequence runs three trials per hunk, the first with plasticity on: 32 hunks is one to two minutes on an idle
+    // laptop, and 25 took 2:50 on a busy one, so the cap leaves room to finish on stage.
+    line.includes('\tsequence\t') ? 600_000 : 60_000,
   );
   const lines = output.trim().split('\n');
   if (lines.length !== 2) throw new Error('Malformed review assay output');

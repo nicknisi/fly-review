@@ -1,29 +1,47 @@
+/* The deck's world: a near-black stage, violet as the house color, red and green only for the fly's two teams. */
 :root {
-  color-scheme: light;
-  --bg: oklch(1 0 0);
-  --ink: oklch(0.19 0.01 25);
-  --muted: oklch(0.46 0.01 25);
-  --line: oklch(0.87 0.006 25);
-  --surface: oklch(0.965 0.003 25);
-  --red: oklch(0.568 0.208 27.1);
-  --deep: oklch(0.34 0.12 27);
+  color-scheme: dark;
+  --bg: oklch(0.12 0.012 290);
+  --ink: oklch(0.96 0.005 290);
+  --muted: oklch(0.74 0.02 290);
+  --faint: oklch(0.58 0.02 290);
+  --line: oklch(0.3 0.02 290);
+  --surface: oklch(0.16 0.015 290);
+  --surface-2: oklch(0.21 0.02 290);
+  --on-accent: oklch(0.14 0.02 290);
+  --violet: oklch(0.7 0.18 300);
+  --red: oklch(0.68 0.22 25);
+  --deep: oklch(0.45 0.17 25);
   --yellow: oklch(0.89 0.15 93);
-  --green: oklch(0.38 0.1 145);
-  --ch-a: oklch(0.55 0.17 150);
-  --ch-b: oklch(0.5 0.2 300);
-  --ch-c: oklch(0.55 0.2 25);
+  --green: oklch(0.85 0.2 150);
+  --novelty-ink: var(--violet);
+  --ch-a: oklch(0.78 0.18 150);
+  --ch-b: oklch(0.68 0.19 300);
+  --ch-c: oklch(0.66 0.21 25);
   --ch-a-bright: oklch(0.85 0.2 150);
   --ch-b-bright: oklch(0.72 0.2 300);
   --ch-c-bright: oklch(0.68 0.22 25);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    sans-serif;
+  --sans: ui-sans-serif, -apple-system, 'Segoe UI', system-ui, sans-serif;
+  font-family: var(--sans);
   color: var(--ink);
   background: var(--bg);
+  accent-color: var(--violet);
+  caret-color: var(--violet);
+  scrollbar-color: var(--line) var(--bg);
+}
+::selection {
+  background: oklch(0.7 0.18 300 / 0.45);
+  color: var(--ink);
+}
+a {
+  color: inherit;
+  text-underline-offset: 3px;
+  text-decoration-color: oklch(0.7 0.18 300 / 0.6);
+}
+a:hover {
+  text-decoration-color: var(--violet);
 }
 * {
   box-sizing: border-box;
@@ -39,9 +57,11 @@ select {
 button {
   cursor: pointer;
   border: 0;
-  border-radius: 5px;
+  border-radius: 999px;
   transition:
     background 0.16s ease-out,
+    border-color 0.16s ease-out,
+    color 0.16s ease-out,
     transform 0.16s ease-out;
 }
 button:disabled {
@@ -57,8 +77,8 @@ summary:focus-visible,
 input:focus-visible,
 select:focus-visible,
 canvas:focus-visible {
-  outline: 3px solid var(--red);
-  outline-offset: 4px;
+  outline: 2px solid var(--yellow);
+  outline-offset: 3px;
 }
 [hidden] {
   display: none !important;
@@ -87,42 +107,64 @@ p {
   white-space: nowrap;
   border: 0;
 }
-header {
+.site-header {
   height: 64px;
   padding: 0 40px;
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 20px;
   border-bottom: 1px solid var(--line);
 }
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.header-nav .author-link {
+  margin-left: 8px;
+  border: 1px solid var(--line);
+  font-family: var(--mono);
+  color: var(--muted);
+}
+.header-nav .author-link:hover {
+  border-color: var(--violet);
+  color: var(--ink);
+}
 .logo {
-  font-size: 1.17rem;
-  font-weight: 850;
+  font-size: 1.25rem;
+  font-weight: 800;
   letter-spacing: -0.035em;
   color: var(--ink);
   text-decoration: none;
 }
 .logo span {
-  color: var(--red);
+  color: var(--violet);
   padding: 0 3px;
 }
 #connection {
   margin-left: auto;
-  font-size: 0.7rem;
-  color: var(--muted);
+  font: 500 0.68rem var(--mono);
+  letter-spacing: 0.04em;
+  color: var(--faint);
 }
 .quiet {
   background: transparent;
   color: var(--ink);
-  padding: 9px 11px;
-  font-size: 0.75rem;
+  padding: 8px 14px;
+  font-size: 0.78rem;
+  font-weight: 550;
+  border: 1px solid transparent;
+}
+a.quiet {
+  border-radius: 999px;
+  text-decoration: none;
 }
 .quiet:hover:not(:disabled) {
-  background: var(--surface);
+  background: var(--surface-2);
 }
 .quiet.light {
   color: oklch(0.88 0 0);
-  font-size: 0.66rem;
+  font-size: 0.72rem;
 }
 .quiet.light:hover:not(:disabled) {
   background: oklch(0.25 0 0);
@@ -133,28 +175,75 @@ main {
   padding: 0 40px 26px;
 }
 .intro {
+  padding: clamp(40px, 7vh, 88px) 0 40px;
+}
+.intro-row {
   display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
   justify-content: space-between;
+  gap: 28px 48px;
+  margin-top: 30px;
+}
+.intro-row > div:first-child {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 30px;
-  padding: 30px 0 24px;
+  gap: 22px 40px;
 }
 .intro h1 {
-  font-size: 3.05rem;
-  line-height: 1.08;
+  font-size: clamp(2.7rem, 6.6vw, 6rem);
+  line-height: 0.96;
   letter-spacing: -0.035em;
-  font-weight: 820;
+  font-weight: 780;
+  /* Two lines on desktop: "Would you merge code / reviewed by a fruit fly?" */
+  max-width: 11.8em;
 }
-.intro p {
-  font-size: 0.86rem;
+.lede {
+  font-size: clamp(1.05rem, 1.45vw, 1.35rem);
+  line-height: 1.45;
   color: var(--muted);
-  line-height: 1.55;
-  margin-top: 13px;
+  max-width: 40ch;
+}
+.lede b {
+  color: var(--violet);
+  font-weight: 650;
+}
+.byline {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 5px 18px 5px 5px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  text-decoration: none;
+  transition: border-color 0.2s var(--ease);
+}
+.byline:hover {
+  border-color: var(--violet);
+}
+.byline img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  outline: 2px solid var(--violet);
+}
+.byline b {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+.byline small {
+  display: block;
+  font: 500 0.72rem var(--mono);
+  color: var(--violet);
+  margin-top: 2px;
 }
 .notice {
   padding: 13px 16px;
   border: 1px solid var(--line);
-  border-radius: 5px;
+  border-radius: 12px;
   background: var(--surface);
   display: flex;
   align-items: center;
@@ -171,64 +260,81 @@ main {
 .error {
   padding: 16px;
   border: 1px solid var(--red);
-  border-radius: 5px;
+  border-radius: 12px;
   margin-bottom: 16px;
-  color: var(--deep);
+  background: oklch(0.68 0.22 25 / 0.08);
+  color: var(--red);
   font-size: 0.83rem;
 }
+/* The three steps read as one track: finished legs go white, the live one goes violet. */
 .story {
   list-style: none;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 20px;
-  padding: 19px 0;
-  margin: 0 0 20px;
+  gap: 0 24px;
+  padding: 0;
+  margin: 0 0 28px;
   border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
 }
 .story li {
   display: flex;
-  gap: 11px;
+  gap: 12px;
   align-items: center;
-  opacity: 0.7;
+  padding-top: 16px;
+  margin-top: -1px;
+  border-top: 2px solid transparent;
+  opacity: 0.55;
+  transition:
+    opacity 0.4s var(--ease),
+    border-color 0.4s var(--ease);
 }
 .story li > span {
   display: grid;
   place-items: center;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   flex-shrink: 0;
   border: 1px solid var(--line);
   border-radius: 50%;
-  font: 11px var(--mono);
+  font: 600 11px var(--mono);
+  color: var(--muted);
 }
 .story strong {
-  font-size: 0.9rem;
+  font-size: 0.98rem;
+  letter-spacing: -0.01em;
 }
 .story small {
   display: block;
   color: var(--muted);
-  font-size: 0.69rem;
+  font-size: 0.74rem;
   margin-top: 4px;
-  line-height: 1.4;
+  line-height: 1.45;
 }
-.story .active {
+.story .active,
+.story .done {
   opacity: 1;
 }
+.story .active {
+  border-top-color: var(--violet);
+}
+.story .done {
+  border-top-color: var(--ink);
+}
 .story .active > span {
-  background: var(--red);
-  border-color: var(--red);
-  color: var(--bg);
+  background: var(--violet);
+  border-color: var(--violet);
+  color: var(--on-accent);
 }
 .story .done > span {
   background: var(--ink);
   border-color: var(--ink);
-  color: var(--bg);
+  color: var(--on-accent);
 }
 .experiment {
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 20px;
   overflow: hidden;
+  background: var(--surface);
 }
 .stage-main {
   display: grid;
@@ -246,18 +352,18 @@ main {
   margin-bottom: 12px;
 }
 .section-header h2 {
-  font-size: 1rem;
+  font-size: 1.15rem;
   letter-spacing: -0.02em;
 }
 .section-header > span {
-  font-size: 0.65rem;
-  color: var(--muted);
+  font: 500 0.66rem var(--mono);
+  color: var(--faint);
 }
 select {
   background: var(--bg);
   border: 1px solid var(--line);
-  border-radius: 4px;
-  padding: 10px 12px;
+  border-radius: 10px;
+  padding: 11px 14px;
   font-size: 0.78rem;
   color: var(--ink);
   width: 100%;
@@ -265,15 +371,16 @@ select {
 }
 .diff-shell {
   border: 1px solid var(--line);
-  border-radius: 5px;
+  border-radius: 12px;
   overflow: hidden;
+  background: var(--bg);
 }
 .file-bar {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  padding: 9px 11px;
-  background: var(--surface);
+  padding: 10px 12px;
+  background: var(--surface-2);
   font: 10px var(--mono);
 }
 .file-bar span {
@@ -286,6 +393,7 @@ select {
   padding: 10px 0;
   max-height: 255px;
   tab-size: 2;
+  scrollbar-width: thin;
 }
 .diff-line {
   display: block;
@@ -301,16 +409,16 @@ select {
   color: var(--muted);
 }
 .diff-line.removed {
-  background: oklch(0.965 0.022 27);
-  color: oklch(0.35 0.12 27);
+  background: oklch(0.5 0.15 25 / 0.24);
+  color: oklch(0.88 0.08 25);
 }
 .diff-line.added {
-  background: oklch(0.96 0.025 145);
-  color: oklch(0.32 0.08 145);
+  background: oklch(0.5 0.12 150 / 0.22);
+  color: oklch(0.9 0.08 150);
 }
 .diff-line.scan {
   background: var(--yellow);
-  color: var(--ink);
+  color: var(--on-accent);
 }
 .diff-line.review-focus {
   outline: 1px solid var(--red);
@@ -323,17 +431,22 @@ select {
   margin: 14px 0;
 }
 .primary {
-  background: var(--red);
-  color: var(--bg);
-  padding: 14px 18px;
+  background: var(--violet);
+  color: var(--on-accent);
+  padding: 15px 22px;
   display: flex;
   justify-content: space-between;
   gap: 24px;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 750;
+  box-shadow: 0 10px 28px -10px oklch(0 0 0 / 0.7);
 }
 .primary:hover:not(:disabled) {
-  background: var(--deep);
+  background: oklch(0.78 0.15 300);
+  box-shadow: 0 14px 34px -10px oklch(0 0 0 / 0.8);
+}
+.primary:disabled {
+  box-shadow: none;
 }
 #review {
   width: 100%;
@@ -350,15 +463,17 @@ select {
   gap: 7px;
   margin-top: 12px;
 }
+/* Lit receptors, as on the slides: violet-tinted chips. */
 .signal-card {
   display: flex;
   justify-content: space-between;
   gap: 7px;
   align-items: center;
-  background: var(--surface);
-  padding: 9px 10px;
-  border-radius: 4px;
-  font-size: 0.66rem;
+  background: oklch(0.7 0.18 300 / 0.1);
+  border: 1px solid oklch(0.7 0.18 300 / 0.35);
+  padding: 9px 11px;
+  border-radius: 10px;
+  font-size: 0.7rem;
   animation: arrive 0.3s ease-out both;
 }
 .signal-card:nth-child(2) {
@@ -371,19 +486,19 @@ select {
   animation-delay: 0.21s;
 }
 .signal-card b {
-  font-size: 0.6rem;
-  color: var(--muted);
-  font-weight: 500;
+  font: 600 0.62rem var(--mono);
+  color: var(--violet);
 }
 .signal-card.likely b {
   color: var(--green);
 }
+/* Matches the canvas clear color so the brain has no visible frame. */
 .brain-side {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  background: oklch(0.1 0 0);
-  color: var(--bg);
+  background: rgb(2 2 2);
+  color: var(--ink);
   position: relative;
 }
 .brain-toolbar {
@@ -426,9 +541,11 @@ select {
 }
 .scene-caption strong {
   display: block;
-  font-size: 1.45rem;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
+  font-size: clamp(1.5rem, 2.4vw, 2.3rem);
+  font-weight: 760;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  max-width: 22ch;
 }
 .scene-caption span {
   display: block;
@@ -447,11 +564,12 @@ select {
   font-size: 0.59rem;
 }
 .truth-label {
-  padding: 11px 18px;
-  background: var(--deep);
-  color: var(--bg);
-  font-size: 0.65rem;
-  line-height: 1.5;
+  padding: 13px 18px;
+  border-top: 1px solid oklch(1 0 0 / 0.08);
+  color: var(--violet);
+  font: 600 0.68rem/1.5 var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   text-align: center;
 }
 .anatomy-error {
@@ -524,7 +642,7 @@ select {
   background: var(--surface);
 }
 .live-status strong {
-  font-size: 0.83rem;
+  font-size: 0.9rem;
   line-height: 1.5;
   flex-shrink: 0;
 }
@@ -542,32 +660,35 @@ select {
   align-items: center;
 }
 .verdict > div:first-child > span {
-  font-size: 0.74rem;
-  color: var(--muted);
+  font: 600 0.7rem var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--faint);
 }
 .verdict h2 {
-  font-size: 2.3rem;
-  line-height: 1.08;
-  letter-spacing: -0.03em;
-  margin: 7px 0;
+  font-size: clamp(2.2rem, 4.2vw, 3.6rem);
+  font-weight: 780;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  margin: 10px 0;
   color: var(--red);
 }
 .verdict[data-vote='no_objection'] h2 {
-  color: var(--ink);
+  color: var(--green);
 }
 .verdict[data-vote='abstain'] h2 {
-  color: var(--muted);
+  color: var(--yellow);
 }
 /* On a pull request the headline is attention, not a vote: it takes the novelty ink whatever the hunk's vote was. */
 .verdict[data-looked] h2 {
-  color: var(--novelty-ink, #7c3aed);
+  color: var(--novelty-ink);
 }
 .verdict[data-looked] {
-  background: linear-gradient(90deg, oklch(0.96 0.03 300), transparent 40%);
+  background: linear-gradient(90deg, oklch(0.7 0.18 300 / 0.14), transparent 55%);
 }
 .verdict p {
-  font-size: 0.8rem;
-  line-height: 1.5;
+  font-size: 0.86rem;
+  line-height: 1.55;
 }
 .verdict-actions {
   max-width: 270px;
@@ -595,14 +716,14 @@ select {
 }
 .experiment-controls > span {
   font: 10px var(--mono);
-  color: var(--muted);
+  color: var(--faint);
   margin-left: auto;
 }
 .comparison {
-  padding: 17px 21px;
+  padding: 18px 22px;
   border: 1px solid var(--line);
   background: var(--surface);
-  border-radius: 6px;
+  border-radius: 16px;
   margin: 8px 0;
 }
 .comparison strong {
@@ -615,10 +736,11 @@ select {
   color: var(--muted);
 }
 .verification {
-  margin: 25px 0 30px;
-  padding: 25px;
+  margin: 28px 0 32px;
+  padding: 28px;
   border: 1px solid var(--line);
-  border-radius: 7px;
+  border-radius: 20px;
+  background: var(--surface);
 }
 .verification-header {
   display: flex;
@@ -627,14 +749,17 @@ select {
   gap: 18px;
 }
 .section-label {
-  font-size: 0.73rem;
-  color: var(--muted);
+  font: 600 0.7rem var(--mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--violet);
 }
 .verification h2 {
-  font-size: 1.85rem;
-  line-height: 1.12;
-  letter-spacing: -0.025em;
-  margin: 8px 0 10px;
+  font-size: clamp(1.8rem, 3.2vw, 2.7rem);
+  font-weight: 760;
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  margin: 12px 0 12px;
 }
 .verification-header p {
   font-size: 0.8rem;
@@ -643,10 +768,10 @@ select {
   max-width: 83ch;
 }
 .tag {
-  font: 10px var(--mono);
-  background: var(--surface);
-  padding: 7px 9px;
-  border-radius: 4px;
+  font: 11px var(--mono);
+  background: var(--surface-2);
+  padding: 7px 11px;
+  border-radius: 999px;
   white-space: nowrap;
 }
 .test-input {
@@ -657,8 +782,8 @@ select {
 .test-results {
   display: flex;
   gap: 0;
-  background: var(--surface);
-  border-radius: 6px;
+  background: var(--bg);
+  border-radius: 14px;
   overflow: hidden;
 }
 .test-results > div {
@@ -719,22 +844,45 @@ select {
   white-space: nowrap;
 }
 .inspect {
-  margin-top: 25px;
+  margin-top: 32px;
   border-top: 1px solid var(--line);
-  padding-top: 20px;
+  padding-top: 24px;
 }
 .inspect > summary {
   cursor: pointer;
   display: flex;
-  gap: 12px;
-  align-items: center;
-  font-size: 0.85rem;
-  font-weight: 700;
+  gap: 14px;
+  align-items: baseline;
+  font-size: 1.35rem;
+  font-weight: 760;
+  letter-spacing: -0.02em;
   list-style-position: inside;
+}
+.inspect > summary::-webkit-details-marker {
+  display: none;
+}
+/* A drawn chevron: the summary is flex, so the native marker is gone. */
+.inspect > summary::before {
+  content: '';
+  align-self: center;
+  flex-shrink: 0;
+  width: 9px;
+  height: 9px;
+  border-right: 2px solid var(--violet);
+  border-bottom: 2px solid var(--violet);
+  transform: translateY(-3px) rotate(-45deg);
+  transition: transform 0.25s var(--ease);
+}
+.inspect[open] > summary::before {
+  transform: translateY(-3px) rotate(45deg);
+}
+.inspect > summary:hover {
+  color: var(--violet);
 }
 .inspect > summary span {
   font-weight: 400;
-  font-size: 0.73rem;
+  font-size: 0.8rem;
+  letter-spacing: 0;
   color: var(--muted);
 }
 .inspection-grid {
@@ -744,14 +892,16 @@ select {
   padding-top: 28px;
 }
 .inspection-grid h2 {
-  font-size: 1rem;
+  font-size: 1.1rem;
+  letter-spacing: -0.015em;
   margin-bottom: 14px;
 }
 .inspection-grid p {
-  font-size: 0.74rem;
+  font-size: 0.8rem;
   line-height: 1.75;
   color: var(--muted);
   margin: 10px 0;
+  max-width: 72ch;
 }
 .inspection-grid details {
   font-size: 0.74rem;
@@ -782,7 +932,7 @@ select {
   margin: 8px 0;
 }
 .encoder-mode input {
-  accent-color: var(--red);
+  accent-color: var(--violet);
 }
 .feature {
   display: grid;
@@ -800,7 +950,7 @@ select {
 .feature input {
   grid-column: 1/-1;
   width: 100%;
-  accent-color: var(--red);
+  accent-color: var(--violet);
 }
 .encoded-rate {
   grid-column: 1/-1;
@@ -815,7 +965,7 @@ select {
 .playback input {
   min-width: 50px;
   width: 100%;
-  accent-color: var(--red);
+  accent-color: var(--violet);
 }
 .playback output {
   font: 9px var(--mono);
@@ -859,10 +1009,11 @@ meter::-moz-meter-bar {
 }
 #test-code {
   font: 11px/1.8 var(--mono);
-  padding: 15px;
+  padding: 16px;
   overflow: auto;
   background: var(--surface);
-  border-radius: 5px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
 }
 #log {
   list-style: none;
@@ -884,30 +1035,54 @@ meter::-moz-meter-bar {
 #evidence {
   overflow-wrap: anywhere;
 }
-footer {
+/* The close: one big line, then who made it. */
+.site-footer {
   border-top: 1px solid var(--line);
-  margin-top: 28px;
-  padding-top: 20px;
+  margin-top: 56px;
+  padding: 56px 0 24px;
+}
+.signoff {
+  font-size: clamp(2rem, 4.6vw, 4.2rem);
+  font-weight: 780;
+  line-height: 1;
+  letter-spacing: -0.035em;
+  max-width: 18ch;
+}
+.signoff span {
+  color: var(--violet);
+}
+.disclaimer {
+  margin-top: 22px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 60ch;
+}
+.credits {
   display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  font-size: 0.7rem;
-  line-height: 1.7;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 32px;
+  margin-top: 40px;
+  font-size: 0.8rem;
   color: var(--muted);
 }
 dialog {
   border: 1px solid var(--line);
-  padding: 34px;
-  max-width: min(620px, calc(100vw - 32px));
-  border-radius: 10px;
+  padding: 36px;
+  max-width: min(640px, calc(100vw - 32px));
+  border-radius: 20px;
   color: var(--ink);
-  background: var(--bg);
+  background: var(--surface);
+  box-shadow: 0 30px 80px -20px oklch(0 0 0 / 0.8);
 }
 dialog::backdrop {
-  background: oklch(0.1 0 0 / 0.65);
+  background: oklch(0.06 0.01 290 / 0.78);
 }
 dialog h2 {
-  font-size: 1.6rem;
+  font-size: 2.2rem;
+  font-weight: 780;
+  letter-spacing: -0.03em;
   margin: 17px 0;
 }
 dialog p {
@@ -950,12 +1125,15 @@ code {
   main {
     padding: 0 24px 25px;
   }
-  header {
+  .site-header {
     padding: 0 24px;
-    gap: 13px;
+    gap: 12px;
   }
-  .intro h1 {
-    font-size: 2.65rem;
+  #connection {
+    display: none;
+  }
+  .header-nav {
+    margin-left: auto;
   }
   .stage-main {
     grid-template-columns: minmax(300px, 1fr) minmax(0, 1.2fr);
@@ -977,9 +1155,6 @@ code {
     left: 18px;
     right: 18px;
   }
-  .scene-caption strong {
-    font-size: 1.2rem;
-  }
   .live-status {
     align-items: start;
     flex-direction: column;
@@ -989,11 +1164,8 @@ code {
   .verdict {
     padding: 23px;
   }
-  .verdict h2 {
-    font-size: 1.9rem;
-  }
   .story small {
-    font-size: 0.65rem;
+    font-size: 0.68rem;
   }
   .brain-viewport {
     min-height: 410px;
@@ -1009,41 +1181,37 @@ code {
   main {
     padding: 0 16px 24px;
   }
-  header {
-    height: 58px;
-    padding: 0 16px;
-    gap: 7px;
+  /* On a phone the nav becomes its own swipeable row under the logo. */
+  .site-header {
+    height: auto;
+    flex-wrap: wrap;
+    padding: 12px 16px 8px;
+    gap: 6px;
   }
-  .logo {
-    font-size: 1.03rem;
+  .header-nav {
+    margin: 0 -16px;
+    padding: 0 12px 2px;
+    width: calc(100% + 32px);
+    overflow-x: auto;
+    scrollbar-width: none;
   }
-  #connection {
-    display: none;
+  .header-nav > * {
+    flex-shrink: 0;
   }
-  header #explain {
-    margin-left: auto;
-    font-size: 0.65rem;
-  }
-  header #sound {
-    font-size: 0.65rem;
-    padding: 7px;
+  .header-nav .quiet {
+    padding: 7px 11px;
+    font-size: 0.74rem;
   }
   .intro {
-    padding: 25px 0;
-  }
-  .intro h1 {
-    font-size: 2.35rem;
-  }
-  .intro p {
-    font-size: 0.78rem;
+    padding: 36px 0 32px;
   }
   .story {
-    gap: 12px;
-    padding: 15px 0;
+    gap: 0 12px;
   }
   .story li {
     align-items: start;
     gap: 7px;
+    padding-top: 12px;
   }
   .story li > span {
     width: 21px;
@@ -1051,7 +1219,7 @@ code {
     font-size: 9px;
   }
   .story strong {
-    font-size: 0.75rem;
+    font-size: 0.78rem;
   }
   .story small {
     display: none;
@@ -1080,9 +1248,6 @@ code {
   .brain-toolbar > span {
     font-size: 10px;
   }
-  .scene-caption strong {
-    font-size: 1.5rem;
-  }
   .brain-bottom {
     font-size: 0.59rem;
   }
@@ -1094,9 +1259,6 @@ code {
     flex-direction: column;
     gap: 19px;
     padding: 21px;
-  }
-  .verdict h2 {
-    font-size: 2rem;
   }
   .verdict-actions {
     min-width: 0;
@@ -1120,9 +1282,6 @@ code {
     flex-direction: column;
     gap: 12px;
   }
-  .verification h2 {
-    font-size: 1.65rem;
-  }
   .test-results > div {
     padding: 14px 10px;
   }
@@ -1141,9 +1300,11 @@ code {
     gap: 6px;
   }
   .inspect > summary {
-    align-items: start;
-    flex-direction: column;
-    gap: 6px;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+  }
+  .inspect > summary span {
+    flex-basis: 100%;
   }
   .inspection-grid {
     grid-template-columns: 1fr;
@@ -1155,18 +1316,19 @@ code {
     gap: 7px;
     font-size: 0.72rem;
   }
-  footer {
+  .site-footer {
+    margin-top: 40px;
+    padding-top: 40px;
+  }
+  .credits {
     flex-direction: column;
-    gap: 8px;
+    align-items: flex-start;
   }
   dialog {
     padding: 24px;
   }
   dialog p {
     font-size: 1rem;
-  }
-  .intro h1 br {
-    display: none;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -1181,22 +1343,24 @@ code {
     opacity: 0.5;
   }
 }
+/* The fly's record reads like the slides' readout line: one bold claim, the receipts in mono. */
 .record {
-  text-align: right;
-  max-width: 300px;
+  max-width: 320px;
+  padding: 0 0 6px 24px;
+  border-left: 1px solid var(--line);
 }
 .record strong {
   display: block;
-  font-size: 1rem;
-  line-height: 1.3;
-  letter-spacing: -0.015em;
+  font-size: 1.5rem;
+  font-weight: 760;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
 }
 .record small {
   display: block;
-  font-size: 0.7rem;
-  line-height: 1.65;
+  font: 0.72rem/1.65 var(--mono);
   color: var(--muted);
-  margin-top: 7px;
+  margin-top: 10px;
 }
 .readouts > div > span {
   display: flex;
@@ -1261,10 +1425,10 @@ code {
   font-weight: 600;
 }
 .nearest li[data-lesson='punish'] b {
-  color: var(--avoid, #c2410c);
+  color: var(--red);
 }
 .nearest li[data-lesson='reward'] b {
-  color: var(--approach, #15803d);
+  color: var(--green);
 }
 .nearest li span {
   color: var(--muted);
@@ -1296,7 +1460,7 @@ code {
   border-radius: 4px;
 }
 .attention li:hover {
-  background: var(--paper-2, rgba(0, 0, 0, 0.04));
+  background: var(--surface-2);
 }
 .attention li.looked .unit-name {
   color: var(--ink);
@@ -1307,8 +1471,8 @@ code {
   border-radius: 2px;
   background: linear-gradient(
     90deg,
-    var(--novelty-ink, #7c3aed) 0 calc(var(--novelty, 0) * 100%),
-    var(--rule, #e5e5e5) calc(var(--novelty, 0) * 100%) 100%
+    var(--novelty-ink) 0 calc(var(--novelty, 0) * 100%),
+    var(--line) calc(var(--novelty, 0) * 100%) 100%
   );
 }
 .attention .unit-name {
@@ -1334,25 +1498,25 @@ code {
   }
 }
 .attention li[data-vote='avoid'] .unit-numbers {
-  color: var(--avoid, #c2410c);
+  color: var(--red);
 }
 .attention li[data-vote='approach'] .unit-numbers {
-  color: var(--approach, #15803d);
+  color: var(--green);
 }
 /* Attention on the diff itself: the second reading's novelty tints each hunk; the loudest is marked. */
 .diff-line.smelled {
   box-shadow: inset 3px 0 0
-    color-mix(in srgb, var(--novelty-ink, #7c3aed) calc(var(--novelty, 0) * 100%), transparent);
+    color-mix(in srgb, var(--novelty-ink) calc(var(--novelty, 0) * 100%), transparent);
 }
 .diff-line.looked {
-  background: color-mix(in srgb, var(--novelty-ink, #7c3aed) 9%, transparent);
+  background: color-mix(in srgb, var(--novelty-ink) 9%, transparent);
 }
 .diff-line.hunk .looked-marker {
   margin-left: 12px;
   padding: 1px 8px;
   border-radius: 999px;
-  background: var(--novelty-ink, #7c3aed);
-  color: #fff;
+  background: var(--novelty-ink);
+  color: var(--on-accent);
   font-size: 0.68rem;
   font-weight: 600;
   letter-spacing: 0.01em;
@@ -1396,7 +1560,7 @@ code {
 .custom-form textarea {
   width: 100%;
   border: 1px solid var(--line);
-  border-radius: 4px;
+  border-radius: 10px;
   padding: 8px 10px;
   font: 11px/1.6 var(--mono);
   color: var(--ink);
@@ -1673,10 +1837,7 @@ code {
   margin: 8px 0 0;
   padding-top: 7px;
   border-top: 1px solid oklch(1 0 0 / 0.14);
-  font:
-    11px/1.45 Inter,
-    -apple-system,
-    sans-serif;
+  font: 11px/1.45 var(--sans);
   color: oklch(0.92 0 0);
 }
 @keyframes pump {
@@ -1738,15 +1899,11 @@ code {
   padding: 8px 14px;
   border: 4px solid currentColor;
   border-radius: 6px;
-  font:
-    900 clamp(0.9rem, 2.2vw, 1.5rem)/1 Inter,
-    -apple-system,
-    sans-serif;
+  font: 900 clamp(0.9rem, 2.2vw, 1.5rem)/1 var(--sans);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   transform: rotate(-9deg);
   color: var(--red);
-  mix-blend-mode: multiply;
   opacity: 0.92;
   pointer-events: none;
   z-index: 3;
@@ -1757,7 +1914,7 @@ code {
   color: var(--green);
 }
 .stamp[data-vote='abstain'] {
-  color: var(--muted);
+  color: var(--yellow);
 }
 .stamp.slam {
   animation: slam 0.38s cubic-bezier(0.15, 0.9, 0.25, 1.25) both;
@@ -1808,10 +1965,10 @@ code {
   animation: arrive 0.35s ease-out both;
 }
 .verdict[data-vote='changes_requested'] {
-  background: linear-gradient(90deg, oklch(0.97 0.02 27), transparent 40%);
+  background: linear-gradient(90deg, oklch(0.68 0.22 25 / 0.14), transparent 55%);
 }
 .verdict[data-vote='no_objection'] {
-  background: linear-gradient(90deg, oklch(0.97 0.02 145), transparent 40%);
+  background: linear-gradient(90deg, oklch(0.85 0.2 150 / 0.1), transparent 55%);
 }
 /* Your pull request. */
 .pr-form {
@@ -1827,15 +1984,19 @@ code {
 .pr-form input {
   flex: 1;
   border: 1px solid var(--line);
-  border-radius: 4px;
-  padding: 9px 11px;
+  border-radius: 999px;
+  padding: 10px 16px;
   font: 11px var(--mono);
   color: var(--ink);
+  background: var(--bg);
   min-width: 0;
 }
 .pr-form button {
   white-space: nowrap;
   border: 1px solid var(--line);
+}
+.pr-form button:hover:not(:disabled) {
+  border-color: var(--violet);
 }
 .pr-status {
   font-size: 0.7rem;
@@ -1844,7 +2005,7 @@ code {
   margin: 0;
 }
 .pr-status.error {
-  color: var(--deep);
+  color: var(--red);
 }
 .pr-head {
   display: flex;
@@ -1852,8 +2013,8 @@ code {
   gap: 3px;
   padding: 10px 12px;
   border: 1px solid var(--line);
-  border-radius: 5px;
-  background: var(--surface);
+  border-radius: 12px;
+  background: var(--surface-2);
 }
 .pr-head strong {
   font-size: 0.82rem;
@@ -1907,8 +2068,8 @@ code {
   z-index: 1;
   padding: 6px 12px;
   margin-top: 6px;
-  background: var(--ink);
-  color: var(--bg);
+  background: oklch(0.26 0.04 290);
+  color: var(--ink);
   font-weight: 700;
   font-size: 10.5px;
   min-width: 100%;
@@ -2038,8 +2199,8 @@ code {
   align-items: end;
   padding: 6px 8px;
   border: 1px solid var(--line);
-  border-radius: 4px;
-  background: var(--surface);
+  border-radius: 10px;
+  background: var(--bg);
 }
 .odor-strip i {
   display: block;
@@ -2065,19 +2226,19 @@ code {
 /* The lesson. */
 .lesson {
   margin-top: 16px;
-  padding: 14px 16px;
-  border-radius: 6px;
+  padding: 16px 18px;
+  border-radius: 14px;
   background: var(--surface);
   border: 1px solid var(--line);
 }
 /* The color says whether the test agreed with the vote, not which dopamine pathway fired. */
 .lesson[data-agree='right'] {
   border-color: var(--green);
-  background: oklch(0.97 0.02 145);
+  background: oklch(0.85 0.2 150 / 0.08);
 }
 .lesson[data-agree='wrong'] {
   border-color: var(--red);
-  background: oklch(0.97 0.02 27);
+  background: oklch(0.68 0.22 25 / 0.1);
 }
 .lesson[data-agree='new'] {
   border-color: var(--ink);

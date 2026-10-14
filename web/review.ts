@@ -736,6 +736,7 @@ function renderMemory(s: ReviewState) {
       : 'A naive fly. Every KC → MBON synapse is at its connectome strength; nothing has taught it yet.',
   );
   el<HTMLButtonElement>('forget').disabled = s.busy || !connected || (!m.lessons.length && !m.rememberedSynapses);
+  el('forget').hidden = Boolean(s.public);
   el('memory-log').replaceChildren(
     ...[...live]
       .reverse()
@@ -818,7 +819,7 @@ function updateStory() {
   el('verdict').hidden = !hasVote;
   for (const id of ['disconnect', 'repeat', 'second-opinion'])
     el<HTMLButtonElement>(id).disabled = !hasVote || busy || !connected;
-  const canPost = Boolean(s?.review.pullRequest) && Boolean(state?.hasGitHub);
+  const canPost = Boolean(s?.review.pullRequest) && Boolean(state?.hasGitHub) && !state?.public;
   el('post-review').hidden = !hasVote || !canPost || Boolean(s?.posted);
   el<HTMLButtonElement>('post-review').disabled = busy || !connected;
   el('posted').hidden = !hasVote || !s?.posted;
@@ -1018,9 +1019,11 @@ function updateStory() {
   text(
     'investigator-note',
     s?.review.pullRequest
-      ? state?.hasGitHub
+      ? state?.hasGitHub && !state.public
         ? 'No contract, so no test. The fly can leave this vote as a comment on the pull request.'
-        : 'No contract, so no test. Set GITHUB_TOKEN or log in with gh to let the fly post its review.'
+        : state?.public
+          ? 'No contract, so no test. Here the fly only votes; it posts nothing.'
+          : 'No contract, so no test. Set GITHUB_TOKEN or log in with gh to let the fly post its review.'
       : s?.review.oracle === null
         ? 'Pasted changes have no contract, so there is nothing to test against. Bundled examples only.'
         : s?.hasInvestigator || state?.hasInvestigator
@@ -1144,6 +1147,7 @@ function render(s: ReviewState) {
     selected = s.review.id;
     // A lesson already on the books when the page opens is history: show the vote, not the teaching trial.
     knownTeaching = s.lesson?.at ?? null;
+    if (s.public) text('pr-status', 'Any public pull request.');
     if (s.review.pullRequest) {
       pullRequestPreview = s.review;
       el<HTMLInputElement>('pr-url').value = s.review.pullRequest.url;

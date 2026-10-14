@@ -158,8 +158,9 @@ export class ReviewShow {
       verification: null,
       vote: null,
       hasJev: Boolean(process.env.TYPESAFE_API_KEY),
-      hasInvestigator: Boolean(process.env.ANTHROPIC_API_KEY),
+      hasInvestigator: Boolean(process.env.ANTHROPIC_API_KEY) && process.env.FLY_REVIEW_PUBLIC !== '1',
       hasGitHub: false,
+      public: process.env.FLY_REVIEW_PUBLIC === '1',
       posted: null,
       poke: null,
       pokePair: null,
@@ -694,7 +695,7 @@ export class ReviewShow {
     this.state.headline = recall
       ? `${flyName(seed)} smells the same change again.`
       : reuse
-        ? `Second opinion from ${flyName(seed)}.`
+        ? `Second opinion: ${flyName(seed)}.`
         : mode === 'jev'
           ? 'Jev is describing the change. Not reviewing it.'
           : 'Human-set descriptors. No Jev call.';
@@ -719,7 +720,7 @@ export class ReviewShow {
           throw new Error('The saved per-hunk descriptions do not match this pull request');
         unitFeatures = input.unitFeatures;
         this.state.encoderModel = input.encoderModel;
-        await this.publish(`Reusing the saved Jev descriptions of ${plan.units.length} hunks for ${flyName(seed)}.`);
+        await this.publish(`Reusing the saved Jev descriptions of ${plan.units.length} hunks.`);
       } else {
         this.state.headline = `Jev is describing ${plan.units.length} ${plan.granularity}s. Not reviewing them.`;
         this.state.explanation = `Each ${plan.granularity} is described on its own, with the pull request's title and description as context. ${plan.skipped ? `${plan.skipped} smaller files were not smelled. ` : ''}Thirty descriptive questions per ${plan.granularity}; none asks whether it should be approved.`;
@@ -739,10 +740,7 @@ export class ReviewShow {
     } else if (reuse) {
       this.state.features = input.features;
       this.state.encoderModel = input.encoderModel;
-      await this.publish(
-        `Reusing the saved ${mode === 'jev' ? 'Jev description' : 'manual inputs'} for ${flyName(seed)}.`,
-        input.features,
-      );
+      await this.publish(`Reusing the saved ${mode === 'jev' ? 'Jev description' : 'manual inputs'}.`, input.features);
     } else if (mode === 'jev') {
       const result = await this.dependencies.encode(review);
       this.state.features = result.features;
@@ -858,7 +856,7 @@ export class ReviewShow {
     this.state.headline = looked
       ? stood!.stands
         ? `${flyName(seed)} looked at ${looked.filename}${looked.hunk === null ? '' : `, hunk ${looked.hunk + 1}`}.`
-        : `Nothing stood out to ${flyName(seed)} in ${this.state.attention!.units.length} ${this.state.attention!.granularity}s.`
+        : `${flyName(seed)}: nothing stood out in ${this.state.attention!.units.length} ${this.state.attention!.granularity}s.`
       : this.state.verdict.verdict === 'changes_requested'
         ? `${flyName(seed)}: changes requested, ${changedRange(review)}.`
         : this.state.verdict.verdict === 'no_objection'

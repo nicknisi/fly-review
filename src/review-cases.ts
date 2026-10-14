@@ -546,35 +546,9 @@ export function changedRange(review: ReviewCase): string {
   return changed.length ? `${review.filename}:${changed[0].afterLine}–${changed.at(-1)!.afterLine}` : review.filename;
 }
 
-const FLY_NAMES = [
-  'Buzz',
-  'Zippy',
-  'Debbie',
-  'Sir Compound Eyes',
-  'Gregor',
-  'Jeff',
-  'Vincent',
-  'Maggie',
-  'Larva Croft',
-  'Anakin Flywalker',
-  'Fly Fieri',
-  'Dr. Wingston',
-  'The Notorious F.L.Y.',
-  'Chitin',
-  'Melanogaster Nash',
-  'Wingardium',
-  'Flybert Einstein',
-  'Bzz Aldrin',
-  'Antenna Rice',
-  'Segment Fault',
-  'Pupa Smurf',
-  'Mothra (allegedly)',
-  'Beelzebub',
-  'Ocelli Dion',
-];
-/** Each seed is a different fly. Same seed, same fly, same spikes. */
+/** Every run uses seed 7 unless asked otherwise; a different seed is the same trained fly with different random noise. */
 export function flyName(seed: number): string {
-  return `${FLY_NAMES[Math.abs(seed) % FLY_NAMES.length]} (fly #${seed})`;
+  return seed === 7 ? 'The fly' : `The fly (seed ${seed})`;
 }
 
 /** The text the lexical receptors smell: every added or removed line, for one file or a whole pull request. */

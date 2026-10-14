@@ -28,7 +28,8 @@
     "wobble": "node --env-file-if-exists=.env src/review-wobble.ts",
     "nose": "node src/review-nose.ts",
     "deck": "node src/review-deck.ts",
-    "intent": "node --env-file-if-exists=.env src/review-intent.ts"
+    "intent": "node --env-file-if-exists=.env src/review-intent.ts",
+    "deploy": "npm run typecheck && npm test && wrangler deploy"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",

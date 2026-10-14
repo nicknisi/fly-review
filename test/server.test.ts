@@ -10,7 +10,8 @@ import test from 'node:test';
 import { ROOT } from '../src/io.ts';
 import { RECEPTOR_KEYS } from '../src/review-brain.ts';
 
-test('server exposes only fly-review and rejects cross-origin actions', { timeout: 15000 }, async () => {
+/** Start the real server on a free port with extra environment; resolves once it is listening. */
+async function startServer(extra: Record<string, string> = {}) {
   const dataDir = await mkdtemp(join(tmpdir(), 'fly-server-tests-'));
   const reservation = createServer();
   await new Promise<void>((resolve, reject) => {
@@ -27,6 +28,7 @@ test('server exposes only fly-review and rejects cross-origin actions', { timeou
       TYPESAFE_API_KEY: '',
       ANTHROPIC_API_KEY: '',
       FLY_REVIEW_DATA_DIR: dataDir,
+      ...extra,
     },
     stdio: ['ignore', 'pipe', 'pipe'],
   });
@@ -34,6 +36,14 @@ test('server exposes only fly-review and rejects cross-origin actions', { timeou
   child.stderr.on('data', chunk => {
     stderr += chunk.toString();
   });
+  const stop = async () => {
+    if (child.exitCode === null) {
+      const exited = once(child, 'exit');
+      child.kill();
+      await exited;
+    }
+    await rm(dataDir, { recursive: true, force: true });
+  };
   try {
     await new Promise<void>((resolve, reject) => {
       const timer = setTimeout(() => reject(new Error(`Server startup timed out: ${stderr}`)), 10000);
@@ -52,7 +62,16 @@ test('server exposes only fly-review and rejects cross-origin actions', { timeou
         reject(new Error(`Server exited ${code}: ${stderr}`));
       });
     });
-    const base = `http://127.0.0.1:${port}`;
+  } catch (error) {
+    await stop();
+    throw error;
+  }
+  return { base: `http://127.0.0.1:${port}`, stop };
+}
+
+test('server exposes only fly-review and rejects cross-origin actions', { timeout: 15000 }, async () => {
+  const { base, stop } = await startServer();
+  try {
     const page = await fetch(base);
     assert.equal(page.status, 200);
     const html = await page.text();
@@ -150,11 +169,50 @@ test('server exposes only fly-review and rejects cross-origin actions', { timeou
     assert.match(await tooLong.text(), /12,000/);
     assert.match(html, /Paste your own change|custom-form/);
   } finally {
-    if (child.exitCode === null) {
-      const exited = once(child, 'exit');
-      child.kill();
-      await exited;
-    }
-    await rm(dataDir, { recursive: true, force: true });
+    await stop();
   }
 });
+
+test(
+  'in public mode every visitor gets their own fly, and nothing can be taught, wiped, or posted',
+  { timeout: 15000 },
+  async () => {
+    const { base, stop } = await startServer({ FLY_REVIEW_PUBLIC: '1', PUBLIC_ORIGIN: 'https://fruitfly.review' });
+    try {
+      assert.equal((await fetch(`${base}/health`)).status, 200);
+      const cookie = async (path: string) => {
+        const page = await fetch(base + path);
+        await page.text();
+        return /fly=([a-f0-9]{32})/.exec(page.headers.get('set-cookie') ?? '')?.[1];
+      };
+      const [first, second] = [await cookie('/'), await cookie('/presentation')];
+      assert.ok(first && second && first !== second, 'each page load without a cookie starts a new visitor');
+      const state = (await (
+        await fetch(`${base}/api/review/state`, { headers: { Cookie: `fly=${first}` } })
+      ).json()) as {
+        public: boolean;
+        hasInvestigator: boolean;
+      };
+      assert.equal(state.public, true);
+      assert.equal(state.hasInvestigator, false);
+      for (const action of ['reset-memory', 'post-review', 'verify']) {
+        const refused = await fetch(`${base}/api/review/action`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Origin: 'https://fruitfly.review', Cookie: `fly=${first}` },
+          body: JSON.stringify({ action }),
+        });
+        assert.equal(refused.status, 403, action);
+        assert.match(await refused.text(), /Not on the public site/);
+      }
+      const foreign = await fetch(`${base}/api/review/action`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Origin: 'https://example.com', Cookie: `fly=${first}` },
+        body: '{"action":"repeat"}',
+      });
+      assert.equal(foreign.status, 403);
+      await foreign.text();
+    } finally {
+      await stop();
+    }
+  },
+);

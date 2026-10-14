@@ -1,7 +1,6 @@
 import { BrainView } from './brain-view.js';
 import { FlyModel, SABER_BPM } from './fly-model.js';
 import { doom } from './doom.js';
-import { GLOMERULI } from '../src/review-odor.js';
 import { PULL_REQUEST_CASE_ID, parsePatch } from '../src/review-cases.js';
 import type { ReviewCase } from '../src/review-cases.js';
 import { reviewUnits } from '../src/review-hunks.js';
@@ -59,6 +58,19 @@ type Numbers = {
   shuffled: { caught: [number, number]; bugsApproved: number };
   answerKey: Record<string, { single: number; glomerulus: string; logistic: number; fly: number | null }>;
   prs: { pr: string; title: string; verdict: string; share: number; looked: string | null }[];
+  intent: {
+    tickets: number;
+    rightApproved: [number, number];
+    rightObjected: number;
+    wrongCaught: [number, number];
+    sameVerdict: number;
+    balanced: number;
+    spreadsheetBalanced: number;
+    spreadsheetRightApproved: [number, number];
+    refactorsApproved: [number, number];
+    refactorsObjected: number;
+    prCode: { total: number; approved: number; objected: number };
+  };
 };
 type Deck = {
   numbers: Numbers;
@@ -66,6 +78,8 @@ type Deck = {
   recordings: Record<string, Recording>;
   pool: Pick[];
   poolRule: string;
+  /** The harder test's example ticket: the right and the wrong change, with the fly's recorded vote on each. */
+  intentExample: (Shown & { kind: 'right' | 'wrong'; fly: { verdict: string; share: number } })[];
 };
 type Slide = {
   id: string;
@@ -252,7 +266,7 @@ const flyCall = (p: Pick) =>
 const truth = (p: Pick) => (p.label === 'bug' ? 'object' : 'approve');
 function drawRounds() {
   const pool = [...deck.pool];
-  rounds = Array.from({ length: 3 }, () => ({
+  rounds = Array.from({ length: 2 }, () => ({
     pick: pool.splice(Math.floor(Math.random() * pool.length), 1)[0],
     room: null,
     revealed: 0,
@@ -312,7 +326,7 @@ function roundSlide(i: number): Slide {
   const render = () => {
     const r = rounds[i];
     host.replaceChildren();
-    html(host, `<div class="kicker">Round ${i + 1} of 3</div>`);
+    html(host, `<div class="kicker">Round ${i + 1} of 2</div>`);
     if (!r) {
       html(host, `<h2>Draw the changes on the previous slide.</h2>`);
       return;
@@ -623,14 +637,29 @@ async function prepareLive(reference: string) {
     liveMessage(String(error instanceof Error ? error.message : error), 'error');
   }
 }
+/** While the simulator reads, the slide shows how long it has been at it; the server has no progress until it finishes. */
+let liveClock: ReturnType<typeof setInterval> | undefined;
 function onLiveState(s: ReviewState) {
   lastState = s;
+  clearInterval(liveClock);
   if (!asked || s.review.pullRequest?.url !== asked.url || s.runDir === asked.prevRun) return;
   if (s.phase === 'error') return liveMessage(s.explanation, 'error');
   if (!(s.phase === 'ready' && s.brain && s.verdict)) {
     // Jev describing, then the simulator reading: the fly sniffs while it waits.
     livePanel.replaceChildren(make('h3', 'live-title', asked.title), make('p', 'live-status', s.headline));
     if (s.log[0] && s.log[0].text !== s.headline) livePanel.append(make('p', 'caption', s.log[0].text));
+    if (s.phase === 'simulating' && s.log[0]) {
+      const hunks = reviewUnits(s.review.pullRequest!).units.length;
+      const since = Date.parse(s.log[0].at);
+      const clock = make('p', 'caption');
+      const tick = () => {
+        const t = Math.max(0, Math.round((Date.now() - since) / 1000));
+        clock.textContent = `${count(hunks, 'hunk')}, each read twice: usually a minute or two, longer on a busy laptop. ${Math.floor(t / 60)}:${String(t % 60).padStart(2, '0')}`;
+      };
+      tick();
+      liveClock = setInterval(tick, 1000);
+      livePanel.append(clock);
+    }
     drive({ ...rest, smell: 0.9, input: 0.5, arousal: s.phase === 'simulating' ? 0.7 : 0.3 });
     return;
   }
@@ -782,7 +811,7 @@ const slides: Slide[] = [
   },
   {
     id: 'solved',
-    minutes: '1:15',
+    minutes: '1:00',
     className: 'wide',
     bare: true,
     steps: 4,
@@ -877,7 +906,7 @@ const slides: Slide[] = [
   },
   {
     id: 'games',
-    minutes: '0:45',
+    minutes: '0:30',
     className: 'wide',
     steps: 2,
     build: h =>
@@ -1005,54 +1034,6 @@ typeof null           // "object"</pre>
     ],
   },
   {
-    id: 'live',
-    minutes: '1:30',
-    build: h => {
-      html(
-        h,
-        `<div class="kicker">Live</div><h2>A fruit fly is about to review a pull request.</h2><p>176,422 simulated neurons, wired like a real fly’s: its nervous system, mapped neuron by neuron. About two seconds on this laptop.</p>`,
-      );
-      const row = make('div', 'row');
-      const input = make('input', 'pr-input');
-      input.placeholder = 'owner/repo#123';
-      input.setAttribute('aria-label', 'Pull request to review live');
-      const go = make('button', 'button primary', 'Fetch it');
-      go.addEventListener('click', () => void prepareLive(input.value.trim()));
-      input.addEventListener('keydown', e => {
-        if (e.key === 'Enter') go.click();
-      });
-      const recorded = make('button', 'button', 'Plan B: a recorded run');
-      recorded.addEventListener('click', () => {
-        home();
-        play('objects');
-      });
-      row.append(input, go, recorded);
-      livePanel = make('div', 'live-panel');
-      livePanel.setAttribute('aria-live', 'polite');
-      h.append(row, livePanel);
-      html(
-        h,
-        `<p class="caption">Each hunk goes to Jev only after the second click. A pull request is never executed. The fly votes; nothing checks the vote.</p>`,
-      );
-    },
-    enter: () => {
-      home();
-      still();
-      // Follow the server's review; coming back to the slide replays the last result.
-      shownRun = null;
-      const events = new EventSource('/review-events');
-      events.onmessage = e => onLiveState(JSON.parse(e.data) as ReviewState);
-      onLeave(() => events.close());
-    },
-    notes: [
-      'Ask someone in the room for an open-source PR, or have one ready. Small PRs are faster: each hunk is one Jev call, and a 32-hunk PR takes the simulation one to two minutes to read.',
-      'Type it, Enter: it fetches the PR and shows its title and what Jev will be sent. Click “Send it to Jev and ask the fly”. The status follows Jev, then the simulator; when it lands, the brain behind you plays the real recording, the fly reacts, and its vote is stamped with the hunk it looked at.',
-      'Wifi dies → “Plan B: a recorded run” plays a real recording of the fly catching a bug.',
-      'If asked: the wiring map is a connectome, male-cns v1.0 from HHMI Janelia, Cambridge, and Google.',
-      'Line to use, yours: “I like the idea of having your code reviewed by a fruit fly and the analogy that I’m so smooth-brained that it’s better at code review than me at this point.”',
-    ],
-  },
-  {
     id: 'connectome',
     minutes: '0:45',
     build: h => {
@@ -1153,73 +1134,10 @@ typeof null           // "object"</pre>
       document.querySelectorAll('.slide.on .station').forEach((s, i) => s.classList.toggle('active', step === i));
     },
     notes: [
-      'One press per part; the fly acts each one out. The detail slides that follow are the same four, one at a time.',
+      'One press per part; the fly acts each one out. The teacher and the vote get their own slides next; the nose and the memory live only here now.',
+      'Nose line, if you want it: “We’ve called them code smells for decades. I took it literally.”',
       'If anyone asks for the real names: the smell channels are glomeruli, the memory cells are Kenyon cells in the mushroom body, the two output groups are MBONs, the tongue is the proboscis.',
       'For this room, optional: the fly’s smell circuit has been described as locality-sensitive hashing (Dasgupta, Stevens & Navlakha, Science, 2017).',
-    ],
-  },
-  {
-    id: 'nose',
-    minutes: '0:45',
-    className: 'wide',
-    steps: 2,
-    build: h => {
-      const rec = deck.recordings.objects;
-      html(
-        h,
-        `<div class="kicker">1 · The nose</div><h2>Step 1: turn the diff into a smell.</h2><p class="aside">We’ve called them code smells for decades. I took it literally.</p>`,
-      );
-      html(
-        h,
-        `<p>Jev, an AI model, answers thirty yes-or-no questions about <strong>what changed</strong>. None asks whether the change is good. The two that ask whether it changes the result are switched off: that’s the tests’ job.</p>`,
-      );
-      const chips = make('div', 'receptors');
-      deck.receptors.forEach((r, i) => {
-        const lit = (rec.stimuli[`odor:${GLOMERULI[i]}`] ?? 0) > 0;
-        const chip = make('span', `receptor ${r.silenced ? 'silenced' : lit ? 'lit' : ''}`, r.label);
-        chip.title = r.question;
-        chips.append(chip);
-      });
-      h.append(chips);
-      const odor = make('div', 'odor step later');
-      odor.dataset.step = '1';
-      GLOMERULI.forEach((g, i) => {
-        const bar = make('i', i < deck.receptors.length ? '' : 'lexical');
-        bar.dataset.height = String(Math.min(100, ((rec.stimuli[`odor:${g}`] ?? 0) / 150) * 100));
-        odor.append(bar);
-      });
-      h.append(odor);
-      html(
-        h,
-        `<p class="caption step later" data-step="1">The answers, plus the words in the changed lines, become ${N.glomeruli} numbers: a smell. Violet from Jev, yellow from the words. Same change, same smell, every time. This one is “${rec.review!.title}”.</p>`,
-      );
-    },
-    enter: step => {
-      still();
-      home();
-      for (const bar of document.querySelectorAll<HTMLElement>('.odor i'))
-        bar.style.height = step >= 1 ? `${Math.max(4, Number(bar.dataset.height))}%` : '4%';
-    },
-    notes: [
-      'Lit chips are what Jev said about this change (above 25%). Struck-through red chips are the two the fly never smells.',
-      '→ the smell: one bar per smell channel (a glomerulus, if asked).',
-    ],
-  },
-  {
-    id: 'memory',
-    minutes: '0:40',
-    build: h =>
-      html(
-        h,
-        `<div class="kicker">2 · The memory</div><h2>Step 2: the smell lights up a few of ${N.kenyonCells.toLocaleString()} memory cells.</h2><p>Each violet dot is a memory cell, where it sits in a real fly’s brain. Every one is wired to two groups of output neurons, <strong class="red">avoid</strong> and <strong class="green">approach</strong>. Those wires are the memory.</p><p class="caption">Similar descriptions light up similar cells: two unrelated smells share about 1% of them, two that share a channel about 40%.</p>`,
-      ),
-    enter: () => {
-      view.focusMushroomBody(true);
-      play('objects');
-    },
-    notes: [
-      'The camera swoops onto the fly’s memory center (the mushroom body). This is a real recording, bins of 25 ms slowed down. The readout strip at the bottom left is live from the recording.',
-      'If asked: memory cells are Kenyon cells; the output neurons are MBONs. Each smell lights the 5% of each cell type it drives hardest.',
     ],
   },
   {
@@ -1337,9 +1255,9 @@ typeof null           // "object"</pre>
     build: h => {
       html(
         h,
-        `<div class="kicker">Audience round: you vs. a bug</div><h1>Are you smarter than a fruit fly?</h1><p>Three real changes. Hands up: approve or request changes. Then the fly. Then the tests.</p>`,
+        `<div class="kicker">Audience round: you vs. a bug</div><h1>Are you smarter than a fruit fly?</h1><p>Two real changes. Hands up: approve or request changes. Then the fly. Then the tests.</p>`,
       );
-      const draw = make('button', 'button primary', 'Draw three changes');
+      const draw = make('button', 'button primary', 'Draw two changes');
       draw.addEventListener('click', () => {
         drawRounds();
         draw.textContent = 'Drawn. Draw again';
@@ -1357,13 +1275,15 @@ typeof null           // "object"</pre>
   },
   roundSlide(0),
   roundSlide(1),
-  roundSlide(2),
   {
     id: 'numbers',
     minutes: '0:50',
     className: 'wide',
     build: h => {
-      html(h, `<div class="kicker">The whole exam</div><h2>${N.heldOut} changes it had never seen.</h2>`);
+      html(
+        h,
+        `<div class="kicker">The whole exam: telling bugs from tidy-ups</div><h2>${N.heldOut} changes it had never seen.</h2>`,
+      );
       const bars = make('div', 'bars');
       const rows: [string, number, string][] = [
         ['Coin flip', 0.5, ''],
@@ -1384,7 +1304,7 @@ typeof null           // "object"</pre>
       h.append(bars);
       html(
         h,
-        `<p>Of the <strong>${N.caught[1]}</strong> bugs, it caught <strong>${N.caught[0]}</strong>. Of the <strong>${N.approved[1]}</strong> harmless changes, it approved <strong>${N.approved[0]}</strong>. ${N.abstained} times it said “I don’t know.”</p><p class="caption">Why not just percent right? Three in four exam changes are bugs, so a fly that rejected everything would be ${Math.round((N.caught[1] / N.heldOut) * 100)}% right. These scores average the two halves instead, so rejecting everything scores 50%: a coin flip.</p>`,
+        `<p>Of the <strong>${N.caught[1]}</strong> bugs, it caught <strong>${N.caught[0]}</strong>. Of the <strong>${N.approved[1]}</strong> harmless changes, it approved <strong>${N.approved[0]}</strong>. ${N.abstained} times it said “I don’t know.”</p><p class="caption">Every harmless change on this exam is a tidy-up that leaves behavior alone. Why not just percent right? Three in four exam changes are bugs, so a fly that rejected everything would be ${Math.round((N.caught[1] / N.heldOut) * 100)}% right. These scores average the two halves instead, so rejecting everything scores 50%: a coin flip.</p>`,
       );
     },
     enter: () => {
@@ -1405,35 +1325,98 @@ typeof null           // "object"</pre>
       `Say: “On the exam, it caught ${N.caught[0]} of ${N.caught[1]} bugs and approved ${N.approved[0]} of ${N.approved[1]} harmless changes. Average those and you get ${pct(N.balanced)}. A coin flip gets 50.”`,
       `Say: “And a spreadsheet beats it. A logistic regression reading the exact same 53 numbers gets ${pct(neutral.logistic)}. The fly isn’t the best classifier here. It’s a fly.”`,
       '“Best single clue” is the one smell channel that does best alone. Both comparisons were fit on the same flashcards.',
-      'The room bar is three questions, not ' + N.heldOut + '. Say so.',
+      'The room bar is two questions, not ' + N.heldOut + '. Say so.',
     ],
   },
   {
-    id: 'miss',
-    minutes: '0:45',
-    className: 'wide',
+    id: 'live',
+    minutes: '1:00',
     build: h => {
-      const rec = deck.recordings.missed;
+      html(h, `<div class="kicker">Live</div><h2>Now it’s been taught. Give it a real pull request.</h2>`);
+      const row = make('div', 'row');
+      const input = make('input', 'pr-input');
+      input.placeholder = 'owner/repo#123';
+      input.setAttribute('aria-label', 'Pull request to review live');
+      const go = make('button', 'button primary', 'Fetch it');
+      go.addEventListener('click', () => void prepareLive(input.value.trim()));
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') go.click();
+      });
+      const recorded = make('button', 'button', 'Plan B: a recorded run');
+      recorded.addEventListener('click', () => {
+        home();
+        play('objects');
+      });
+      row.append(input, go, recorded);
+      livePanel = make('div', 'live-panel');
+      livePanel.setAttribute('aria-live', 'polite');
+      h.append(row, livePanel);
       html(
         h,
-        `<div class="kicker">What it gets wrong</div><h2>It reaches for real bugs.</h2><p class="aside">In its defense, fruit flies evolved to love things that are going bad.</p>`,
-      );
-      if (rec) {
-        h.append(diffBox(rec.review!));
-        html(h, `<p>“${rec.review!.title}”: a test reproduces this bug. The fly reaches for it anyway.</p>`);
-      }
-      const prs = N.prs.filter(p => /#(35|249)$/.test(p.pr));
-      html(
-        h,
-        `<p class="caption">${prs.map(p => `${p.pr}: ${p.verdict.replace('_', ' ')}`).join(' · ')}. Both were later reverted.</p>`,
+        `<p class="caption">Each hunk goes to Jev only after the second click. A pull request is never executed. The fly votes; nothing checks the vote.</p>`,
       );
     },
     enter: () => {
       home();
-      play('missed');
+      still();
+      // Follow the server's review; coming back to the slide replays the last result.
+      shownRun = null;
+      const events = new EventSource('/review-events');
+      events.onmessage = e => onLiveState(JSON.parse(e.data) as ReviewState);
+      onLeave(() => {
+        events.close();
+        clearInterval(liveClock);
+      });
     },
     notes: [
-      'The fly approves the rounding bug and reaches for it. On real PRs it flagged #35 and let #249 through; both were reverted.',
+      'Moved here from the opening: the fly has been taught by now. On a real feature PR it will most likely object or abstain on the code hunks, which sets up the next slide. If it approves, it was probably looking at docs, tests, or config; say so.',
+      'Pick a PR with a handful of hunks. A 25-hunk PR took 2:50 on this laptop while it was busy; the slide shows a clock while the fly reads, but that is a long silence on stage.',
+      'Ask someone in the room for an open-source PR, or have one ready. Small PRs are faster: each hunk is one Jev call, and a 32-hunk PR takes the simulation one to two minutes to read.',
+      'Type it, Enter: it fetches the PR and shows its title and what Jev will be sent. Click “Send it to Jev and ask the fly”. The status follows Jev, then the simulator; when it lands, the brain behind you plays the real recording, the fly reacts, and its vote is stamped with the hunk it looked at.',
+      'Wifi dies → “Plan B: a recorded run” plays a real recording of the fly catching a bug.',
+      'If asked: the wiring map is a connectome, male-cns v1.0 from HHMI Janelia, Cambridge, and Google.',
+      'Line to use, yours: “I like the idea of having your code reviewed by a fruit fly and the analogy that I’m so smooth-brained that it’s better at code review than me at this point.”',
+    ],
+  },
+  {
+    id: 'harder',
+    minutes: '1:00',
+    className: 'wide',
+    steps: 2,
+    build: h => {
+      const I = N.intent;
+      const [right] = deck.intentExample;
+      html(
+        h,
+        `<div class="kicker">Then I gave it a harder test</div><h2>Changes that are supposed to change what the code does.</h2><p class="ticket">Ticket: <strong>${right.title}</strong></p>`,
+      );
+      const pair = make('div', 'pair');
+      const call = (verdict: string): Call =>
+        verdict === 'no_objection' ? 'approve' : verdict === 'changes_requested' ? 'object' : 'unsure';
+      for (const ex of deck.intentExample) {
+        const side = make('div', `pair-side ${ex.kind}`);
+        side.append(make('div', 'kicker', ex.kind === 'right' ? 'Does what the ticket asks' : 'A plausible mistake'));
+        side.append(diffBox(ex));
+        side.append(verdictCard('The fly', call(ex.fly.verdict), `${Math.round(ex.fly.share * 100)}% avoid`));
+        pair.append(side);
+      }
+      h.append(pair);
+      html(
+        h,
+        `<div class="step later" data-step="1"><p>${I.tickets} tickets like this. Correct changes it approved: <strong>${I.rightApproved[0]} of ${I.rightApproved[1]}</strong>. The same verdict for the right and the wrong change: <strong>${I.sameVerdict} of ${I.tickets}</strong>.</p><p class="caption">Not a strange test: tidy-ups of the same code, it approved ${I.refactorsApproved[0]} of ${I.refactorsApproved[1]}. On real pull requests it objected to ${I.prCode.objected} of ${I.prCode.total} code changes and approved ${I.prCode.approved}. A spreadsheet reading the same smells does no better: ${pct(I.spreadsheetBalanced)}.</p></div>`,
+      );
+    },
+    enter: () => {
+      home();
+      play('intent-right');
+    },
+    notes: [
+      'Say: “On the exam, every harmless change was a tidy-up that changed nothing. So I wrote tickets that change what the code should do. Free shipping from $50, not over $100. One change does it right, one gets the boundary wrong. The fly rejects both.”',
+      `→ the numbers. Say: “${N.intent.tickets} tickets. It approved ${N.intent.rightApproved[0]} of the correct changes, and gave the right and the wrong change the same answer ${N.intent.sameVerdict} times.”`,
+      'What it means, plainly: it learned that a change in behavior means a bug, because on the exam that was always true. Whether a change is what you wanted, nothing it smells can say.',
+      'Behind you: the real recording of the trained fly smelling the correct free-shipping change. It backs away.',
+      'Don’t present “caught 22 of 24 wrong changes” as a strength: it objects to everything that changes behavior.',
+      'Sources: data/intent.json (24 hand-written tickets, labels proven by execution, scored once), data/intent-refactor.json (the tidy-up check), data/pr-smells.json (every source-code hunk of 8 merged authkit-nextjs PRs; each hunk’s own vote, where a reach approves).',
     ],
   },
   {
@@ -1453,14 +1436,15 @@ typeof null           // "object"</pre>
     },
     notes: [
       'The turn. Your words, verbatim (interview). The fly takes its one flight here.',
+      '[NICK: your answer to your own question, in your words. What it can stand on: it tells bugs from tidy-ups; it can’t tell whether a change is what you wanted. It pays off card 4 of “solved”: “If review sticks around, it’s to fill your head with what’s changing and why.”]',
       '→ the why. Your line: “Agents can verify that it’s logically correct but we need to make sure that it makes sense for the use case or the application.”',
     ],
   },
   {
     id: 'proposal',
-    minutes: '1:45',
+    minutes: '2:00',
     className: 'wide',
-    steps: 6,
+    steps: 7,
     build: h => {
       html(
         h,
@@ -1485,24 +1469,11 @@ typeof null           // "object"</pre>
       h.append(pipe);
       html(
         h,
-        `<blockquote class="step later" data-step="1">…having them maintain a skill, for lack of a better term, that is how that team would do code reviews.</blockquote><p class="caption step later" data-step="3">Every pipeline needs a fly on the wall.</p>`,
+        `<blockquote class="step later skill-quote" data-step="1">…having them maintain a skill, for lack of a better term, that is how that team would do code reviews.</blockquote><p class="caption step later" data-step="3">Every pipeline needs a fly on the wall.</p>`,
       );
-    },
-    enter: step => {
-      still();
-      document.querySelectorAll('.slide.on .station').forEach((s, i) => s.classList.toggle('active', step - 1 === i));
-      el('fly').classList.add('station-seat');
-    },
-    notes: [
-      'Your proposal, verbatim: “…having individual teams where we might have code owners before that are assigned to it, having them maintain a skill, for lack of a better term, that is how that team would do code reviews. Along with some like classification, potentially with Jev or other models that can decide whether something is too complex, or if it fails the team’s automated review system, then it gets escalated to a human to review in a summarized way, where they’re focusing on just the business logic or just the bits that actually make sense.”',
-      '→ walks a PR through, one station per press. The fly sits on “Automated review”.',
-    ],
-  },
-  {
-    id: 'evidence',
-    minutes: '0:45',
-    build: h => {
-      html(h, `<div class="kicker">What the agent hands the human</div><h2>Evidence and a receipt.</h2>`);
+      // The last press: what the agent hands the human at the end of the line.
+      const receipt = make('div', 'step later handoff');
+      receipt.dataset.step = '6';
       const receipts = make('div', 'receipts');
       for (const item of [
         'videos',
@@ -1513,47 +1484,23 @@ typeof null           // "object"</pre>
         'easy ways for me to replicate that as well',
       ])
         receipts.append(make('span', '', item));
-      h.append(receipts);
-      html(h, `<blockquote>…what the code is doing and why, and specifically why not other methods.</blockquote>`);
+      receipt.append(receipts);
+      html(
+        receipt,
+        `<blockquote>…what the code is doing and why, and specifically why not other methods.</blockquote>`,
+      );
+      h.append(receipt);
     },
-    enter: () => {
+    enter: step => {
       still();
-    },
-    notes: ['The list and the quote are yours (interview, and the Sept 18 pitch).'],
-  },
-  {
-    id: 'bridge',
-    minutes: '0:45',
-    className: 'wide',
-    build: h => {
-      html(h, `<div class="kicker">The fly is the dumbest version of this</div>`);
-      const table = make('table', 'bridge');
-      table.innerHTML = `<thead><tr><th>The proposal</th><th>The fly</th></tr></thead><tbody></tbody>`;
-      const rows: [string, string][] = [
-        [
-          'A team-owned review skill',
-          'A memory learned from that repo’s own test suite (203 mutants of authkit-nextjs)',
-        ],
-        ['A classifier', 'Jev describes; it never judges'],
-        ['The team’s automated review', 'Only executed evidence teaches'],
-        ['Escalate to a human', `The fly abstains: ${N.abstained} of ${N.heldOut}`],
-        [
-          'A summarized human review',
-          'Where it looks: the hunk unlike the rest. #249 is the warning: the bug was in the hunks it tuned out.',
-        ],
-      ];
-      for (const [a, b] of rows) {
-        const tr = make('tr');
-        tr.append(make('td', '', a), make('td', '', b));
-        table.querySelector('tbody')!.append(tr);
-      }
-      h.append(table);
-    },
-    enter: () => {
-      still();
+      document.querySelectorAll('.slide.on .station').forEach((s, i) => s.classList.toggle('active', step - 1 === i));
+      document.querySelector('.slide.on .skill-quote')?.classList.toggle('gone', step >= 6);
+      el('fly').classList.add('station-seat');
     },
     notes: [
-      '[NICK: confirm this mapping is the point you want. It is a structural read of the facts, not your framing yet.]',
+      'Your proposal, verbatim: “…having individual teams where we might have code owners before that are assigned to it, having them maintain a skill, for lack of a better term, that is how that team would do code reviews. Along with some like classification, potentially with Jev or other models that can decide whether something is too complex, or if it fails the team’s automated review system, then it gets escalated to a human to review in a summarized way, where they’re focusing on just the business logic or just the bits that actually make sense.”',
+      '→ walks a PR through, one station per press. The fly sits on “Automated review”: that station is what it can do (bug or tidy-up?); the human box is what it can’t (is this what we wanted?).',
+      '→ the last press: what the agent hands the human. The list and the quote are yours (interview, and the Sept 18 pitch).',
     ],
   },
   {

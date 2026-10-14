@@ -3,8 +3,6 @@
   --z-tour-veil: 30;
   --z-tour-card: 31;
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
-  --violet: oklch(0.62 0.2 300);
-  --violet-soft: oklch(0.86 0.08 300);
 }
 .tour-veil {
   position: fixed;
@@ -16,12 +14,12 @@
   pointer-events: none;
 }
 .tour-shade {
-  fill: oklch(0.14 0.01 25 / 0.66);
+  fill: oklch(0.05 0.01 290 / 0.74);
   pointer-events: visiblePainted;
 }
 .tour-ring {
   fill: none;
-  stroke: var(--red);
+  stroke: var(--violet);
   stroke-width: 2;
   pointer-events: none;
 }
@@ -35,10 +33,11 @@
   z-index: var(--z-tour-card);
   width: min(400px, calc(100vw - 32px));
   padding: 18px 20px 16px;
-  border-radius: 12px;
-  background: var(--bg);
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: var(--surface);
   color: var(--ink);
-  box-shadow: 0 8px 24px oklch(0 0 0 / 0.28);
+  box-shadow: 0 24px 60px -12px oklch(0 0 0 / 0.7);
   transition: transform 0.38s var(--ease-out-quint);
   will-change: transform;
 }
@@ -70,11 +69,11 @@
 }
 .tour-skip:hover {
   color: var(--ink);
-  background: var(--surface);
+  background: var(--surface-2);
 }
 .tour-scene {
-  border-radius: 8px;
-  background: var(--surface);
+  border-radius: 12px;
+  background: var(--bg);
   overflow: hidden;
 }
 .tour-scene[hidden] {
@@ -105,7 +104,7 @@
   color: var(--ink);
 }
 .tour-seg button:hover {
-  background: var(--surface);
+  background: var(--surface-2);
 }
 .tour-seg button[aria-pressed='true'] {
   background: var(--ink);
@@ -141,7 +140,7 @@
   background: var(--muted);
 }
 .tour-dots .current button {
-  background: var(--red);
+  background: var(--violet);
   transform: scale(1.25);
 }
 .tour-nav {
@@ -163,13 +162,13 @@
 }
 @keyframes launch-glow {
   0% {
-    box-shadow: 0 0 0 0 oklch(0.568 0.208 27.1 / 0);
+    box-shadow: 0 0 0 0 oklch(0.7 0.18 300 / 0);
   }
   30% {
-    box-shadow: 0 0 0 5px oklch(0.568 0.208 27.1 / 0.35);
+    box-shadow: 0 0 0 5px oklch(0.7 0.18 300 / 0.4);
   }
   100% {
-    box-shadow: 0 0 0 9px oklch(0.568 0.208 27.1 / 0);
+    box-shadow: 0 0 0 9px oklch(0.7 0.18 300 / 0);
   }
 }
 
@@ -199,7 +198,7 @@
   font-family: var(--mono);
 }
 .tour-svg .caption.faint {
-  fill: oklch(0.7 0.005 25);
+  fill: var(--faint);
 }
 .tour-svg .caption.note {
   font-family: inherit;
@@ -221,7 +220,7 @@
 }
 .tour-svg .baseline,
 .tour-svg .tick {
-  stroke: oklch(0.8 0.005 25);
+  stroke: var(--line);
   stroke-width: 1;
 }
 
@@ -231,7 +230,7 @@
   stroke: var(--line);
 }
 .code-line.plain {
-  fill: oklch(0.78 0.005 25);
+  fill: var(--faint);
 }
 .code-line.removed {
   fill: var(--red);
@@ -305,23 +304,23 @@
   fill: var(--ink);
 }
 .bar.quiet {
-  fill: oklch(0.85 0.005 25);
+  fill: var(--line);
   animation: none;
 }
 .bar.first-read {
-  fill: oklch(0.8 0.01 25);
+  fill: var(--faint);
 }
 .bar.second-read {
-  fill: oklch(0.55 0.18 300);
+  fill: oklch(0.5 0.14 300);
 }
 .bar.second-read.looked {
-  fill: oklch(0.45 0.22 300);
+  fill: var(--violet);
 }
 .bar.still {
   animation: none;
 }
 .tour-svg .caption.looked {
-  fill: oklch(0.45 0.22 300);
+  fill: var(--violet);
   font-weight: 700;
 }
 @keyframes bar-rise {
@@ -333,7 +332,7 @@
   }
 }
 .cell {
-  fill: oklch(0.84 0.005 25);
+  fill: var(--line);
 }
 .cell.lit {
   transform-box: fill-box;
@@ -407,7 +406,7 @@
 
 /* Dopamine. */
 .wire {
-  stroke: oklch(0.72 0.005 25);
+  stroke: var(--faint);
   stroke-width: 1.6;
   opacity: 0.75;
 }

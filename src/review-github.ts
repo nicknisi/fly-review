@@ -88,9 +88,15 @@ export async function fetchPullRequest(
   fetcher: typeof fetch = fetch,
   token?: string | null,
 ): Promise<PullRequest> {
-  const auth = token === undefined ? await githubToken() : token;
+  let auth = token === undefined ? await githubToken() : token;
   const base = `/repos/${ref.owner}/${ref.repo}/pulls/${ref.number}`;
-  const response = await github(base, {}, fetcher, auth);
+  let response = await github(base, {}, fetcher, auth);
+  // An organization can refuse a token outright (SAML SSO it is not authorized for, or a token policy), even for its
+  // public repositories. Public data needs no token, so ask again without one.
+  if (auth && response.status === 403) {
+    auth = null;
+    response = await github(base, {}, fetcher, null);
+  }
   if (response.status === 404)
     throw new Error(
       `${pullRequestKey(ref)} was not found${auth ? '' : '. Private repositories need GITHUB_TOKEN or a logged-in gh CLI'}.`,
@@ -103,12 +109,15 @@ export async function fetchPullRequest(
     title: string;
     body: string | null;
     user?: { login?: string };
-    base: { ref: string };
+    base: { ref: string; repo?: { private?: boolean } };
     head: { ref: string };
     additions: number;
     deletions: number;
     changed_files: number;
   };
+  // fruitfly.review shows public code only, whatever the token could reach; a private one reads as not found.
+  if (process.env.FLY_REVIEW_PUBLIC === '1' && pr.base.repo?.private !== false)
+    throw new Error(`${pullRequestKey(ref)} was not found. The public site reads public repositories only.`);
   const files: PatchFile[] = [];
   for (let page = 1; page <= Math.ceil(PR_LIMITS.files / 100); page++) {
     const list = await github(`${base}/files?per_page=100&page=${page}`, {}, fetcher, auth);

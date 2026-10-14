@@ -140,6 +140,14 @@ for (const ref of refs) {
         naiveNoveltyHz: h.naiveNoveltyHz,
         share: h.avoidHz + h.approachHz > 0 ? h.avoidHz / (h.avoidHz + h.approachHz) : 0.5,
       })),
+      // Every hunk's own vote, the way the fly votes on a single change: a reach approves whatever the share says.
+      hunks: seq.hunks.map(h => ({
+        index: h.index,
+        name: name(h.index),
+        share: h.avoidHz + h.approachHz > 0 ? h.avoidHz / (h.avoidHz + h.approachHz) : 0.5,
+        feedHz: h.feedHz ?? 0,
+        verdict: reviewVerdict({ avoidHz: h.avoidHz, approachHz: h.approachHz, feedHz: h.feedHz ?? 0 }).verdict,
+      })),
     };
     console.log(
       `  read ${units.length} ${entry.granularity}s twice; ${attention.quiet} went quiet. Looked at #${seq.looked + 1}: ${name(seq.looked)} (${units[seq.looked].header.slice(0, 70)})`,

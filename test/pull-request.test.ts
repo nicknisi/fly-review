@@ -363,7 +363,7 @@ test('a pull request is read hunk by hunk, saved as one bundle, refused verifica
     assert.equal(sequences, 1);
     assert.equal(show.state.review.pullRequest?.title, 'Do the thing');
     assert.equal(show.state.verdict?.verdict, 'changes_requested');
-    assert.match(show.state.headline, /fly #7\) looked at src\/a.ts, hunk 2/);
+    assert.match(show.state.headline, /The fly looked at src\/a.ts, hunk 2/);
     assert.equal(show.state.attention?.looked, 1);
     assert.equal(show.state.attention?.granularity, 'hunk');
     assert.deepEqual(
@@ -437,4 +437,49 @@ test('a pull request with nothing to smell is refused before disclosure or any m
   });
   const request = { action: 'review', caseId: 'pull-request', mode: 'jev', pullRequest: 'o/r#12' };
   await assert.rejects(show.disclosure(request), /Nothing for the fly to smell.*package-lock\.json: generated file/);
+});
+
+test('the public site reads public repositories only, even with a token that could reach private ones', async () => {
+  const previous = process.env.FLY_REVIEW_PUBLIC;
+  process.env.FLY_REVIEW_PUBLIC = '1';
+  try {
+    const privateRepo: typeof fetch = async () =>
+      Response.json({
+        html_url: 'u',
+        title: 'secret',
+        body: '',
+        base: { ref: 'main', repo: { private: true } },
+        head: { ref: 'x' },
+      });
+    await assert.rejects(
+      fetchPullRequest({ owner: 'o', repo: 'r', number: 12 }, privateRepo, 'token'),
+      /not found\. The public site reads public repositories only/,
+    );
+  } finally {
+    if (previous === undefined) delete process.env.FLY_REVIEW_PUBLIC;
+    else process.env.FLY_REVIEW_PUBLIC = previous;
+  }
+});
+
+test('a token an organization refuses falls back to reading its public pull requests without one', async () => {
+  const seen: (string | undefined)[] = [];
+  const ssoOrg: typeof fetch = async (url, init) => {
+    const auth = (init?.headers as Record<string, string>).Authorization;
+    seen.push(auth);
+    if (auth) return new Response('Resource protected by organization SAML enforcement', { status: 403 });
+    if (String(url).includes('/files')) return Response.json([]);
+    return Response.json({
+      html_url: 'https://github.com/o/r/pull/12',
+      title: 'Public change',
+      body: '',
+      base: { ref: 'main', repo: { private: false } },
+      head: { ref: 'x' },
+      additions: 0,
+      deletions: 0,
+      changed_files: 0,
+    });
+  };
+  const pr = await fetchPullRequest({ owner: 'o', repo: 'r', number: 12 }, ssoOrg, 'token');
+  assert.equal(pr.title, 'Public change');
+  assert.deepEqual(seen, ['Bearer token', undefined, undefined], 'the files are fetched without the refused token too');
 });

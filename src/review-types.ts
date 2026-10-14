@@ -105,6 +105,8 @@ export type ReviewState = {
   hasInvestigator: boolean;
   /** A GitHub token (env or gh CLI) is available, so pull requests can be fetched privately and the fly's review can be posted. */
   hasGitHub: boolean;
+  /** fruitfly.review: the fly votes, but nothing is taught, forgotten, or posted (FLY_REVIEW_PUBLIC=1). */
+  public?: boolean;
   /** Where the fly's review landed on GitHub, if it was posted. */
   posted: { url: string; at: string } | null;
   /** The latest direct stimulation of a sensory population, independent of any review. */

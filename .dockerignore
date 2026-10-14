@@ -1,0 +1,11 @@
+.git
+.pi
+.runs
+.runtime
+node_modules
+test
+deploy
+wrangler.jsonc
+*.md
+.env
+.env.*
