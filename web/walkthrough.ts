@@ -6,6 +6,7 @@
  */
 import type { ReviewState } from '../src/review-types.js';
 import { RECEPTORS, hear, odorEntries } from '../src/review-odor.js';
+import { standsOut } from '../src/review-hunks.js';
 import type { Drive } from './fly.js';
 
 export type TourContext = {
@@ -67,7 +68,7 @@ function balance(s: ReviewState | null): { avoid: number; approach: number; shar
   const b = s?.brain;
   if (b && b.avoidHz + b.approachHz >= 20)
     return { avoid: b.avoidHz, approach: b.approachHz, share: b.avoidHz / (b.avoidHz + b.approachHz), real: true };
-  return { avoid: 96, approach: 78, share: 0.55, real: false };
+  return { avoid: 96, approach: 62, share: 0.61, real: false };
 }
 
 /* Scene 1: Jev sniffs the diff and hands back descriptions, never a verdict. */
@@ -673,7 +674,7 @@ export class Walkthrough {
         padding: 6,
         title: () => 'Meet the fly.',
         body: () =>
-          'Every dot is a real neuron from a fruit fly, at its real position: <b>176,422 of them</b>, with every wire between them, simulated. The violet cloud is the <b>mushroom body</b>, the part that remembers smells. We are about to give it something to smell.',
+          'Every dot is a real fruit-fly neuron at its measured position, a sample of the <b>176,422</b> we simulate along with 6.3 million of the connections between them. The violet cloud is the <b>mushroom body</b>, the part that remembers smells. We are about to give it something to smell.',
         enter: () => ctx.focusMushroomBody(true),
         exit: () => ctx.focusMushroomBody(false),
       },
@@ -692,7 +693,7 @@ export class Walkthrough {
         target: firstOf('odor', 'input-story'),
         title: () => 'Answers become a smell.',
         body: s =>
-          `Each answer is one scent; the words in the changed lines add a few more. Together they are a <b>53-scent smell</b>. In the fly, that smell wakes about <b>${(s?.brain?.activeKenyon ?? 200).toLocaleString()} of 4,064 memory cells</b>, the violet flicker in the brain. A different change wakes a different set.`,
+          `Each confident answer is one scent; the words in the changed lines add a few more. Together they make one smell across the fly’s <b>53 scent channels</b>. In the fly, that smell wakes about <b>${(s?.brain?.activeKenyon ?? 200).toLocaleString()} of 4,064 memory cells</b>, the violet flicker in the brain. A different change wakes a different set.`,
         scene: (s, host) => {
           host.append(smellScene(s));
         },
@@ -709,11 +710,11 @@ export class Walkthrough {
         body: s => {
           const b = balance(s);
           const feed = s?.brain?.feedHz ?? 0;
-          return `The memory cells shout to two teams of output cells: <b>back away</b> and <b>come closer</b>. Which team an output cell is on is decided by which dopamine neurons the wiring puts over it. The louder team wins, and if come closer wins hard enough the signal reaches the tongue: the proboscis comes out, and that is the fly’s approval. ${
+          return `The memory cells shout to two teams of output cells: <b>back away</b> and <b>come closer</b>. Which team an output cell is on is decided by which dopamine neurons the wiring puts over it. Back away has to take more than 68% of the shouting to object; come closer wins under 45%; in between, the fly shrugs. If come closer wins hard enough, the signal reaches the tongue: the proboscis comes out, and that is the fly’s approval. ${
             b.real
               ? `On screen right now: back away ${hz(b.avoid)}, come closer ${hz(b.approach)}, proboscis motor neurons ${hz(feed)}${feed >= 8 ? ', it reached for it' : ', it stayed still'}.`
-              : 'A fly that has never learned anything comes out about even and keeps its tongue in, and that is a shrug.'
-          } Watch the body: leaning in is come closer; backing off with the wings half up is back away.`;
+              : 'A fly that has never learned anything sits near 60% back away with its tongue in, and that is a shrug.'
+          } The leaning body is our picture of the two teams; the proboscis is the one movement read from the fly’s own motor neurons.`;
         },
         scene: (s, host) => {
           const b = balance(s);
@@ -752,12 +753,18 @@ export class Walkthrough {
             b = balance(s),
             mem = s?.brain?.rememberedSynapses ?? 0;
           if (!v)
-            return 'Press <b>Ask the fly</b> below. One live Jev call, then 176,422 neurons run for 450 ms of the fly’s time. When the vote lands, this card redraws around the real result.';
+            return `Press <b>Ask the fly</b> below. ${
+              s?.review.pullRequest
+                ? 'One live Jev call per hunk, then every hunk runs through 176,422 neurons, twice.'
+                : 'One live Jev call, then 176,422 neurons run for 450 ms of the fly’s time.'
+            } When the vote lands, this card redraws around the real result.`;
           const lessons = s!.memory.lessons,
-            trained = lessons.filter(l => l.source === 'training').length;
+            training = lessons.filter(l => l.source === 'training'),
+            trained = training.length,
+            cases = new Set(training.map(l => l.caseId)).size;
           const memory = mem
             ? trained
-              ? `This fly was taught ${trained} lessons by executed tests before you met it: mutations of three real TypeScript libraries that their own suites caught, harmless rewrites of the same functions that the suites passed, and small drafted scenarios run against a reference${lessons.length > trained ? `; and ${lessons.length - trained} more on this page` : ''}.`
+              ? `This fly was taught ${cases} lessons by executed tests before you met it${trained > cases ? ` (${trained} tastes in all, over repeated passes)` : ''}: mutations of three real TypeScript libraries that their own suites caught, harmless rewrites of the same functions that the suites passed, and small drafted scenarios run against a reference${lessons.length > trained ? `; and ${lessons.length - trained} more on this page` : ''}.`
               : `This fly remembers ${lessons.length} lesson${lessons.length === 1 ? '' : 's'}.`
             : 'This fly has never been taught anything.';
           const near = (s?.nearest ?? []).find(n => n.shared > 0);
@@ -765,13 +772,22 @@ export class Walkthrough {
             ? ` The closest thing it was taught: <b>${near.title}</b>, ${near.lesson === 'punish' ? 'punished' : 'rewarded'}, ${Math.round(near.overlap * 100)}% of the same cells.`
             : '';
           const reached = s?.verdict?.behavior === 'reached';
+          const a = s?.attention;
+          if (
+            a &&
+            !standsOut(
+              a.units.map(u => u.reading),
+              a.looked,
+            ).stands
+          )
+            return `${memory} No ${a.granularity} stood out, so the vote is the count of every ${a.granularity}’s own vote: changes requested on ${a.tally.changes_requested}, no objection on ${a.tally.no_objection}, abstained on ${a.tally.abstain} of ${a.tally.total}${a.tally.reached ? `, reached for ${a.tally.reached}` : ''}. That is not a promise about the code either way.`;
           return v === 'changes_requested'
             ? `${memory} Back away won, ${hz(b.avoid)} to ${hz(b.approach)}, and its body stayed still. Something that smelled like this came with bitter before, so: <b>changes requested</b>.${closest}`
             : v === 'no_objection'
               ? reached
                 ? `${memory} Its proboscis came out to the smell alone (${hz(s!.brain!.feedHz)} on the feeding motor neurons), which a naive fly never does: the body voted. Something that smelled like this came with sugar before, so: <b>no objection</b>. That is not a promise the code is right.${closest}`
                 : `${memory} Come closer won, ${hz(b.approach)} to ${hz(b.avoid)}, though it did not reach for it. Something that smelled like this came with sugar before, so: <b>no objection</b>. That is not a promise the code is right.${closest}`
-              : `${memory} The teams came out ${hz(b.avoid)} to ${hz(b.approach)} and its body stayed still: nothing in its memory smells much like this, so it <b>abstains</b>.${closest}`;
+              : `${memory} The teams came out ${hz(b.avoid)} to ${hz(b.approach)}, neither past its line, and its body stayed still: what it remembers does not settle this smell, so it <b>abstains</b>.${closest}`;
         },
         scene: (s, _host, extra) => {
           if (s?.verdict) return;
@@ -792,7 +808,11 @@ export class Walkthrough {
             : s?.verification && s.verification.status !== 'confirmed'
               ? ' This run: the test could not break it, and that is not proof of safety, so the fly learned nothing.'
               : '';
-          return `A separate AI bets on one input and real code runs both versions. <b>Prove a break: bitter.</b> A bitter drop on its tongue while it smells the change. Its own punishment neurons (PPL1) fire, and the wiring decides where that dopamine lands: on the wires from these memory cells to come closer. <b>Known harmless and the test can’t break it: sugar.</b> Its reward neurons (PAM) fire and the wires to back away weaken. Anything else teaches nothing; “couldn’t break it” is not “safe”. The taste is about the smell, not a grade for the fly: if it already backed away, the same bitter just deepens that memory.${learned}`;
+          return `On a bundled example, a separate AI bets on one input and real code runs both versions; pull requests and pasted changes have no contract, so they are never taught. <b>Prove a break: bitter.</b> A bitter drop on its tongue while it smells the change. Its own punishment neurons (PPL1) fire, and the wiring decides where that dopamine lands: on the wires from these memory cells to come closer. <b>Known harmless and the test can’t break it: sugar.</b> Its reward neurons (PAM) fire and the wires to back away weaken. (Both tastes get a push from us: this model’s taste wiring into its dopamine neurons is incomplete.) Anything else teaches nothing; “couldn’t break it” is not “safe”. The taste is about the smell, not a grade for the fly: if it already backed away, the same bitter just deepens that memory.${learned}${
+            s?.public
+              ? ' <b>On fruitfly.review nothing is taught:</b> this fly keeps the lessons it came with. Run your own copy to teach it.'
+              : ''
+          }`;
         },
         scene: (s, host, extra) => {
           const verify = ctx.control('verify');
@@ -826,18 +846,18 @@ export class Walkthrough {
       {
         target: firstOf('recall', 'verify', 'review'),
         title: () => 'Ask it again. Then make it forget.',
-        body: () =>
-          'Same change, same description, <b>same fly</b>. <b>Ask the fly again</b> and the only thing that can differ is what it learned; compare the measured share. <b>Forget everything</b> and the memory’s effect is gone. That is the whole proof that the memory did it, and not us.',
+        body: s =>
+          `${s?.public ? '<b>This one needs your own copy:</b> on fruitfly.review the fly cannot be taught or wiped. ' : ''}Same change, same description, <b>same fly</b>. <b>Ask the fly again</b> after a lesson and the only thing that can differ is what it learned; compare the measured share. <b>Forget everything</b> and the fly is naive again, every lesson gone, its own included. That is the whole proof that the memory did it, and not us.`,
         scene: (s, host, extra) => {
           const b = balance(s);
-          const before = b.real && !s?.lesson ? b.share : 0.53;
-          const tug = tugScene(96, 88, before, true);
+          const before = b.real && !s?.lesson ? b.share : 0.61;
+          const tug = tugScene(96, 62, before, true);
           host.append(tug.root);
           const seg = document.createElement('div');
           seg.className = 'tour-seg';
           for (const [label, share, note, a, c] of [
             ['Ask again', 0.74, 'after the bitter', 99, 35],
-            ['Forget', 0.53, 'memory wiped', 96, 88],
+            ['Forget', 0.61, 'memory wiped', 96, 62],
           ] as const) {
             const btn = document.createElement('button');
             btn.type = 'button';
@@ -864,9 +884,15 @@ export class Walkthrough {
         body: s => {
           const a = s?.attention;
           if (!a)
-            return 'A pull request is not one smell, it is a row of them. The fly reads the diff <b>hunk by hunk</b>; every hunk it smells makes that smell a little more familiar. Then it reads the diff again with those synapses frozen. Repeated smells have gone quiet. <b>Whatever still smells new is where it looks.</b> That is a real mushroom body circuit (the α\u20193 compartment), and it is the one thing here a list of yes/no answers cannot do on its own.';
+            return 'A pull request is not one smell, it is a row of them. The fly reads the diff <b>hunk by hunk</b>; every hunk it smells makes that smell a little more familiar. Then it reads the diff again with those synapses frozen. Repeated smells have gone quiet. <b>Whatever still smells new is where it looks</b>, when one hunk clearly stands out; when none does, it counts every hunk’s own vote. That is a real mushroom body circuit (the α\u20193 compartment), and it is the one thing here a list of yes/no answers cannot do on its own.';
           const looked = a.units[a.looked];
           const quiet = a.units.filter(u => u.reading.noveltyHz === 0).length;
+          const stood = standsOut(
+            a.units.map(u => u.reading),
+            a.looked,
+          );
+          if (!stood.stands)
+            return `It read ${a.units.length} ${a.granularity}s, then read them again, and ${stood.why}. So it did not pick one: the vote you saw is the count of every ${a.granularity}’s own vote. Novelty finds the one thing unlike the rest only when the rest are alike. The loudest, barely, was <b>${looked.filename}${looked.hunk === null ? '' : `, hunk ${looked.hunk + 1}`}</b>.`;
           return `It read ${a.units.length} ${a.granularity}s, then read them again. ${quiet} had gone quiet. <b>${looked.filename}${looked.hunk === null ? '' : `, hunk ${looked.hunk + 1}`}</b> still evoked ${hz(looked.reading.noveltyHz)} of its first-exposure ${hz(looked.reading.naiveNoveltyHz)}, the most of any, so that is where it looked. The vote you saw is its vote on that ${a.granularity}. Novelty says <i>unlike the rest</i>, not <i>wrong</i>; the memory says what it thinks of it.`;
         },
         scene: (s, host) => {
@@ -877,7 +903,7 @@ export class Walkthrough {
         target: byId('record'),
         title: () => 'Same smell, same answer.',
         body: () =>
-          'Same smell, same fly, same memory: <b>the same answer every time, to the bit</b>. Jev’s sniff wobbles a little between calls, like anyone sniffing twice, so asking Jev again shifts the smell a hair. The fly’s vote is only as good as what taught it. So is anyone’s. And does the wiring matter, or is the brain decoration? Rewire which dopamine neuron reaches which output cell, degrees preserved, teach that fly the same lessons, and it catches no regressions and reaches for most of them. Thirty logistic weights classify about as well as this fly does; they have no wiring to shuffle.',
+          'Same smell, same fly, same memory: <b>the same answer every time, to the bit</b>. Jev’s sniff wobbles a little between calls, like anyone sniffing twice, so asking Jev again shifts the smell a hair. The fly’s vote is only as good as what taught it. So is anyone’s. And does the wiring matter, or is the brain decoration? Rewire which dopamine neuron reaches which output cell, degrees preserved, teach that fly the same lessons, and it catches 1 of 234 held-out regressions and reaches for 212 of them. A logistic regression reading the same smell classifies better than this fly, 94.8% to 88.3% balanced accuracy on changes neither has seen; it has no wiring to shuffle.',
         scene: (_s, host) => {
           host.append(sameScene());
         },

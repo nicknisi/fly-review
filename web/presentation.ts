@@ -264,9 +264,12 @@ let rounds: Round[] = [];
 const flyCall = (p: Pick) =>
   p.fly.verdict === 'no_objection' ? 'approve' : p.fly.verdict === 'changes_requested' ? 'object' : 'unsure';
 const truth = (p: Pick) => (p.label === 'bug' ? 'object' : 'approve');
+const ROUNDS = 3;
+/** The title slide's reels, shown from whatever is drawn (?draw draws before any reel exists). */
+let syncReels = () => {};
 function drawRounds() {
   const pool = [...deck.pool];
-  rounds = Array.from({ length: 2 }, () => ({
+  rounds = Array.from({ length: ROUNDS }, () => ({
     pick: pool.splice(Math.floor(Math.random() * pool.length), 1)[0],
     room: null,
     revealed: 0,
@@ -291,10 +294,49 @@ function tally() {
   }
   return { room, voted, fly: flyScore, played };
 }
+let shownScore = { room: 0, fly: 0 };
 function renderScore() {
   const t = tally();
-  for (const host of scoreHosts)
-    host.textContent = t.played ? `${t.voted ? `Room ${t.room} / ${t.voted} · ` : ''}Fly ${t.fly} / ${t.played}` : '';
+  const digit = (n: number, was: number) => `<b class="${n !== was ? 'bump' : ''}">${n}</b>`;
+  for (const host of scoreHosts) {
+    host.replaceChildren();
+    html(host, `<span>Room</span>${digit(t.room, shownScore.room)}<i>vs</i>${digit(t.fly, shownScore.fly)}<span>Fly</span>`);
+  }
+  shownScore = { room: t.room, fly: t.fly };
+}
+
+// The game show: marquee bulbs, confetti.
+/** Chasing bulbs around a frame, clockwise; each bulb is lit one beat in three. */
+function marquee(frame: HTMLElement, across = 24, down = 7) {
+  let i = 0;
+  const bulb = (x: number, y: number) => {
+    const b = make('i', 'bulb');
+    b.style.left = `${x}%`;
+    b.style.top = `${y}%`;
+    b.style.setProperty('--i', String(i++ % 3));
+    frame.append(b);
+  };
+  for (let k = 0; k < across; k++) bulb((k / across) * 100, 0);
+  for (let k = 0; k < down; k++) bulb(100, (k / down) * 100);
+  for (let k = across; k > 0; k--) bulb((k / across) * 100, 100);
+  for (let k = down; k > 0; k--) bulb(0, (k / down) * 100);
+}
+function confetti(from: Element) {
+  if (reduce.matches) return;
+  const r = from.getBoundingClientRect();
+  const colors = ['--yellow', '--green', '--violet', '--pink', '--red'];
+  for (let i = 0; i < 40; i++) {
+    const bit = make('i', 'confetti');
+    bit.style.left = `${r.left + r.width / 2}px`;
+    bit.style.top = `${r.top + r.height / 3}px`;
+    bit.style.background = `var(${colors[i % colors.length]})`;
+    bit.style.setProperty('--dx', `${(Math.random() - 0.5) * 60}vh`);
+    bit.style.setProperty('--dy', `${-12 - Math.random() * 26}vh`);
+    bit.style.setProperty('--spin', `${(Math.random() - 0.5) * 1440}deg`);
+    bit.style.animationDelay = `${Math.random() * 90}ms`;
+    bit.addEventListener('animationend', () => bit.remove());
+    document.body.append(bit);
+  }
 }
 
 function diffBox(shown: Shown) {
@@ -323,20 +365,34 @@ function verdictCard(who: string, call: Call | null, why = '', says = SAYS) {
 }
 function roundSlide(i: number): Slide {
   let host: HTMLElement;
+  // What this slide last showed, so only a new reveal animates; re-renders and revisits stay still.
+  let seen: Round | undefined,
+    seenRoom: Round['room'] = null,
+    seenRevealed = 0;
   const render = () => {
     const r = rounds[i];
     host.replaceChildren();
-    html(host, `<div class="kicker">Round ${i + 1} of 2</div>`);
+    html(host, `<div class="round-badge">Round ${i + 1} of ${ROUNDS}</div>`);
     if (!r) {
       html(host, `<h2>Draw the changes on the previous slide.</h2>`);
       return;
     }
+    if (r !== seen) [seen, seenRoom, seenRevealed] = [r, null, 0];
+    const fresh = {
+      room: !!r.room && r.room !== seenRoom,
+      fly: r.revealed >= 1 && seenRevealed < 1,
+      test: r.revealed >= 2 && seenRevealed < 2,
+    };
+    [seenRoom, seenRevealed] = [r.room, r.revealed];
     html(host, `<h2></h2>`);
     // The file, not the title: mined and drafted titles describe the edit, and a few would give the answer away.
     host.querySelector('h2')!.textContent = r.pick.filename;
     host.append(diffBox(r.pick));
-    const cards = make('div', 'verdicts');
-    const room = verdictCard('The room', r.room, r.room ? 'show of hands' : 'hands up: approve, or request changes?');
+    const cards = make('div', 'verdicts podiums');
+    const mystery = (card: HTMLElement) => card.classList.add('mystery');
+    const room = verdictCard('The room', r.room, r.room ? 'locked in' : 'hands up: approve, or request changes?');
+    if (!r.room) mystery(room);
+    if (fresh.room) room.classList.add('flip');
     const flyCard =
       r.revealed >= 1
         ? verdictCard(
@@ -346,6 +402,12 @@ function roundSlide(i: number): Slide {
             SNIFFS,
           )
         : verdictCard('The fly', null, 'waiting');
+    if (r.revealed < 1) mystery(flyCard);
+    // Its first reveal on its own step: a beat of sniffing, then the card flips.
+    if (fresh.fly && !fresh.test) {
+      flyCard.classList.add('flip', 'suspense');
+      flyCard.append(make('div', 'sniff', 'sniff… sniff…'));
+    } else if (fresh.fly) flyCard.classList.add('flip');
     const test = make('div', `verdict ${r.revealed >= 2 ? truth(r.pick) : ''}`);
     test.append(make('div', 'who', 'The tests'));
     test.append(make('div', 'what', r.revealed >= 2 ? (r.pick.label === 'bug' ? 'A bug' : 'Harmless') : '…'));
@@ -356,10 +418,12 @@ function roundSlide(i: number): Slide {
         r.revealed >= 2 ? (r.pick.label === 'bug' ? 'a test reproduced it' : 'every test still passes') : 'not run yet',
       ),
     );
+    if (r.revealed < 2) mystery(test);
+    if (fresh.test) test.classList.add('flip');
     if (r.revealed >= 2) {
       if (r.room) room.classList.add(r.room === truth(r.pick) ? 'right' : 'wrong');
       flyCard.classList.add(flyCall(r.pick) === truth(r.pick) ? 'right' : 'wrong');
-      test.classList.add('right');
+      if (fresh.test) cards.classList.add('judging');
     }
     cards.append(room, flyCard, test);
     host.append(cards);
@@ -375,7 +439,7 @@ function roundSlide(i: number): Slide {
       });
       buttons.append(b);
     }
-    const score = make('span', 'score');
+    const score = make('span', 'scoreboard');
     scoreHosts.splice(0, scoreHosts.length, ...scoreHosts.filter(node => node.isConnected), score);
     buttons.append(score);
     host.append(buttons);
@@ -394,25 +458,36 @@ function roundSlide(i: number): Slide {
     enter: step => {
       still();
       const r = rounds[i];
-      if (r) {
-        r.revealed = Math.max(r.revealed, step);
-        render();
-        if (step >= 1) {
-          const call = flyCall(r.pick);
-          drive({
-            ...rest,
-            feed: r.pick.fly.behavior === 'reached' ? 0.4 : 0,
-            avoid: call === 'object' ? 0.8 : 0,
-            approach: call === 'approve' ? 0.5 : 0,
-          });
-        }
-      }
+      if (!r) return;
+      const was = r.revealed;
+      r.revealed = Math.max(r.revealed, step);
+      render();
+      if (step < 1) return;
+      const call = flyCall(r.pick);
+      const verdict = () =>
+        drive({
+          ...rest,
+          feed: r.pick.fly.behavior === 'reached' ? 0.4 : 0,
+          avoid: call === 'object' ? 0.8 : 0,
+          approach: call === 'approve' ? 0.5 : 0,
+        });
+      // The same beat as the card: the fly sniffs while its card says so, then shows its vote.
+      if (step === 1 && was < 1) {
+        drive({ ...rest, smell: 1, arousal: 0.6 });
+        later(1100, verdict);
+      } else verdict();
+      if (step >= 2 && was < 2)
+        later(800, () => {
+          document.querySelectorAll('.slide.on .podiums .right').forEach(confetti);
+          if (call === truth(r.pick)) applaud('.podiums .verdict:nth-child(2)');
+          else flinch();
+        });
     },
     notes: [
-      'Step 1: read the change aloud in one sentence. Hands up: who approves? Who requests changes? Press A or R for the majority.',
-      'Step 2 (→): the fly’s vote. It is its answer from the exam; the fly gives the same answer every time, so recording it is fair. Its card speaks nose: “Smells good to me” is approve, “Something stinks” is changes requested, “Can’t tell” is abstain.',
+      'Step 1: read the change aloud in one sentence. Hands up: who approves? Who requests changes? Press A or R for the majority; the room’s card flips to “locked in.”',
+      'Step 2 (→): the fly’s vote. Its card sniffs for a beat, then flips. It is its answer from the exam; the fly gives the same answer every time, so recording it is fair. Its card speaks nose: “Smells good to me” is approve, “Something stinks” is changes requested, “Can’t tell” is abstain.',
       'Say the percentage like this: “72% of its output neurons’ firing came from the avoid side.” Over 68% is changes requested; under 45%, or tongue out, is approve; in between, “I don’t know.”',
-      'Step 3 (→): the tests. Green border = right.',
+      'Step 3 (→): the tests. Right answers glow green and throw confetti; wrong ones shake. If the fly got it right it claps for itself (its real grooming recording); if not, it flinches. The scoreboard ticks up.',
     ],
   };
 }
@@ -1255,26 +1330,55 @@ typeof null           // "object"</pre>
     build: h => {
       html(
         h,
-        `<div class="kicker">Audience round: you vs. a bug</div><h1>Are you smarter than a fruit fly?</h1><p>Two real changes. Hands up: approve or request changes. Then the fly. Then the tests.</p>`,
+        `<div class="kicker">Audience round: you vs. a bug</div>`,
       );
-      const draw = make('button', 'button primary', 'Draw two changes');
+      const frame = make('div', 'marquee');
+      html(frame, `<h1>Are you smarter than a fruit&nbsp;fly?</h1>`);
+      marquee(frame);
+      h.append(frame);
+      html(h, `<p>Three real changes. Hands up: approve or request changes. Then the fly. Then the tests.</p>`);
+      // The draw as a slot machine: each reel spins through the pool and lands on its round's file.
+      const reels = make('div', 'reels');
+      const faces = Array.from({ length: ROUNDS }, (_, k) => {
+        const reel = make('div', 'reel');
+        reel.append(make('span', '', `Round ${k + 1}`), make('b', '', '?'));
+        reels.append(reel);
+        return reel;
+      });
+      const land = (reel: HTMLElement, k: number) => {
+        reel.classList.remove('spinning');
+        reel.classList.add('landed');
+        reel.querySelector('b')!.textContent = rounds[k].pick.filename;
+      };
+      syncReels = () => faces.forEach((reel, k) => rounds[k] && !reel.classList.contains('spinning') && land(reel, k));
+      const draw = make('button', 'button primary big', 'Draw three changes');
       draw.addEventListener('click', () => {
         drawRounds();
-        draw.textContent = 'Drawn. Draw again';
+        draw.textContent = 'Spin again';
+        faces.forEach((reel, k) => {
+          if (reduce.matches) return land(reel, k);
+          reel.classList.remove('landed');
+          reel.classList.add('spinning');
+          const face = reel.querySelector('b')!;
+          const spin = setInterval(() => {
+            face.textContent = deck.pool[Math.floor(Math.random() * deck.pool.length)].filename;
+          }, 70);
+          setTimeout(() => (clearInterval(spin), land(reel, k)), 900 + k * 500);
+        });
       });
-      h.append(draw);
+      h.append(draw, reels);
       html(h, `<p class="caption">${deck.poolRule}</p>`);
     },
     enter: () => {
       home();
       play('naive');
+      syncReels();
     },
     notes: [
-      'Click Draw (random, live). Say how the pool was made; the caption has it. The fly’s answers are fixed in advance because it is deterministic; the live draw is what keeps the round honest.',
+      'Click Draw (random, live): three reels spin through the pool and land on the three changes. Say how the pool was made; the caption has it. The fly’s answers are fixed in advance because it is deterministic; the live draw is what keeps the round honest.',
     ],
   },
-  roundSlide(0),
-  roundSlide(1),
+  ...Array.from({ length: ROUNDS }, (_, k) => roundSlide(k)),
   {
     id: 'numbers',
     minutes: '0:50',
@@ -1325,7 +1429,7 @@ typeof null           // "object"</pre>
       `Say: “On the exam, it caught ${N.caught[0]} of ${N.caught[1]} bugs and approved ${N.approved[0]} of ${N.approved[1]} harmless changes. Average those and you get ${pct(N.balanced)}. A coin flip gets 50.”`,
       `Say: “And a spreadsheet beats it. A logistic regression reading the exact same 53 numbers gets ${pct(neutral.logistic)}. The fly isn’t the best classifier here. It’s a fly.”`,
       '“Best single clue” is the one smell channel that does best alone. Both comparisons were fit on the same flashcards.',
-      'The room bar is two questions, not ' + N.heldOut + '. Say so.',
+      'The room bar is three questions, not ' + N.heldOut + '. Say so.',
     ],
   },
   {

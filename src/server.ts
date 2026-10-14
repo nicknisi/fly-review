@@ -7,7 +7,6 @@ import { ROOT } from './io.ts';
 import { pokeBrain, smellBrain, smellSequence } from './review-brain.ts';
 import { fetchPullRequest, pullRequestCase, pullRequestKey } from './review-github.ts';
 import type { PullRequest, PullRequestRef } from './review-github.ts';
-import { encodeUnitWithJev, encodeWithJev } from './review-jev.ts';
 import { ReviewShow } from './review-show.ts';
 import { parseReviewAction } from './review-action.ts';
 import type { ReviewAction } from './review-action.ts';
@@ -17,8 +16,7 @@ const port = Number(process.env.PORT ?? 4488);
 if (!Number.isInteger(port) || port < 1024 || port > 65535) throw new Error('Invalid PORT');
 /**
  * FLY_REVIEW_PUBLIC=1 is fruitfly.review: the server sits in a container behind a Cloudflare Worker, every visitor gets
- * their own fly (a cookie session) sharing one simulator, nothing can be posted, taught, or forgotten, and a daily cap
- * limits the Jev calls billed to the deployment's key. Without it, this is the local lab, one shared fly, as before.
+ * their own fly (a cookie session) sharing one simulator, and nothing can be posted, taught, or forgotten. Without it, this is the local lab, one shared fly, as before.
  */
 const PUBLIC = process.env.FLY_REVIEW_PUBLIC === '1';
 const origins = new Set([
@@ -36,18 +34,6 @@ const oneAtATime =
     const next = simulator.then(() => run(...args));
     simulator = next.catch(() => {});
     return next;
-  };
-/** In public, at most FLY_REVIEW_JEV_DAILY Jev calls a day (one per hunk), across every visitor. */
-const jevDaily = Number(process.env.FLY_REVIEW_JEV_DAILY ?? 400);
-const jevSpent = { day: '', calls: 0 };
-const budgeted =
-  <A extends unknown[], R>(run: (...args: A) => Promise<R>) =>
-  (...args: A): Promise<R> => {
-    const day = new Date().toISOString().slice(0, 10);
-    if (jevSpent.day !== day) Object.assign(jevSpent, { day, calls: 0 });
-    if (++jevSpent.calls > jevDaily)
-      return Promise.reject(new Error('The fly has read all the code it can today. Try again tomorrow.'));
-    return run(...args);
   };
 /** In public, per visitor (the Worker's x-fly-client: their IP) per hour: reviews, and everything else that runs. */
 const LIMITS = { review: Number(process.env.FLY_REVIEW_REVIEWS_HOURLY ?? 10), other: 120 };
@@ -91,8 +77,6 @@ async function openSession(): Promise<Session> {
           smell: oneAtATime(smellBrain),
           smellSequence: oneAtATime(smellSequence),
           poke: oneAtATime(pokeBrain),
-          encode: budgeted(encodeWithJev),
-          encodeUnit: budgeted(encodeUnitWithJev),
           fetchPullRequest: sharedPullRequest,
           // Never the gh CLI's token: only a token deliberately given to the deployment (public repositories only).
           githubToken: async () => process.env.GITHUB_TOKEN || null,
@@ -163,6 +147,7 @@ const files: Record<string, [string, string]> = {
   '/assets/nick-nisi.webp': ['web/assets/nick-nisi.webp', 'image/webp'],
   '/assets/fruitfly-qr.svg': ['web/assets/fruitfly-qr.svg', 'image/svg+xml'],
   '/assets/wanted-nick.webp': ['web/assets/wanted-nick.webp', 'image/webp'],
+  '/assets/og.jpg': ['web/assets/og.jpg', 'image/jpeg'],
 };
 const server = createServer(async (request, response) => {
   response.setHeader('X-Content-Type-Options', 'nosniff');
@@ -278,6 +263,6 @@ server.listen(port, process.env.HOST ?? '127.0.0.1', () => {
   console.log(
     state
       ? `Jev: ${state.hasJev ? 'available' : 'TYPESAFE_API_KEY missing; explicit manual mode available'}. Investigator: ${state.hasInvestigator ? 'Anthropic available' : 'ANTHROPIC_API_KEY missing'}. GitHub: ${state.hasGitHub ? 'token found; private pull requests and posting enabled' : 'public pull requests only'}.`
-      : `Jev: ${process.env.TYPESAFE_API_KEY ? `available, ${jevDaily} calls a day` : 'TYPESAFE_API_KEY missing'}. Public pull requests only; no teaching, forgetting, or posting.`,
+      : `Jev: ${process.env.TYPESAFE_API_KEY ? 'available' : 'TYPESAFE_API_KEY missing'}. Public pull requests only; no teaching, forgetting, or posting.`,
   );
 });
