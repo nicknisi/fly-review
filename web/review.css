@@ -139,7 +139,7 @@ p {
 }
 .logo span {
   color: var(--violet);
-  padding: 0 3px;
+  padding: 0 1px;
 }
 #connection {
   margin-left: auto;
