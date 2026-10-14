@@ -300,7 +300,10 @@ function renderScore() {
   const digit = (n: number, was: number) => `<b class="${n !== was ? 'bump' : ''}">${n}</b>`;
   for (const host of scoreHosts) {
     host.replaceChildren();
-    html(host, `<span>Room</span>${digit(t.room, shownScore.room)}<i>vs</i>${digit(t.fly, shownScore.fly)}<span>Fly</span>`);
+    html(
+      host,
+      `<span>Room</span>${digit(t.room, shownScore.room)}<i>vs</i>${digit(t.fly, shownScore.fly)}<span>Fly</span>`,
+    );
   }
   shownScore = { room: t.room, fly: t.fly };
 }
@@ -1261,54 +1264,22 @@ typeof null           // "object"</pre>
     ],
   },
   {
-    id: 'exam',
-    minutes: '0:45',
-    className: 'wide',
-    build: h => {
-      html(
-        h,
-        `<div class="kicker">How it studied, and how I tested it</div><h2>${N.lessons} flashcards. Then an exam it had never seen.</h2>`,
-      );
-      const cols = make('div', 'duel');
-      cols.innerHTML = `<div><div class="kicker">Study</div><div class="num">${N.lessons}<small> lessons</small></div><ul>
-          <li><strong>Bugs:</strong> mutation testing on three real TypeScript repos. Kept only if a real test failed.</li>
-          <li><strong>Harmless:</strong> rewrites like flipping an if/else or renaming a variable. Kept only if every test still passed.</li>
-          <li>Plus small examples Claude wrote, checked by running them.</li>
-          <li>Half bugs, half harmless. It went through the pile ${N.passes} times.</li></ul></div>
-        <div><div class="kicker">Exam</div><div class="num">${N.heldOut}<small> changes</small></div><ul>
-          <li>Never studied. Whole functions were held back, so no exam question has a sibling in the flashcards.</li>
-          <li><strong>${N.caught[1]}</strong> bugs, <strong>${N.approved[1]}</strong> harmless. Every answer checked by running a test.</li></ul></div>`;
-      h.append(cols);
-      html(
-        h,
-        `<p class="caption">In your terms: a train/test split. ${N.passes} epochs, learning rate ${N.rate}, picked on a practice slice of the training set, never on the exam.</p>`,
-      );
-    },
-    enter: () => still(),
-    notes: [
-      `Say: “It studied ${N.lessons} flashcards. Every flashcard is a real code change, and a test decided the answer: a test failed, so bitter, or every test passed, so sugar. It went through the stack ${N.passes} times. Then I gave it ${N.heldOut} changes it had never seen. That’s the exam, and every number from here on is from it.”`,
-      'The three repos: authkit-nextjs, authkit-js, ufo. “Mutation testing” = a tool (StrykerJS) makes small bugs on purpose; a mutant that makes a real test fail is a proven bug.',
-      'If asked “why so few harmless ones on the exam?”: harmless rewrites are harder to make than bugs. That’s why the score on the next slides averages the two halves.',
-      'Honest footnotes if asked: (1) every harmless example is a refactor. Measured: on 24 tickets that change what a function should do, it approved 0 of 24 correct changes and caught 22 of 24 wrong ones, the same verdict for both 22 times (data/intent.json). It learned “did behavior change,” not “is it right.” (2) Switching off the two answer-key questions was decided after seeing them sort this exam; the learning rate and epochs were picked without it. (3) Exam functions are held out, but the repos are the same three.',
-    ],
-  },
-  {
     id: 'proof',
-    minutes: '0:50',
+    minutes: '0:40',
     className: 'wide',
     steps: 2,
     build: h => {
       html(
         h,
-        `<div class="kicker">The ablation</div><h2>Break where the teacher’s signal lands, and it stops catching bugs.</h2><p>Same nose, same lessons. Shuffle only which output neurons the dopamine reaches.</p>`,
+        `<div class="kicker">Is it really the fly?</div><h2>Scramble its wiring, and it eats the bug.</h2><p>The same bug as the last slide. Same nose, same lessons. Shuffle one thing: which output neurons the teaching signal reaches.</p>`,
       );
       const duel = make('div', 'duel');
-      duel.innerHTML = `<div class="good" data-side="real"><div class="kicker">Real wiring</div><div class="num">${N.caught[0]}<small> / ${N.caught[1]}</small></div><p>bugs caught</p></div>
-        <div class="bad dim" data-side="scrambled"><div class="kicker">Scrambled</div><div class="num">${N.shuffled.caught[0]}<small> / ${N.shuffled.caught[1]}</small></div><p>bugs caught · ${N.shuffled.bugsApproved} approved</p></div>`;
+      duel.innerHTML = `<div class="good" data-side="real"><div class="kicker">Real wiring</div><div class="num say">Backs away</div><p>tongue in · changes requested</p></div>
+        <div class="bad dim" data-side="scrambled"><div class="kicker">Scrambled</div><div class="num say">Tongue out</div><p>it approves the bug</p></div>`;
       h.append(duel);
       html(
         h,
-        `<p class="caption">Out of the ${N.caught[1]} bugs on the exam. The nose carries the information (a spreadsheet reading it does better); the fly has to learn what it means. Untrained, it says “I don’t know” to all ${N.heldOut}. Press S to switch.</p>`,
+        `<p class="caption">Across ${N.caught[1]} bugs it had never seen: real wiring catches ${N.caught[0]}. Scrambled, it catches ${N.shuffled.caught[0]}.</p>`,
       );
     },
     enter: step => {
@@ -1318,9 +1289,14 @@ typeof null           // "object"</pre>
       document.querySelector('[data-side="scrambled"]')?.classList.toggle('dim', step === 0);
     },
     notes: [
-      `Say: “Same nose, same lessons. Real wiring: it catches ${N.caught[0]} of the ${N.caught[1]} exam bugs. Scramble where its teacher’s signal lands and it catches ${N.shuffled.caught[0]}, and approves ${N.shuffled.bugsApproved}. The fly has to learn, and it learns through that wiring.”`,
-      'Don’t claim more: this shows the learning depends on the dopamine wiring lining up with the output neurons. It does not show fly wiring beats any other learner; the spreadsheet on a later slide beats it.',
-      '→ scrambles. Same bug, same smell: with scrambled wiring the fly reaches for it. Every neuron keeps the same number of connections; only who-talks-to-whom changed.',
+      'Say: “Fair question: is that the fly, or did I build a classifier and glue a fly on top? Here’s the test. Same bug as the last slide. With its real wiring, it backs away.”',
+      `→ Say: “Now I scramble one thing: which neurons the teaching signal reaches. Same nose, same lessons, every neuron keeps the same number of connections. Watch the corner.” [tongue out, about 36 Hz on the strip] “It eats the bug. Across ${N.caught[1]} bugs it had never seen, the real fly catches ${N.caught[0]}. Scrambled, it catches ${N.shuffled.caught[0]}. The learning lives in that wiring.”`,
+      'If asked “so it beats ML?” No. A spreadsheet beats it, and you show that in a few slides. This shows the learning runs through the fly’s wiring, not that the wiring is a better learner.',
+      `If asked “how did you train and test it?” ${N.lessons} changes, half bugs, half harmless. Bugs: mutants of three real TypeScript repos (authkit-nextjs, authkit-js, ufo) that a real test caught. Harmless: rewrites that pass every test. Plus small scenarios Claude wrote, checked by running them. The ${N.heldOut} exam changes come from functions it never studied. Learning rate and passes were picked on a practice slice, never on the exam.`,
+      'If asked “one random shuffle?” One per run, and it has come out the same every time it was measured: 0 of 15, 0 of 234, 1 of 234.',
+      'If asked “what is the teaching signal?” Dopamine. Bitter fires the punishment neurons, sugar the reward neurons, and they weaken specific connections. Scramble where they land and the memory has no direction.',
+      'If asked “does any other wiring matter?” Scrambling which memory cells reach the outputs changes nothing on the exam. That matches the biology: the memory cells are a random layer; meaning lives where the dopamine lands.',
+      `Only if pushed: two of Jev’s thirty questions were switched off after seeing how well they sorted the exam; the exam’s functions are new but the repos are the same three; the real fly also waves ${N.bugsApproved} of the ${N.caught[1]} bugs through.`,
     ],
   },
   {
@@ -1328,10 +1304,7 @@ typeof null           // "object"</pre>
     minutes: '0:30',
     className: 'center',
     build: h => {
-      html(
-        h,
-        `<div class="kicker">Audience round: you vs. a bug</div>`,
-      );
+      html(h, `<div class="kicker">Audience round: you vs. a bug</div>`);
       const frame = make('div', 'marquee');
       html(frame, `<h1>Are you smarter than a fruit&nbsp;fly?</h1>`);
       marquee(frame);
@@ -1426,6 +1399,7 @@ typeof null           // "object"</pre>
       });
     },
     notes: [
+      `Say first: “Here’s the whole exam: ${N.heldOut} changes from functions it never studied, and a test decided every answer.” (It studied ${N.lessons}, half bugs, half harmless, ${N.passes} passes.)`,
       `Say: “On the exam, it caught ${N.caught[0]} of ${N.caught[1]} bugs and approved ${N.approved[0]} of ${N.approved[1]} harmless changes. Average those and you get ${pct(N.balanced)}. A coin flip gets 50.”`,
       `Say: “And a spreadsheet beats it. A logistic regression reading the exact same 53 numbers gets ${pct(neutral.logistic)}. The fly isn’t the best classifier here. It’s a fly.”`,
       '“Best single clue” is the one smell channel that does best alone. Both comparisons were fit on the same flashcards.',
@@ -1546,9 +1520,9 @@ typeof null           // "object"</pre>
   },
   {
     id: 'proposal',
-    minutes: '2:00',
+    minutes: '2:30',
     className: 'wide',
-    steps: 7,
+    steps: 8,
     build: h => {
       html(
         h,
@@ -1573,7 +1547,7 @@ typeof null           // "object"</pre>
       h.append(pipe);
       html(
         h,
-        `<blockquote class="step later skill-quote" data-step="1">…having them maintain a skill, for lack of a better term, that is how that team would do code reviews.</blockquote><p class="caption step later" data-step="3">Every pipeline needs a fly on the wall.</p>`,
+        `<blockquote class="step later skill-quote" data-step="1">…having them maintain a skill, for lack of a better term, that is how that team would do code reviews.</blockquote><p class="caption step later fly-wall" data-step="3">Every pipeline needs a fly on the wall.</p>`,
       );
       // The last press: what the agent hands the human at the end of the line.
       const receipt = make('div', 'step later handoff');
@@ -1594,17 +1568,42 @@ typeof null           // "object"</pre>
         `<blockquote>…what the code is doing and why, and specifically why not other methods.</blockquote>`,
       );
       h.append(receipt);
+      // The last press: what the first station holds, for one team. DX is the example; every team writes its own.
+      const card = make('div', 'review-card gone');
+      card.innerHTML = `<header><b>REVIEW.md</b><span>DX team · SDKs, AuthKit, CLI, docs</span><span class="example">an example</span></header>
+        <div class="cols"><div class="col human"><h3>Any yes → a human looks</h3><ul>
+          <li>Changes the public API: an export, an option, a default, an error?</li>
+          <li>Touches sessions, tokens, cookies, or redirects?</li>
+          <li>Hand-edits generated SDK code instead of the OpenAPI spec?</li>
+          <li>Adds a runtime dependency?</li>
+          <li>Too big to explain in three sentences?</li></ul></div>
+        <div class="col pass"><h3>All proven → one more reason it doesn’t need one</h3><ul>
+          <li>CI is green on every framework version we support</li>
+          <li>The example app signs in and out, on video</li>
+          <li>Docs and code samples change in the same PR</li>
+          <li>A changelog line in the words a developer would use</li></ul></div></div>
+        <footer>Shaped like the fly: yes/no questions a model can answer, and only checks that actually ran. A red check goes to a human too.</footer>`;
+      h.append(card);
     },
     enter: step => {
       still();
       document.querySelectorAll('.slide.on .station').forEach((s, i) => s.classList.toggle('active', step - 1 === i));
       document.querySelector('.slide.on .skill-quote')?.classList.toggle('gone', step >= 6);
-      el('fly').classList.add('station-seat');
+      // The last press swaps the pipeline for the team's review card; the fly leaves its station.
+      const skill = step >= 7;
+      for (const part of ['.pipeline', '.handoff', '.fly-wall'])
+        document.querySelector(`.slide.on ${part}`)?.classList.toggle('gone', skill);
+      document.querySelector('.slide.on .review-card')?.classList.toggle('gone', !skill);
+      el('fly').classList.toggle('station-seat', !skill);
     },
     notes: [
       'Your proposal, verbatim: “…having individual teams where we might have code owners before that are assigned to it, having them maintain a skill, for lack of a better term, that is how that team would do code reviews. Along with some like classification, potentially with Jev or other models that can decide whether something is too complex, or if it fails the team’s automated review system, then it gets escalated to a human to review in a summarized way, where they’re focusing on just the business logic or just the bits that actually make sense.”',
       '→ walks a PR through, one station per press. The fly sits on “Automated review”: that station is what it can do (bug or tidy-up?); the human box is what it can’t (is this what we wanted?).',
-      '→ the last press: what the agent hands the human. The list and the quote are yours (interview, and the Sept 18 pitch).',
+      '→ what the agent hands the human. The list and the quote are yours (interview, and the Sept 18 pitch).',
+      '→ the last press: the first station, written down for one team. Say: “Here’s what that skill looks like for my team. Two lists. Any yes on the left, a human looks. Everything on the right proven, and that’s one more reason it doesn’t need one. Not proof. Notice the shape: the left side is yes/no questions a model can answer, like the fly’s nose. Nobody asks ‘is it good?’ The right side only counts things that ran, like the fly’s teacher.”',
+      '[NICK: drafted from the DX one-pager: generated SDKs (edit the spec, not the output), the session and redirect security work, major-version cadence, changelog quality, docs code samples. Swap in what your team actually checks.]',
+      'If asked “why send every public API change to a human?” For an SDK the public API is the product, and a changed default breaks someone’s app without an error. Bonus: “changes a default” is also the strongest clue the fly and the spreadsheet learned.',
+      'If asked “who answers the questions?” Jev or any model, each as a yes/no with a confidence, the same way it answers the fly’s thirty. The thresholds belong to the team.',
     ],
   },
   {

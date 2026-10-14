@@ -521,7 +521,8 @@ input {
   position: relative;
   padding: 4.5vh 7vh;
   border-radius: 2.4vh;
-  background: radial-gradient(ellipse at 50% 120%, oklch(0.45 0.18 300 / 0.45), transparent 70%),
+  background:
+    radial-gradient(ellipse at 50% 120%, oklch(0.45 0.18 300 / 0.45), transparent 70%),
     oklch(0.13 0.03 300 / 0.75);
   box-shadow:
     inset 0 0 0 0.3vh oklch(0.55 0.16 300 / 0.8),
@@ -529,7 +530,9 @@ input {
 }
 .slide.on .marquee h1 {
   animation: pop-in 0.7s cubic-bezier(0.2, 1.6, 0.4, 1) both 0.15s;
-  text-shadow: 0 0.5vh 0 oklch(0.35 0.14 300), 0 0 4vh oklch(0.7 0.18 300 / 0.5);
+  text-shadow:
+    0 0.5vh 0 oklch(0.35 0.14 300),
+    0 0 4vh oklch(0.7 0.18 300 / 0.5);
 }
 .bulb {
   position: absolute;
@@ -564,7 +567,9 @@ input {
 .button.big {
   font-size: 2.6vh;
   padding: 1.5vh 3.6vh;
-  box-shadow: 0 0.6vh 0 oklch(0.45 0.16 300), 0 0 4vh oklch(0.7 0.18 300 / 0.45);
+  box-shadow:
+    0 0.6vh 0 oklch(0.45 0.16 300),
+    0 0 4vh oklch(0.7 0.18 300 / 0.45);
   animation: beckon 1.6s ease-in-out infinite;
 }
 .button.big:active {
@@ -586,7 +591,9 @@ input {
   border-radius: 1.2vh;
   border: 2px solid oklch(0.55 0.16 300 / 0.8);
   background: oklch(0.1 0.02 290 / 0.9);
-  box-shadow: inset 0 1.4vh 1.4vh -1vh oklch(0 0 0 / 0.8), inset 0 -1.4vh 1.4vh -1vh oklch(0 0 0 / 0.8);
+  box-shadow:
+    inset 0 1.4vh 1.4vh -1vh oklch(0 0 0 / 0.8),
+    inset 0 -1.4vh 1.4vh -1vh oklch(0 0 0 / 0.8);
   overflow: hidden;
 }
 .reel span {
@@ -638,7 +645,9 @@ input {
   letter-spacing: 0.14em;
   text-transform: uppercase;
   rotate: -3deg;
-  box-shadow: 0 0.5vh 0 oklch(0.55 0.12 80), 0 0 3vh oklch(0.89 0.15 93 / 0.45);
+  box-shadow:
+    0 0.5vh 0 oklch(0.55 0.12 80),
+    0 0 3vh oklch(0.89 0.15 93 / 0.45);
 }
 .slide.on .round-badge {
   animation: pop-in 0.6s cubic-bezier(0.2, 1.8, 0.4, 1) both;
@@ -676,19 +685,15 @@ input {
 .podiums .verdict .what {
   font-size: 3.4vh;
 }
+/* Not revealed yet: a bobbing question mark. */
 .podiums .mystery .what {
-  font-size: 5vh;
+  font-size: 0;
   line-height: 1;
   color: var(--yellow);
   animation: bob 1.4s ease-in-out infinite;
 }
 .podiums .mystery .what::before {
   content: '?';
-}
-.podiums .mystery .what {
-  font-size: 0;
-}
-.podiums .mystery .what::before {
   font-size: 5vh;
 }
 @keyframes bob {
@@ -757,7 +762,10 @@ input {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  font: 900 2.8vh/1 ui-sans-serif, system-ui, sans-serif;
+  font:
+    900 2.8vh/1 ui-sans-serif,
+    system-ui,
+    sans-serif;
   color: oklch(0.15 0.03 290);
 }
 .podiums .verdict.right::after {
@@ -773,22 +781,29 @@ input {
 .podiums.judging .verdict.wrong::after {
   animation: pop-in 0.5s cubic-bezier(0.2, 1.8, 0.4, 1) both 0.75s;
 }
-.podiums.judging .verdict.right,
-.podiums.judging .verdict.wrong {
-  transition-delay: 0.7s;
-}
+/* Judged as the tests' card lands: until then each podium holds its plain look (the from keyframe), so nothing spoils it. */
 .podiums.judging .verdict.right {
-  animation: cheer 0.5s cubic-bezier(0.2, 1.8, 0.4, 1) 0.7s;
+  animation: cheer 0.6s cubic-bezier(0.2, 1.8, 0.4, 1) 0.7s backwards;
 }
 .podiums.judging .verdict.wrong {
-  animation: shake 0.45s ease-in-out 0.7s;
+  animation: shake 0.45s ease-in-out 0.7s backwards;
 }
 @keyframes cheer {
+  from {
+    border-color: oklch(0.5 0.14 300 / 0.9);
+    box-shadow:
+      inset 0 -1vh 0 oklch(0.08 0.02 290 / 0.6),
+      0 1.2vh 3vh oklch(0 0 0 / 0.45);
+  }
   40% {
     transform: translateY(-1.4vh) scale(1.04);
   }
 }
 @keyframes shake {
+  from {
+    border-color: oklch(0.5 0.14 300 / 0.9);
+    opacity: 1;
+  }
   20%,
   60% {
     transform: translateX(-1vh) rotate(-1.5deg);
@@ -797,6 +812,9 @@ input {
   80% {
     transform: translateX(1vh) rotate(1.5deg);
   }
+}
+.podiums + .row {
+  width: min(62vw, 980px);
 }
 .scoreboard {
   display: flex;
@@ -1730,6 +1748,88 @@ body.unplugged .readout {
   .verdict.stamp,
   .aaah.on,
   .slide.on .wanted:not(.later) {
+    animation: none;
+  }
+}
+
+/* The scramble slide says what the fly did in words, not a score. */
+.duel .num.say {
+  font-size: 6vh;
+  letter-spacing: -0.03em;
+}
+
+/* The proposal's last press: one team's review skill, as a file. */
+.review-card {
+  width: min(84vw, 1300px);
+  border: 1px solid var(--line);
+  border-radius: 1.6vh;
+  background: var(--panel);
+  backdrop-filter: blur(6px);
+  overflow: hidden;
+  animation: card-in 0.6s var(--ease) both;
+}
+.review-card header {
+  display: flex;
+  align-items: baseline;
+  gap: 2.4vh;
+  padding: 1.4vh 2.4vh;
+  border-bottom: 1px solid var(--line);
+  font: 500 1.6vh var(--mono);
+  color: var(--faint);
+}
+.review-card header b {
+  color: var(--ink);
+  font-weight: 650;
+}
+.review-card .example {
+  margin-left: auto;
+  color: var(--yellow);
+}
+.review-card .cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.review-card .col {
+  padding: 2.2vh 2.4vh;
+}
+.review-card .col + .col {
+  border-left: 1px solid var(--line);
+}
+.review-card h3 {
+  margin: 0 0 1.4vh;
+  font-size: 2.6vh;
+  letter-spacing: -0.015em;
+}
+.review-card .human h3 {
+  color: var(--red);
+}
+.review-card .pass h3 {
+  color: var(--green);
+}
+.review-card ul {
+  margin: 0;
+  padding-left: 2.4vh;
+}
+.review-card li {
+  font-size: 2.1vh;
+}
+.review-card li + li {
+  margin-top: 0.9vh;
+}
+.review-card footer {
+  padding: 1.6vh 2.4vh;
+  border-top: 1px solid var(--line);
+  font-size: 1.9vh;
+  color: var(--muted);
+}
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(1.2vh);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .review-card {
     animation: none;
   }
 }
