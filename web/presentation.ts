@@ -187,6 +187,16 @@ function applaud(target: string) {
   });
 }
 
+/** What a touch does, in plain words. The neuron names stay in deck.json. */
+const TOUCH: Record<string, string> = {
+  sugar: 'Sugar on its tongue: taste neurons fire, and the tongue comes out.',
+  feet: 'Sugar on its feet (flies taste with their feet): taste neurons in its legs fire.',
+  antennae: 'You touched its antennae: touch neurons fire, and it grooms.',
+  eyes: 'Something big, coming fast: its looming detectors fire, and its escape neuron with them.',
+  brush: 'You brushed its bristles: touch neurons all over its body fire.',
+  abdomen: 'You tapped its abdomen: the sensory neurons there fire.',
+};
+
 // Touching the fly: a real recorded run of that sensory population takes the stage, whatever the slide is playing.
 function touch(preset: string) {
   const recording = deck.recordings[`poke-${preset}`];
@@ -195,7 +205,7 @@ function touch(preset: string) {
   playing = playback(recording, 190, false);
   shownFrame = -1;
   const label = el('touch');
-  label.textContent = recording.note;
+  label.textContent = TOUCH[preset] ?? recording.note;
   label.classList.add('on');
 }
 if (fly) {
@@ -395,7 +405,7 @@ const slides: Slide[] = [
     build: h => {
       html(
         h,
-        `<div class="kicker">Live</div><h2>A fruit fly is about to review a pull request.</h2><p>176,422 simulated neurons from a real fruit-fly connectome. About two seconds on this laptop.</p>`,
+        `<div class="kicker">Live</div><h2>A fruit fly is about to review a pull request.</h2><p>176,422 simulated neurons, wired like a real fly’s: its nervous system, mapped neuron by neuron. About two seconds on this laptop.</p>`,
       );
       const row = make('div', 'row');
       const input = make('input', 'pr-input');
@@ -425,6 +435,7 @@ const slides: Slide[] = [
       'Ask someone in the room for an open-source PR, or have one ready. Small PRs are faster: each hunk is one Jev call, and a 32-hunk PR takes the simulation one to two minutes to read.',
       'Type it, Enter. The main page opens with the PR fetched; click Ask the fly. Come back with the browser’s back button.',
       'Wifi dies → “Plan B: a recorded run” plays a real recording of the fly catching a bug.',
+      'If asked: the wiring map is a connectome, male-cns v1.0 from HHMI Janelia, Cambridge, and Google.',
       'Line to use, yours: “I like the idea of having your code reviewed by a fruit fly and the analogy that I’m so smooth-brained that it’s better at code review than me at this point.”',
     ],
   },
@@ -440,7 +451,7 @@ const slides: Slide[] = [
     enter: () => applaud('.headshot'),
     notes: [
       '[NICK: who you are, in your words. Sourced candidates from your blog: Developer Experience Engineer at WorkOS (on the slide); seven years on JS Party.]',
-      'The fly is applauding: the brain is a real recording of its grooming neuron (DNg62) firing after its antennae were touched, and flies rub their front legs together when they groom.',
+      'The fly is applauding: the brain is a real recording of its grooming neuron firing after its antennae were touched, and flies rub their front legs together when they groom.',
     ],
   },
   {
@@ -473,16 +484,71 @@ const slides: Slide[] = [
     ],
   },
   {
+    id: 'how',
+    minutes: '0:45',
+    className: 'wide',
+    steps: 5,
+    build: h => {
+      html(
+        h,
+        `<div class="kicker">How it works</div><h2>A fruit fly can’t read code. Here’s how it reviews it anyway.</h2>`,
+      );
+      const parts: [string, string, string][] = [
+        [
+          '1 · The nose',
+          'An AI model answers 30 yes-or-no questions about what changed. The answers become a smell.',
+          'Feature extraction',
+        ],
+        [
+          '2 · The memory',
+          `The smell lights up about 5% of its ${N.kenyonCells.toLocaleString()} memory cells. Similar code, similar cells.`,
+          'Hashing',
+        ],
+        [
+          '3 · The teacher',
+          'A test result is a taste. Bug reproduced: bitter. Tests pass: sugar. Dopamine rewires what just lit up.',
+          'Training: the write',
+        ],
+        ['4 · The vote', 'If the smell alone makes its tongue come out, it approves.', 'Inference: the read'],
+      ];
+      const pipe = make('div', 'pipeline four');
+      parts.forEach(([title, body, term], i) => {
+        const s = make('div', 'station step later');
+        s.dataset.step = String(i);
+        s.innerHTML = `<span class="packet"></span><h3></h3><p></p><p class="term"></p>${i < 3 ? '<span class="arrow"></span>' : ''}`;
+        s.querySelector('h3')!.textContent = title;
+        s.querySelector('p')!.textContent = body;
+        s.querySelector('.term')!.textContent = term;
+        pipe.append(s);
+      });
+      h.append(pipe);
+      html(
+        h,
+        `<p class="step later summary" data-step="4">A hash table where similar keys collide on purpose, and the tests write the values.</p>`,
+      );
+    },
+    enter: step => {
+      home();
+      play(['objects', 'objects', 'sugar', 'reaches', 'reaches'][step]);
+      document.querySelectorAll('.slide.on .station').forEach((s, i) => s.classList.toggle('active', step === i));
+    },
+    notes: [
+      'One press per part; the fly acts each one out. The detail slides that follow are the same four, one at a time.',
+      'If anyone asks for the real names: the smell channels are glomeruli, the memory cells are Kenyon cells in the mushroom body, the two output groups are MBONs, the tongue is the proboscis.',
+      'For this room, optional: the fly’s smell circuit has been described as locality-sensitive hashing (Dasgupta, Stevens & Navlakha, Science, 2017).',
+    ],
+  },
+  {
     id: 'nose',
-    minutes: '0:55',
+    minutes: '0:45',
     className: 'wide',
     steps: 2,
     build: h => {
       const rec = deck.recordings.objects;
-      html(h, `<div class="kicker">1 · The nose</div><h2>A fly can’t read code. Jev is its nose.</h2>`);
+      html(h, `<div class="kicker">1 · The nose</div><h2>Step 1: turn the diff into a smell.</h2>`);
       html(
         h,
-        `<p>Thirty yes-or-no questions about <strong>what changed</strong>. None asks whether the change is good. The two that ask whether it changed the result are switched off: that’s the test’s job.</p>`,
+        `<p>Jev, an AI model, answers thirty yes-or-no questions about <strong>what changed</strong>. None asks whether the change is good. The two that ask whether it changes the result are switched off: that’s the tests’ job.</p>`,
       );
       const chips = make('div', 'receptors');
       deck.receptors.forEach((r, i) => {
@@ -502,7 +568,7 @@ const slides: Slide[] = [
       h.append(odor);
       html(
         h,
-        `<p class="caption step later" data-step="1">The answers, plus the words in the changed lines, become a smell: ${N.glomeruli} glomeruli. Violet from Jev, yellow from the tokens. This one is “${rec.review!.title}”.</p>`,
+        `<p class="caption step later" data-step="1">The answers, plus the words in the changed lines, become ${N.glomeruli} numbers: a smell. Violet from Jev, yellow from the words. Same change, same smell, every time. This one is “${rec.review!.title}”.</p>`,
       );
     },
     enter: step => {
@@ -513,23 +579,24 @@ const slides: Slide[] = [
     },
     notes: [
       'Lit chips are what Jev said about this change (above 25%). Struck-through red chips are the two the fly never smells.',
-      '→ the smell: one bar per glomerulus. Same change, same smell, every time.',
+      '→ the smell: one bar per smell channel (a glomerulus, if asked).',
     ],
   },
   {
     id: 'memory',
-    minutes: '0:45',
+    minutes: '0:40',
     build: h =>
       html(
         h,
-        `<div class="kicker">2 · The memory</div><h2>A smell wakes a few of ${N.kenyonCells.toLocaleString()} memory cells.</h2><p>Kenyon cells, violet, at their real positions. Their output neurons pull two ways: <strong class="red">avoid</strong> and <strong class="green">approach</strong>.</p>`,
+        `<div class="kicker">2 · The memory</div><h2>Step 2: the smell lights up a few of ${N.kenyonCells.toLocaleString()} memory cells.</h2><p>Each violet dot is a memory cell, where it sits in a real fly’s brain. Every one is wired to two groups of output neurons, <strong class="red">avoid</strong> and <strong class="green">approach</strong>. Those wires are the memory.</p><p class="caption">Similar code lights up similar cells: two unrelated smells share about 1% of them, two that share a channel about 40%.</p>`,
       ),
     enter: () => {
       view.focusMushroomBody(true);
       play('objects');
     },
     notes: [
-      'The camera swoops onto the mushroom body. This is a real recording, bins of 25 ms slowed down. The readout strip at the bottom left is live from the recording.',
+      'The camera swoops onto the fly’s memory center (the mushroom body). This is a real recording, bins of 25 ms slowed down. The readout strip at the bottom left is live from the recording.',
+      'If asked: memory cells are Kenyon cells; the output neurons are MBONs. Each smell lights the 5% of each cell type it drives hardest.',
     ],
   },
   {
@@ -539,9 +606,9 @@ const slides: Slide[] = [
     build: h =>
       html(
         h,
-        `<div class="kicker">3 · The teacher</div><h2>Only executed evidence teaches.</h2>
-        <p data-step="0" class="step">A test reproduced the bug: <strong>bitter</strong>. Punishment dopamine neurons fire, ${Math.round(deck.recordings.bitter.ppl1Hz)} Hz, and the synapses under them weaken.</p>
-        <p data-step="1" class="step later">A test proved the change harmless: <strong>sugar</strong>. Reward neurons fire, ${Math.round(deck.recordings.sugar.pamHz)} Hz, and the proboscis comes out.</p>
+        `<div class="kicker">3 · The teacher</div><h2>Step 3: a test result is a taste.</h2>
+        <p data-step="0" class="step">A test reproduces the bug: <strong>bitter</strong>. Punishment dopamine fires (${Math.round(deck.recordings.bitter.ppl1Hz)} Hz) and weakens the lit cells’ wires to <strong class="green">approach</strong>.</p>
+        <p data-step="1" class="step later">A test proves the change harmless: <strong>sugar</strong>. Reward dopamine fires (${Math.round(deck.recordings.sugar.pamHz)} Hz), weakens their wires to <strong class="red">avoid</strong>, and the tongue comes out.</p>
         <blockquote class="step later" data-step="1">I tried to train the fly on the codebase by using mutation testing to identify good and bad parts of the code and then train the fly to have memories based on that.</blockquote>
         <p class="caption">${N.lessons} lessons. Every label proven by running code: mutants that real test suites killed in authkit-nextjs, authkit-js, and ufo. “No bug found” teaches nothing.</p>`,
       ),
@@ -551,6 +618,7 @@ const slides: Slide[] = [
     },
     notes: [
       'Pink flashes are the dopamine neurons. Bitter first; → sugar, watch the fly reach during the lesson.',
+      'Only a test can teach it: nothing is learned from an opinion. If asked: PPL1 neurons carry bitter, PAM neurons carry sugar.',
       'The quote is yours (interview).',
     ],
   },
@@ -561,26 +629,29 @@ const slides: Slide[] = [
     build: h =>
       html(
         h,
-        `<div class="kicker">4 · The vote</div><h2>Approval is behavior.</h2>
-        <p class="step" data-step="0">A harmless change. If the smell alone brings the proboscis out, <strong>the fly reached for it</strong>: approve. (${deck.recordings.reaches.review!.title})</p>
-        <p class="step later" data-step="1">A real bug. The avoidance neurons win and the tongue stays in: <strong>changes requested</strong>. (${deck.recordings.objects.review!.title})</p>`,
+        `<div class="kicker">4 · The vote</div><h2>Step 4: tongue out means approve.</h2>
+        <p class="step" data-step="0">A harmless change. The smell alone brings its tongue out: <strong>the fly reached for it</strong>. Approve. (${deck.recordings.reaches.review!.title})</p>
+        <p class="step later" data-step="1">A real bug. <strong class="red">Avoid</strong> drowns out <strong class="green">approach</strong> and the tongue stays in: <strong>changes requested</strong>. Too close to call, it abstains. (${deck.recordings.objects.review!.title})</p>`,
       ),
     enter: step => {
       home();
       view.focusReadout(step === 0 ? 0 : null);
       play(step === 0 ? 'reaches' : 'objects');
     },
-    notes: ['Watch the fly in the corner, not me. Green = proboscis motor neurons (MN9).'],
+    notes: [
+      'Watch the fly in the corner, not me. Green in the strip = the tongue’s motor neuron (MN9, if asked).',
+      'The rule: avoid more than 68% of the two groups’ output is changes requested; under 45% with no reach leans approve; in between, it abstains.',
+    ],
   },
   {
     id: 'proof',
-    minutes: '1:00',
+    minutes: '0:50',
     className: 'wide',
     steps: 2,
     build: h => {
       html(
         h,
-        `<div class="kicker">Is it really the fly?</div><h2>Same nose. Same lessons. Scramble only its dopamine wiring.</h2>`,
+        `<div class="kicker">The ablation</div><h2>Is it the fly, or is the AI nose doing the work?</h2><p>Keep the nose and the lessons. Shuffle only which output neurons the teacher’s dopamine reaches.</p>`,
       );
       const duel = make('div', 'duel');
       duel.innerHTML = `<div class="good" data-side="real"><div class="kicker">Real wiring</div><div class="num">${N.caught[0]}<small> / ${N.caught[1]}</small></div><p>bugs caught</p></div>
@@ -673,7 +744,7 @@ const slides: Slide[] = [
       });
     },
     notes: [
-      '“A spreadsheet” is a logistic regression reading the exact same smell. “Best single clue” is the one glomerulus that does best alone. Both fit on the same training lessons.',
+      '“A spreadsheet” is a logistic regression reading the exact same smell. “Best single clue” is the one smell channel that does best alone. Both fit on the same training lessons.',
       'The room bar is three questions, not ' + N.heldOut + '. Say so.',
     ],
   },
@@ -756,7 +827,7 @@ const slides: Slide[] = [
     },
     enter: step => {
       still();
-      document.querySelectorAll('.station').forEach((s, i) => s.classList.toggle('active', step - 1 === i));
+      document.querySelectorAll('.slide.on .station').forEach((s, i) => s.classList.toggle('active', step - 1 === i));
       el('fly').classList.add('station-seat');
     },
     notes: [
