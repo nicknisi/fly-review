@@ -665,7 +665,9 @@ const postJSON = async (path: string, body: unknown) => {
   return result;
 };
 /** The pull request this slide sent, and the run that was on the server before it, so an older review never shows. */
-let asked: { url: string; title: string; prevRun: string | null } | null = null;
+let asked: { url: string; title: string; prevRun: string | null; recorded?: boolean } | null = null;
+/** The last finished pull-request run the server reported. Plan B replays it; a later failed run never replaces it. */
+let recordedRun: ReviewState | null = null;
 let lastState: ReviewState | null = null;
 let shownRun: string | null = null;
 let livePanel: HTMLElement;
@@ -719,6 +721,7 @@ async function prepareLive(reference: string) {
 let liveClock: ReturnType<typeof setInterval> | undefined;
 function onLiveState(s: ReviewState) {
   lastState = s;
+  if (s.phase === 'ready' && s.brain && s.verdict && s.review.pullRequest) recordedRun = s;
   clearInterval(liveClock);
   if (!asked || s.review.pullRequest?.url !== asked.url || s.runDir === asked.prevRun) return;
   if (s.phase === 'error') return liveMessage(s.explanation, 'error');
@@ -776,7 +779,11 @@ function onLiveState(s: ReviewState) {
         `${count(a.units.length, a.granularity)}: ${a.tally.changes_requested} stink, ${a.tally.no_objection} smell good, ${a.tally.abstain} can’t tell${a.tally.reached ? `, tongue out on ${a.tally.reached}` : ''}.`,
       ),
     );
-  livePanel.replaceChildren(make('h3', 'live-title', asked.title), row);
+  livePanel.replaceChildren(
+    ...(asked.recorded ? [make('p', 'caption', 'Recorded earlier on this laptop. Not live.')] : []),
+    make('h3', 'live-title', asked.title),
+    row,
+  );
   if (unit)
     livePanel.append(
       diffBox({
@@ -1422,8 +1429,33 @@ typeof null           // "object"</pre>
       });
       const recorded = make('button', 'button', 'Plan B: a recorded run');
       recorded.addEventListener('click', () => {
+        clearInterval(liveClock);
+        // The last real pull request this laptop ran, replayed whole: recording, stamp, the hunk it looked at.
+        if (recordedRun) {
+          asked = {
+            url: recordedRun.review.pullRequest!.url,
+            title: recordedRun.review.title,
+            prevRun: null,
+            recorded: true,
+          };
+          shownRun = null;
+          return onLiveState(recordedRun);
+        }
+        // Nothing has run here yet: the exam bug the audience saw it catch, recorded.
+        asked = null;
+        const review = deck.recordings.objects.review!;
         home();
         play('objects');
+        const stamp = verdictCard('The fly', 'object', 'it backed away, tongue in', SNIFFS);
+        stamp.classList.add('stamp');
+        const row = make('div', 'row');
+        row.append(stamp);
+        livePanel.replaceChildren(
+          make('p', 'caption', 'Recorded: a bug from the exam. Not live.'),
+          make('h3', 'live-title', review.title),
+          row,
+          diffBox(review),
+        );
       });
       row.append(input, go, recorded);
       livePanel = make('div', 'live-panel');
@@ -1570,19 +1602,20 @@ typeof null           // "object"</pre>
       h.append(receipt);
       // The last press: what the first station holds, for one team. DX is the example; every team writes its own.
       const card = make('div', 'review-card gone');
-      card.innerHTML = `<header><b>REVIEW.md</b><span>DX team · SDKs, AuthKit, CLI, docs</span><span class="example">an example</span></header>
-        <div class="cols"><div class="col human"><h3>Any yes → a human looks</h3><ul>
+      card.innerHTML = `<div class="file"><header><i></i><i></i><i></i><b>REVIEW.md</b><span class="example">an example</span></header>
+        <div class="md"><h3>DX team</h3><p>SDKs, AuthKit, CLI, docs</p>
+        <div class="cols"><div class="col human"><h4>Any yes → a human looks</h4><ul>
           <li>Changes the public API: an export, an option, a default, an error?</li>
           <li>Touches sessions, tokens, cookies, or redirects?</li>
           <li>Hand-edits generated SDK code instead of the OpenAPI spec?</li>
           <li>Adds a runtime dependency?</li>
           <li>Too big to explain in three sentences?</li></ul></div>
-        <div class="col pass"><h3>All proven → one more reason it doesn’t need one</h3><ul>
+        <div class="col pass"><h4>All proven → one more reason it doesn’t need one</h4><ul>
           <li>CI is green on every framework version we support</li>
           <li>The example app signs in and out, on video</li>
           <li>Docs and code samples change in the same PR</li>
-          <li>A changelog line in the words a developer would use</li></ul></div></div>
-        <footer>Shaped like the fly: yes/no questions a model can answer, and only checks that actually ran. A red check goes to a human too.</footer>`;
+          <li>A changelog line in the words a developer would use</li></ul></div></div></div></div>
+        <p class="caption">Shaped like the fly: yes/no questions a model can answer, and only checks that actually ran. A red check goes to a human too.</p>`;
       h.append(card);
     },
     enter: step => {
